@@ -1,0 +1,46 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ include file="/WEB-INF/views/general_path.jsp"%>
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<title>企业概况</title>
+		<meta name="keywords" content="东翌"/>
+		<meta name="description" content="东翌（上海）投资发展有限公司是..."/>
+		<link rel="stylesheet" type="text/css" href="../css/default.css">
+		<link rel="stylesheet" type="text/css" href="../css/main.css">
+		<link rel="shortcut icon" type="image/x-icon" href="<%=request.getContextPath()%>/front/images/favicon.ico" />
+	</head>
+	<body>
+		<%@ include file="/WEB-INF/views/front/header.jsp" %>
+		<div class="d_wrapper">
+			<div class="d_detail_cont clearfix">
+				<div class="text_center"><img src="../images/d_trade.jpg" alt="交易指南" title="交易指南" /></div>
+				<%@ include file="/WEB-INF/views/front/contactus/aboutUs_left.jsp" %>
+				<div class="d_detail_fr fr">
+					<div class="d_content_fl_tit"><h2>东翌简介</h2></div>
+					<div class="d_main_cont">
+						<div class="d_tab_con fl">
+							<div class="d_new_dtit">
+								<h3>东翌简介</h3>
+							</div>
+							<div class="d_new_dcon">
+								<p>
+								东翌（上海）投资管理有限公司是青岛鲁银商品交易所第065号会员单位，主要经营现货石油、现货白银、现货铂金、现货钯金、投资咨询、现货交割等业务。
+									公司坐落于上海陆家嘴金融中心，拥有行业内经验丰富的管理团队，以及高素质的人才队伍，能敏锐的把控行业动态，能及时的掌握市场信息，为客户提供最安全、最快捷的投资体验。</p>
+									<p>
+									面向国内外广大投资者提供全天候现货电子交易服务、投资咨询和管理服务，在现货投资行业中具有先进的运营模式，国际化的管理团队、标准化的服务体系和全面的风险控制能力，为投资者提供安全、快捷、高效的投资渠道和专业、多元、个性化的投资方案。</p>
+									<p>现货电子交易在整个金融市场有着举足轻重的地位，我国对现货行业更是有着海量的现实和潜在市场需求。面对这样具备远大发展前景和潜在机遇的行业，东翌秉承“专注、正气、创新、共赢”的服务理念以及务实、专业的服务体系将继续以客户至上为宗旨，为客户提
+									供全方位综合服务方案，积极抓住市场发展机遇，致力于打造中国最专业的石油投资服务平台</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<%@ include file="/WEB-INF/views/front/footer.jsp"%>
+	</body>
+</html>

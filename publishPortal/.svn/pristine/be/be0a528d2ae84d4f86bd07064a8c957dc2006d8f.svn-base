@@ -1,0 +1,48 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ include file="/WEB-INF/views/general_path.jsp"%>
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<title>隐私保密条款</title>
+		<meta name="keywords" content="东翌"/>
+		<meta name="description" content="东翌（上海）投资发展有限公司是..."/>
+		<link rel="stylesheet" type="text/css" href="../css/default.css">
+		<link rel="stylesheet" type="text/css" href="../css/main.css">
+		<link rel="shortcut icon" type="image/x-icon" href="<%=request.getContextPath()%>/front/images/favicon.ico" />
+	</head>
+	<body>
+		<%@ include file="/WEB-INF/views/front/header.jsp" %>
+		<div class="d_wrapper">
+			<div class="d_detail_cont clearfix">
+				<div class="text_center"><img src="../images/d_trade.jpg" alt="交易指南" title="交易指南" /></div>
+				<%@ include file="/WEB-INF/views/front/contactus/aboutUs_left.jsp" %>
+				<div class="d_detail_fr fr">
+					<div class="d_content_fl_tit"><h2>隐私保密条款</h2></div>
+					<div class="d_main_cont">
+						<div class="d_tab_con fl">
+							<div class="d_new_dtit">
+								<h3>隐私保密条款</h3>
+							</div>
+							<div class="d_new_dcon">
+								<p>
+								东翌贵金属以此声明对本站用户隐私保护的许诺:<br />
+								一、东翌贵金属只会收集我公司认为有助于了解本网站用户的需求的个人资料，以利于东翌贵金属为本网站用户提供更优质的产品和服务。<br />
+								二、东翌贵金属致力确保您个人资料的安全保护,用户的邮件及手机号等个人资料为用户重要隐私，东翌贵金属承诺不会将个人资料用作它途；承诺不会在未获得用户许可的情况下擅自将用户的个人资料信息出租或出售给任何第三方。东翌贵金属将采取一切实际可行措施，确保不会保留您的个人资料。<br />
+								但以下情况除外：<br />
+								1.用户同意让第三方共享资料； <br />
+								2.用户同意公开其个人资料，享受为其提供的产品和服务； <br />
+								3.在法律规定的情况下，如司法机关、监管机构及其他相关机构要求提供上述个人资料，我公司将按照法律规定和相关机构的要求提供上述个人资料。
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<%@ include file="/WEB-INF/views/front/footer.jsp"%>
+	</body>
+</html>

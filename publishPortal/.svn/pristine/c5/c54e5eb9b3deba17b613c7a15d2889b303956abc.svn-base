@@ -1,0 +1,8 @@
+$(function(){
+	var currentNav = document.getElementById("currentNavInfo").value;
+	selectedNav(currentNav);
+});
+
+function selectedNav(selector){
+	$("#"+selector).addClass("selected");
+}

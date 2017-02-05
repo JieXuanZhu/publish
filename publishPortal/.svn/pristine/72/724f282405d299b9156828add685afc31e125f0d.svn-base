@@ -1,0 +1,179 @@
+package cn.com.shukaiken.service.impl;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONArray;
+
+import cn.com.shukaiken.dao.ILabelDao;
+import cn.com.shukaiken.dao.LabelTagRelDao;
+import cn.com.shukaiken.model.Label;
+import cn.com.shukaiken.model.LabelTagRel;
+import cn.com.shukaiken.model.Tag;
+import cn.com.shukaiken.service.ILabelService;
+import cn.com.shukaiken.service.ITagService;
+import cn.com.shukaiken.util.Constant;
+import cn.com.shukaiken.util.ValidateUtils;
+@Service
+public class LabelServiceImpl implements ILabelService {
+	private Logger logger = LoggerFactory.getLogger(LabelServiceImpl.class);
+	@Resource
+	private ILabelDao labelDAo;
+	
+	@Autowired
+	private LabelTagRelDao relDao;
+	
+	@Autowired
+	private ITagService tagService;
+
+	@Override
+	public List<Label> getLabelLs(Label label) {
+	
+		return labelDAo.getLabelLs(label);
+	}
+
+	@Override
+	public int addLabel(Label label) {
+		return labelDAo.insert(label);
+	}
+
+	@Override
+	public int updateByLabelId(Label label) {
+		return labelDAo.updateByPrimaryKeySelective(label);
+	}
+
+	@Override
+	public Label getLabelById(int id) {
+		return labelDAo.selectByPrimaryKey(id);
+	}
+
+	@Override
+	public List<Label> getLevelLs(Label label) {
+		return labelDAo.getLevelLs(label);
+	}
+
+	@Override
+	public int getSubCountById(Label label) {
+		
+		return labelDAo.getSubCountById(label);
+	}
+
+	@Override
+	public Label selectByLabel(Label label) {
+		return labelDAo.selectBySelective(label);
+	}
+
+	/* (non-Javadoc)
+	 * <p>Title: addLabelTagRel</p> 
+	 * <p>Description: </p> 
+	 * @param labelId
+	 * @param nodeIds
+	 * @return 
+	 * @see cn.com.shukaiken.service.ILabelService#addLabelTagRel(java.lang.String, java.lang.String) 
+	 */
+	@Override
+	public int addLabelTagRel(String labelId, String nodeIds) {
+		int result = 0;
+		try {
+			//先将所有的标签都置为无效，再插入
+			LabelTagRel ultr = new LabelTagRel();
+			ultr.setIsValid(Constant.DELETED);
+			ultr.setLabelId(Integer.valueOf(labelId));
+			result = relDao.updateRelByLabelId(ultr);
+			
+			if(!ValidateUtils.isEmpty(nodeIds)){
+				String[] nodeIdArr = nodeIds.split(",");
+				for(int i=0;i<nodeIdArr.length;i++){
+					LabelTagRel ltr = new LabelTagRel();
+					ltr.setCreateTime(new Date());
+					ltr.setIsValid(Constant.VALID);
+					ltr.setLabelId(Integer.valueOf(labelId));
+					ltr.setTagId(Integer.valueOf(nodeIdArr[i]));
+					int row = relDao.insertSelective(ltr);
+					result += row;
+				}
+			}
+		} catch (NumberFormatException e) {
+			result = 0;
+			logger.error("addLabelTagRel.ERROR:"+e, e);
+			e.printStackTrace();
+		}
+			
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * <p>Title: getLabelTree</p> 
+	 * <p>Description: </p> 
+	 * @return 
+	 * @see cn.com.shukaiken.service.ILabelService#getLabelTree() 
+	 */
+	@Override
+	public JSONArray getLabelTree(String tagIds,String labelId) {
+		
+		JSONArray array = new JSONArray();
+		List<Integer> tagsList = new ArrayList<Integer>(); 
+		if(!ValidateUtils.isEmpty(tagIds)){
+			String[] tagArr = tagIds.split(",");
+			for(int i = 0;i<tagArr.length;i++){
+				tagsList.add(Integer.parseInt(tagArr[i]));
+			}
+		}
+		Label qLable = new Label();
+		List<Label> labels = this.getLabelLs(qLable);
+		if(labels!=null&&labels.size()>0){
+			for(int i=0;i<labels.size();i++){
+				Label lab = labels.get(i);
+				Map<String,Object> mapl = new HashMap<String,Object>();
+				mapl.put("id", lab.getId()+10000);//防止两张表中的Id重复，在父节点上加上10000
+				mapl.put("pId", 0);
+				mapl.put("name", lab.getLabel_name());
+				mapl.put("level", 0);
+				mapl.put("nocheck",true);
+				array.add(mapl);
+				
+				LabelTagRel ltr = new LabelTagRel();
+				ltr.setLabelId(lab.getId());
+				ltr.setIsValid(Constant.VALID);
+				List<Tag> tags = tagService.getTagsByLabel(ltr);
+				if(tags!=null&&tags.size()>0){
+					
+					for(int j = 0;j<tags.size();j++){
+					Tag tag = tags.get(j);
+					if(tag.getLabelId()!=null){
+						Map<String,Object> map = new HashMap<String,Object>();
+						map.put("id", tag.getTagId());
+						map.put("pId", lab.getId()+10000);//防止两张表中的Id重复，在父节点上加上10000
+						map.put("name", tag.getTagName());
+						if(!ValidateUtils.isEmpty(labelId) && Integer.valueOf(labelId)==lab.getId()&&tagsList!=null && tagsList.size()>0 &&tagsList.contains(tag.getTagId())){
+							map.put("checked", "true");
+						}
+						map.put("level", 1);
+						array.add(map);
+					}
+					}
+				}
+				
+			}
+		}
+		System.out.println(array);
+		return array;
+	}
+
+	@Override
+	public List<Label> selectLabelsByCondition(Label ql) {
+		// TODO Auto-generated method stub
+		return labelDAo.getLabelsByCondition(ql);
+	}
+	
+}

@@ -1,0 +1,272 @@
+package cn.com.shukaiken.webService.impl;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import cn.com.shukaiken.model.Cust;
+import cn.com.shukaiken.service.ICustService;
+import cn.com.shukaiken.util.JSONHelper;
+import cn.com.shukaiken.util.JacksonHelper;
+import cn.com.shukaiken.util.Md5;
+import cn.com.shukaiken.webService.IAppCustWebService;
+
+import com.alibaba.fastjson.JSONArray;
+@Service
+public class AppCustWebServiceImpl implements IAppCustWebService {
+	
+	@Resource
+	private ICustService custService;
+	
+	private JSONArray array;
+	
+	private Map<Object,Object> map ;
+
+	/**
+	 * 获取手机验证码
+	 */
+	@Override
+	public String getValidCode(String user_name) {
+		Cust cust = new Cust();
+		cust.setUser_name(user_name);
+		cust = custService.selectByCust(cust);
+		Map<String, Object> map = new HashMap<String,Object>();
+		if(cust==null){
+			map.put("result", "1");
+			map.put("message", "可以注册");
+			String validCode = "123456";
+			validCode = Md5.getMD5(validCode);
+			map.put("validCode", validCode);
+		}else{
+			map.put("result", "0");
+			map.put("message", "该用户已经存在");
+		}
+		String jsonStr = JSONHelper.getJsonByMap(map);
+		return jsonStr;
+	}
+
+	/**
+	 * 用户注册
+	 */
+	@Override
+	public String addCust(String user_name) {
+		Map<Object,Object> map = new HashMap<Object,Object>();
+		Cust cust = new Cust();
+		cust.setUser_name(user_name);
+	    Cust temp = custService.selectByCust(cust);
+		if(temp==null){
+			cust.setPassword(Md5.getMD5("123456"));
+			cust.setCreate_date(new Date());
+			cust.setLast_login_date(new Date());
+			cust.setLevel(1);
+			cust.setLevel_id(1);
+			cust.setIs_valid(0);
+			int status = 0;
+		    status = custService.addCust(cust);
+		    cust = custService.selectByCust(cust);
+			if(status>0){
+				map.put("result", "1");
+				map.put("message", "注册成功");
+				map.put("data", cust);
+			}else{
+				map.put("result", "0");
+				map.put("message", "注册失败");
+			}
+		}else{
+			map.put("result", "0");
+			map.put("message", "该用户已经存在");
+		}
+		
+		String jsonStr = JSONHelper.getJsonByMap(map);
+		return jsonStr;
+	}
+	
+	/**
+	 * 登录校验
+	 */
+	@Override
+	public String getLoginStatus(String user_name, String password) {
+		map = new HashMap<Object,Object>();
+		array = new JSONArray();
+		Cust cust = new Cust();
+		cust.setUser_name(user_name);
+		cust.setPassword(password);
+		cust = custService.selectByCust(cust);
+		if(cust!=null){
+			map.put("result", "1");
+			map.put("message", "登录成功");
+			cust.setLast_login_date(new Date());
+			custService.updateByCustId(cust);
+			map.put("data", cust);
+		}else{
+			map.put("result", "0");
+			map.put("message", "用户名或者密码错误");
+		}
+		
+		String jsonStr = JSONHelper.getJsonByMap(map);
+		return jsonStr;
+	}
+	
+	/**
+	 * 设置用户昵称
+	 */
+	@Override
+	public String setCustNickName(String custId, String nick_name) {
+		map = new HashMap<Object,Object>();
+		array = new JSONArray();
+		Cust cust = new Cust();
+		cust.setId(Integer.parseInt(custId));
+		cust.setNick_name(nick_name);
+		int status = 0;
+	    status = custService.updateByCustId(cust);
+	    if(status>0){
+	    	map.put("result", "1");
+			map.put("message", "昵称设置成功");
+	    }else{
+	    	map.put("result", "1");
+			map.put("message", "昵称设置失败");
+	    }
+		String jsonStr = JSONHelper.getJsonByMap(map);
+		return jsonStr;
+	}
+
+
+	/**
+	 * 设置用户头像
+	 */
+	@Override
+	public String setCustHeadImg(String custId, String head_img_url) {
+		map = new HashMap<Object,Object>();
+		array = new JSONArray();
+		Cust cust = new Cust();
+		cust.setId(Integer.parseInt(custId));
+		cust.setHead_img_url(head_img_url);
+		int status = 0;
+	    status = custService.updateByCustId(cust);
+	    if(status>0){
+	    	map.put("result", "1");
+			map.put("message", "用户头像设置成功");
+	    }else{
+	    	map.put("result", "0");
+			map.put("message", "用户头像设置失败");
+	    }
+		
+		String jsonStr = JSONHelper.getJsonByMap(map);
+		return jsonStr;
+	}
+
+	/**
+	 * 绑定微信号
+	 * @param custId 用户id
+	 * @param wei_xin 微信号
+	 * @return
+	 */
+	@Override
+	public String boundWei_xin(String custId, String wei_xin) {
+		map = new HashMap<Object,Object>();
+		array = new JSONArray();
+		Cust cust = new Cust();
+		cust.setId(Integer.parseInt(custId));
+		cust.setWei_xin(wei_xin);
+		int status = 0;
+	    status = custService.updateByCustId(cust);
+	    if(status>0){
+	    	map.put("result", "1");
+			map.put("message", "微信绑定成功");
+	    }else{
+	    	map.put("result", "0");
+			map.put("message", "微信绑定失败");
+	    }
+		
+		String jsonStr = JSONHelper.getJsonByMap(map);
+		return jsonStr;
+	}
+
+	
+	/**
+	 * 绑定qq号
+	 * @param custId 用户id
+	 * @param qq QQ号
+	 * @return
+	 */
+	@Override
+	public String boundQQ(String custId, String qq) {
+		map = new HashMap<Object,Object>();
+		array = new JSONArray();
+		Cust cust = new Cust();
+		cust.setId(Integer.parseInt(custId));
+		cust.setQq(qq);
+		int status = 0;
+	    status = custService.updateByCustId(cust);
+	    if(status>0){
+	    	map.put("result", "1");
+			map.put("message", "QQ绑定成功");
+	    }else{
+	    	map.put("result", "0");
+			map.put("message", "QQ绑定失败");
+	    }
+		
+	    String jsonStr = JSONHelper.getJsonByMap(map);
+		return jsonStr;
+	}
+	
+	/**
+	 * 绑定微博号
+	 * @param custId 用户id
+	 * @param sina_wei_bo 新浪微博号
+	 * @return
+	 */
+	@Override
+	public String boundSina_wei_bo(String custId, String sina_wei_bo) {
+		map = new HashMap<Object,Object>();
+		array = new JSONArray();
+		Cust cust = new Cust();
+		cust.setId(Integer.parseInt(custId));
+		cust.setSina_wei_bo(sina_wei_bo);
+		int status = 0;
+	    status = custService.updateByCustId(cust);
+	    if(status>0){
+	    	map.put("result", "1");
+			map.put("message", "微博绑定成功");
+	    }else{
+	    	map.put("result", "0");
+			map.put("message", "微博绑定失败");
+	    }
+		
+	    String jsonStr = JSONHelper.getJsonByMap(map);
+		return jsonStr;
+	}
+
+	
+	/**
+	 * 修改密码
+	 * @param custId 用户id
+	 * @param password 密码   （传过来的已经过加密）
+	 * @return
+	 */
+	@Override
+	public String updatePassword(String custId, String password) {
+		map = new HashMap<Object,Object>();
+		array = new JSONArray();
+		Cust cust = new Cust();
+		cust.setId(Integer.parseInt(custId));
+		cust.setPassword(password);
+		int status = 0;
+	    status = custService.updateByCustId(cust);
+	    if(status>0){
+	    	map.put("result", "1");
+			map.put("message", "密码修改成功");
+	    }else{
+	    	map.put("result", "0");
+			map.put("message", "密码修改失败");
+	    }
+		
+	    String jsonStr = JSONHelper.getJsonByMap(map);
+		return jsonStr;
+	}
+
+}

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.CustRoleMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.CustRole" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="CHAR" />
+    <result column="description" property="description" jdbcType="CHAR" />
+    <result column="create_date" property="create_date" jdbcType="TIMESTAMP" />
+    <result column="is_valid" property="is_valid" jdbcType="BIT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, description, create_date, is_valid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_cust_role
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_cust_role
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.com.shukaiken.model.CustRole" >
+    insert into t_cust_role (id, name, description, 
+      create_date, is_valid)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=CHAR}, #{description,jdbcType=CHAR}, 
+      #{create_date,jdbcType=TIMESTAMP}, #{is_valid,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.shukaiken.model.CustRole" >
+    insert into t_cust_role
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="create_date != null" >
+        create_date,
+      </if>
+      <if test="is_valid != null" >
+        is_valid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=CHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=CHAR},
+      </if>
+      <if test="create_date != null" >
+        #{create_date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="is_valid != null" >
+        #{is_valid,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.CustRole" >
+    update t_cust_role
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=CHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=CHAR},
+      </if>
+      <if test="create_date != null" >
+        create_date = #{create_date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="is_valid != null" >
+        is_valid = #{is_valid,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.CustRole" >
+    update t_cust_role
+    set name = #{name,jdbcType=CHAR},
+      description = #{description,jdbcType=CHAR},
+      create_date = #{create_date,jdbcType=TIMESTAMP},
+      is_valid = #{is_valid,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

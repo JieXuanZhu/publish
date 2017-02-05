@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.PlattsMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.Platts" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="platts_type_id" property="platts_type_id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="banner_url" property="banner_url" jdbcType="VARCHAR" />
+    <result column="brief" property="brief" jdbcType="VARCHAR" />
+    <result column="stage" property="stage" jdbcType="INTEGER" />
+    <result column="cust_id" property="cust_id" jdbcType="INTEGER" />
+    <result column="create_date" property="create_date" jdbcType="TIMESTAMP" />
+    <result column="is_valid" property="is_valid" jdbcType="INTEGER" />
+    <result column="reproduced" property="reproduced" jdbcType="VARCHAR" />
+    <result column="share_name" property="share_name" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="cn.com.shukaiken.model.Platts" extends="BaseResultMap" >
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, platts_type_id, title, banner_url, brief, stage, cust_id, create_date, is_valid, 
+    reproduced, share_name
+  </sql>
+  <sql id="Blob_Column_List" >
+    content
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_platts
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_platts
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.com.shukaiken.model.Platts" >
+    insert into t_platts (id, platts_type_id, title, 
+      banner_url, brief, stage, 
+      cust_id, create_date, is_valid, 
+      reproduced, share_name, content
+      )
+    values (#{id,jdbcType=INTEGER}, #{platts_type_id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, 
+      #{banner_url,jdbcType=VARCHAR}, #{brief,jdbcType=VARCHAR}, #{stage,jdbcType=INTEGER}, 
+      #{cust_id,jdbcType=INTEGER}, #{create_date,jdbcType=TIMESTAMP}, #{is_valid,jdbcType=INTEGER}, 
+      #{reproduced,jdbcType=VARCHAR}, #{share_name,jdbcType=VARCHAR}, #{content,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.shukaiken.model.Platts" >
+    insert into t_platts
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="platts_type_id != null" >
+        platts_type_id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="banner_url != null" >
+        banner_url,
+      </if>
+      <if test="brief != null" >
+        brief,
+      </if>
+      <if test="stage != null" >
+        stage,
+      </if>
+      <if test="cust_id != null" >
+        cust_id,
+      </if>
+      <if test="create_date != null" >
+        create_date,
+      </if>
+      <if test="is_valid != null" >
+        is_valid,
+      </if>
+      <if test="reproduced != null" >
+        reproduced,
+      </if>
+      <if test="share_name != null" >
+        share_name,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="platts_type_id != null" >
+        #{platts_type_id,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="banner_url != null" >
+        #{banner_url,jdbcType=VARCHAR},
+      </if>
+      <if test="brief != null" >
+        #{brief,jdbcType=VARCHAR},
+      </if>
+      <if test="stage != null" >
+        #{stage,jdbcType=INTEGER},
+      </if>
+      <if test="cust_id != null" >
+        #{cust_id,jdbcType=INTEGER},
+      </if>
+      <if test="create_date != null" >
+        #{create_date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="is_valid != null" >
+        #{is_valid,jdbcType=INTEGER},
+      </if>
+      <if test="reproduced != null" >
+        #{reproduced,jdbcType=VARCHAR},
+      </if>
+      <if test="share_name != null" >
+        #{share_name,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.Platts" >
+    update t_platts
+    <set >
+      <if test="platts_type_id != null" >
+        platts_type_id = #{platts_type_id,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="banner_url != null" >
+        banner_url = #{banner_url,jdbcType=VARCHAR},
+      </if>
+      <if test="brief != null" >
+        brief = #{brief,jdbcType=VARCHAR},
+      </if>
+      <if test="stage != null" >
+        stage = #{stage,jdbcType=INTEGER},
+      </if>
+      <if test="cust_id != null" >
+        cust_id = #{cust_id,jdbcType=INTEGER},
+      </if>
+      <if test="create_date != null" >
+        create_date = #{create_date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="is_valid != null" >
+        is_valid = #{is_valid,jdbcType=INTEGER},
+      </if>
+      <if test="reproduced != null" >
+        reproduced = #{reproduced,jdbcType=VARCHAR},
+      </if>
+      <if test="share_name != null" >
+        share_name = #{share_name,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.com.shukaiken.model.Platts" >
+    update t_platts
+    set platts_type_id = #{platts_type_id,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      banner_url = #{banner_url,jdbcType=VARCHAR},
+      brief = #{brief,jdbcType=VARCHAR},
+      stage = #{stage,jdbcType=INTEGER},
+      cust_id = #{cust_id,jdbcType=INTEGER},
+      create_date = #{create_date,jdbcType=TIMESTAMP},
+      is_valid = #{is_valid,jdbcType=INTEGER},
+      reproduced = #{reproduced,jdbcType=VARCHAR},
+      share_name = #{share_name,jdbcType=VARCHAR},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.Platts" >
+    update t_platts
+    set platts_type_id = #{platts_type_id,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      banner_url = #{banner_url,jdbcType=VARCHAR},
+      brief = #{brief,jdbcType=VARCHAR},
+      stage = #{stage,jdbcType=INTEGER},
+      cust_id = #{cust_id,jdbcType=INTEGER},
+      create_date = #{create_date,jdbcType=TIMESTAMP},
+      is_valid = #{is_valid,jdbcType=INTEGER},
+      reproduced = #{reproduced,jdbcType=VARCHAR},
+      share_name = #{share_name,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

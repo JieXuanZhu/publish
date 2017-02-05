@@ -1,0 +1,172 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ include file="/WEB-INF/views/general_path.jsp"%>
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<title>开户咨询</title>
+		<meta name="keywords" content="东翌"/>
+		<meta name="description" content="东翌（上海）投资发展有限公司是..."/>
+		<link rel="stylesheet" type="text/css" href="<%=path %>/front/css/default.css">
+		<link rel="stylesheet" type="text/css" href="<%=path %>/front/css/main.css">
+		<link rel="shortcut icon" type="image/x-icon" href="<%=request.getContextPath()%>/front/images/favicon.ico" />
+	</head>
+	<body>
+		<%@ include file="/WEB-INF/views/front/header.jsp" %>
+		<div class="d_wrapper">
+			<div class="d_detail_cont clearfix">
+				<div class="text_center"><img src="<%=path %>/front/images/d_trade.jpg" alt="交易指南" title="交易指南" /></div>
+				<!-- left start -->
+				<%@ include file="/WEB-INF/views/front/account/account_left.jsp" %>
+				<!-- left end -->
+				<div class="d_detail_fr fr">
+					<div class="d_content_fl_tit"><h2>开户咨询</h2></div>
+					<div class="d_main_cont">
+						<div class="d_tab_con fl">
+							<form id="consult_form" method="post">
+								<div class="d_consult_cont d_form_cont">
+									<div class="d_form_list clearfix">
+										<label class="fl">姓名：</label>
+										<div class="fl"><input id="name" name="name" type="text" class="d_input" onblur="checkName()" /></div>
+										<em>*必填</em>
+										<div class="onError"></div>
+									</div>
+									<div class="d_form_list clearfix">
+										<label class="fl">联系电话：</label>
+										<div class="fl"><input id="mobile" name="mobile"  type="text" class="d_input" onblur="checkMobile()"/></div>
+										<em>*必填</em>
+										<div class="onError"></div>
+									</div>
+									<div class="d_form_list clearfix">
+										<label class="fl">内容：</label>
+										<div class="fl"><textarea id="content" name="content" class="d_textarea" onblur="checkContent()"></textarea></div>
+										<em>*必填</em>
+										<div class="onError"></div>
+									</div>
+									<div class="d_form_list clearfix">
+										<label class="fl">&nbsp;</label>
+										<div class="fl"><a href="javascript:void(0);" onclick="account_consult()" class="d_btn">确认提交</a></div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<%@ include file="/WEB-INF/views/front/footer.jsp" %>
+		<script type="text/javascript">
+			 function checkName(){
+			   var name = $("#name").val();
+			   var reg = /^[\u4E00-\u9FA5]{2,5}(?:·[\u4E00-\u9FA5]{2,5})*$/;
+			   if(name == ''){
+				   layer.tips('姓名不为空', '#name', {
+					    tips: 2,
+					});
+			 	   return false ;
+			    }else if(!reg.test(name)){
+			    	 layer.tips('姓名不符合规范', '#name', {
+						    tips: 2,
+						});
+			 	   return false;
+			    } else{
+			    
+			    	return true;
+			    } 
+			    
+			 }
+			 
+			 function checkMobile(){
+			   var mobile = $("#mobile").val();
+			   var reg = /^1[3|4|5|7|8][0-9]{9}$/;
+			   if(mobile == ''){
+				   layer.tips('手机号不能为空', '#mobile', {
+					    tips: 2,
+					});
+			 	   return false ;
+			    }else if(!reg.test(mobile)){
+			    	 layer.tips('手机号不符合规范', '#mobile', {
+						    tips: 2,
+						});
+			 	   return false;
+			    }else{
+			    	
+			    	return true;
+			    }
+			   
+			 }
+			 
+			 function checkContent(){
+				 var content = $("#content").val();
+				 if(content == ''){
+				   layer.tips('咨询内容不能为空', '#content', {
+					    tips: 2,
+					});
+			 	   return false ;
+			    }else{
+			    	return true;
+			    }
+			 }
+			 
+			 var flag = false;
+			    function checkEnter(){
+			    	 if(!checkName()){
+						   return ;
+					  } 
+			   
+			    	 if(!checkMobile()){
+						   return ;
+					 }
+			    	 
+			    	 if(!checkContent()){
+			    		 return ;
+			    	 }
+			    	 
+			    	 flag = true;
+			    }	
+				 
+			
+				function account_consult(){
+					 checkEnter();
+					 if(flag){
+						$.ajax({
+					         cache: true,
+					         type: "POST",
+					         url:"<%=path %>/consult/accountConsult",
+					         data:$('#consult_form').serialize(),// 你的formid
+					         async: false,
+					         dataType:"json",
+					         error: function(data) {
+					         },
+					         success: function(data) { 
+					        	 if(data.result==0){
+					        		 layer.open({
+						        		    title: '开户咨询',
+						        		    content: '开户咨询信息提交成功'
+						        	 });
+					        		
+					        	 }else{
+					        		 layer.open({
+						        		    title: '开户咨询',
+						        		    content: '程序异常'
+						        	 }); 
+					        	 }
+					        	 
+					        	 //清空form表单信息
+					        	 document.getElementById("consult_form").reset();
+					        	
+					         }
+					     });
+					}
+					    
+				}
+			
+	 
+		
+		
+		</script>
+	</body>
+</html>

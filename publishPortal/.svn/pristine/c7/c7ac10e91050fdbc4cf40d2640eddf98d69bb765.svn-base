@@ -1,0 +1,104 @@
+package cn.com.shukaiken.webService;
+/**
+ * 
+ * @author jiexuan.zhu
+ * @date 2015-11-25
+ *
+ */
+public interface IAppNewsWebService {
+	
+	/**
+	 * 获取搜索新闻列表
+	 * @param type
+	 * @param jsonStr为分类、页号、分页数量、几天内、搜索关键词的json字符串
+	 *      主键分别为tag_id、pageNum、pageSize、days、words
+	 *      头条分类tag_id为1，行业动态为2，政策规划为3，市场动态为4，书展圈为5
+	 *      pageNum为第几页：1，pageSize为每页展示条数：10，days为搜索几天内：7
+	 *      words为关键词："行业"
+	 * @return
+	 */
+	public String getSearchNews(String jsonStr);
+	
+	/**
+	 * 获取头条新闻列表
+	 * 
+	 * @return
+	 */
+	public String getHeadNews();
+	
+	/**
+	 * 获取分类新闻列表
+	 * @param jsonStr为分类、页号、分页数量、的json字符串
+	 *      主键分别为tag_id、pageNum、pageSize、days、words
+	 *      头条分类tag_id为1，行业动态为2，政策规划为3，市场动态为4，书展圈为5
+	 *      pageNum为第几页：1，pageSize为每页展示条数：10
+	 * @return
+	 */
+	public String getCategoryNews(String jsonStr);
+	
+	/**
+	 * 查看新闻详情
+	 * @param jsonStr为新闻id、页号、分页数量的json字符串
+	 *      主键分别为info_id,pageNum，pageSize
+	 *      pageNum为该条新闻下的评论页号，初始为1
+	 *      pageSize为该条新闻下的分页尺寸，初始为5
+	 * @return
+	 */
+	public String viewNewsDetail(String jsonStr);
+	
+	
+	/**
+	 * 添加评论
+	 * @param jsonStr为评论类型，评论人的id，新闻id，评论内容
+	 *     主键分别为        type, author_id,info_id,comment_content
+	 * @return
+	 */
+	public String addNewsComment(String jsonStr);
+	
+	
+	/**
+	 * 评论列表（新闻下的评论，加载刷新时调用）
+	 * @param jsonStr为新闻id、页号、分页数量的json字符串
+	 *      主键分别为info_id,pageNum，pageSize
+	 *      pageNum为该条新闻下的评论页号，初始为2
+	 *      pageSize为该条新闻下的分页尺寸，列如：5
+	 * @return
+	 */
+	public String getCommentLs(String jsonStr);
+	
+	
+	/**
+	 * 添加收藏
+	 * @param jsonStr为会员id和新闻id的json字符串
+	 *  主键分别为cust_id，info_id
+	 * @return
+	 */
+	public String enshrineNews(String jsonStr);
+	
+	/**
+	 * 收藏列表
+	 * @param jsonStr为会员id、页号、分页数量的json字符串
+	 *       主键分别为cust_id，pageNum，pageSize
+	 * @return
+	 */
+	public String getEnshrineLs(String jsonStr);
+	
+	/**
+	 * 收藏管理(批量删除收藏信息)
+	 * @param jsonStr 用户名id和 新闻idList拼装的json字符串
+	 *          主键分别为 cust_id和 infos
+	 *          List<String> infos = new ArrayList<String>()
+	 *          infos存放需要删除的新闻id
+	 * @return 
+	 */
+	public String updateEnshrineStatus(String jsonStr);
+	
+	/**
+	 * 查看收藏的新闻详情
+	 * @param jsonStr 用户名id和 新闻id的json字符串
+	 *        主键分别为 cust_id和  info_id
+	 * @return
+	 */
+	public String viewEnshrineInfo(String jsonStr);
+	
+}

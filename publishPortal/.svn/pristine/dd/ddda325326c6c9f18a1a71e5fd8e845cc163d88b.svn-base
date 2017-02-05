@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.LabelTagRelDao" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.LabelTagRel" >
+    <result column="label_id" property="labelId" jdbcType="INTEGER" />
+    <result column="tag_id" property="tagId" jdbcType="INTEGER" />
+    <result column="is_valid" property="isValid" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="resv1" property="resv1" jdbcType="VARCHAR" />
+    <result column="resv2" property="resv2" jdbcType="VARCHAR" />
+    <result column="resv3" property="resv3" jdbcType="VARCHAR" />
+    <result column="resv4" property="resv4" jdbcType="VARCHAR" />
+  </resultMap>
+  <insert id="insert" parameterType="cn.com.shukaiken.model.LabelTagRel" >
+    insert into t_label_tag_rel (label_id, tag_id, is_valid, 
+      create_time, update_time, resv1, 
+      resv2, resv3, resv4
+      )
+    values (#{labelId,jdbcType=INTEGER}, #{tagId,jdbcType=INTEGER}, #{isValid,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{resv1,jdbcType=VARCHAR}, 
+      #{resv2,jdbcType=VARCHAR}, #{resv3,jdbcType=VARCHAR}, #{resv4,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.shukaiken.model.LabelTagRel" >
+    insert into t_label_tag_rel
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="labelId != null" >
+        label_id,
+      </if>
+      <if test="tagId != null" >
+        tag_id,
+      </if>
+      <if test="isValid != null" >
+        is_valid,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="resv1 != null" >
+        resv1,
+      </if>
+      <if test="resv2 != null" >
+        resv2,
+      </if>
+      <if test="resv3 != null" >
+        resv3,
+      </if>
+      <if test="resv4 != null" >
+        resv4,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="labelId != null" >
+        #{labelId,jdbcType=INTEGER},
+      </if>
+      <if test="tagId != null" >
+        #{tagId,jdbcType=INTEGER},
+      </if>
+      <if test="isValid != null" >
+        #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resv1 != null" >
+        #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        #{resv4,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="getLabelTagsByCondition" resultMap="BaseResultMap" parameterType="cn.com.shukaiken.model.LabelTagRel">
+  	select label_id, tag_id, is_valid, create_time, update_time, resv1, resv2, resv3, resv4
+  	from t_label_tag_rel
+  	<where>
+  		1=1
+  		<if test="labelId != null" >
+        and label_id = #{labelId,jdbcType=INTEGER}
+      </if>
+      <if test="tagId != null" >
+        and tag_id = #{tagId,jdbcType=INTEGER}
+      </if>
+      <if test="isValid != null" >
+        and is_valid = #{isValid,jdbcType=VARCHAR}
+      </if>
+  	</where>
+  </select>
+  <update id="updateRelByLabelId" parameterType="cn.com.shukaiken.model.LabelTagRel">
+  	update t_label_tag_rel set is_valid=#{isValid,jdbcType=VARCHAR} where label_id = #{labelId,jdbcType=INTEGER}
+  </update>
+</mapper>

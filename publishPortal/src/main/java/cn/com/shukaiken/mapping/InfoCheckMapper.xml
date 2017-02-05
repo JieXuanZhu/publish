@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.InfoCheckDao" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.InfoCheck" >
+    <id column="check_id" property="checkId" jdbcType="INTEGER" />
+    <result column="info_id" property="infoId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="opinion" property="opinion" jdbcType="VARCHAR" />
+    <result column="is_agree" property="isAgree" jdbcType="VARCHAR" />
+    <result column="stage" property="stage" jdbcType="VARCHAR" />
+    <result column="check_time" property="checkTime" jdbcType="TIMESTAMP" />
+    <result column="is_valid" property="isValid" jdbcType="VARCHAR" />
+    <result column="resv1" property="resv1" jdbcType="VARCHAR" />
+    <result column="resv2" property="resv2" jdbcType="VARCHAR" />
+    <result column="resv3" property="resv3" jdbcType="VARCHAR" />
+    <result column="resv4" property="resv4" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    check_id, info_id, user_id, user_name, opinion, is_agree, stage, check_time, is_valid, 
+    resv1, resv2, resv3, resv4
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_info_check
+    where check_id = #{infoId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByInfoId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  	select 
+    <include refid="Base_Column_List" />
+    from t_info_check
+    where info_id = #{checkId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_info_check
+    where check_id = #{checkId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="checkId" parameterType="cn.com.shukaiken.model.InfoCheck" >
+    insert into t_info_check (check_id, info_id, user_id, 
+      user_name, opinion, is_agree, 
+      stage, check_time, is_valid, 
+      resv1, resv2, resv3, 
+      resv4)
+    values (#{checkId,jdbcType=INTEGER}, #{infoId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
+      #{userName,jdbcType=VARCHAR}, #{opinion,jdbcType=VARCHAR}, #{isAgree,jdbcType=VARCHAR}, 
+      #{stage,jdbcType=VARCHAR}, #{checkTime,jdbcType=TIMESTAMP}, #{isValid,jdbcType=VARCHAR}, 
+      #{resv1,jdbcType=VARCHAR}, #{resv2,jdbcType=VARCHAR}, #{resv3,jdbcType=VARCHAR}, 
+      #{resv4,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="checkId"  parameterType="cn.com.shukaiken.model.InfoCheck" >
+    insert into t_info_check
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="checkId != null" >
+        check_id,
+      </if>
+      <if test="infoId != null" >
+        info_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="opinion != null" >
+        opinion,
+      </if>
+      <if test="isAgree != null" >
+        is_agree,
+      </if>
+      <if test="stage != null" >
+        stage,
+      </if>
+      <if test="checkTime != null" >
+        check_time,
+      </if>
+      <if test="isValid != null" >
+        is_valid,
+      </if>
+      <if test="resv1 != null" >
+        resv1,
+      </if>
+      <if test="resv2 != null" >
+        resv2,
+      </if>
+      <if test="resv3 != null" >
+        resv3,
+      </if>
+      <if test="resv4 != null" >
+        resv4,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="checkId != null" >
+        #{checkId,jdbcType=INTEGER},
+      </if>
+      <if test="infoId != null" >
+        #{infoId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="opinion != null" >
+        #{opinion,jdbcType=VARCHAR},
+      </if>
+      <if test="isAgree != null" >
+        #{isAgree,jdbcType=VARCHAR},
+      </if>
+      <if test="stage != null" >
+        #{stage,jdbcType=VARCHAR},
+      </if>
+      <if test="checkTime != null" >
+        #{checkTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null" >
+        #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="resv1 != null" >
+        #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        #{resv4,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.InfoCheck" >
+    update t_info_check
+    <set >
+      <if test="infoId != null" >
+        info_id = #{infoId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="opinion != null" >
+        opinion = #{opinion,jdbcType=VARCHAR},
+      </if>
+      <if test="isAgree != null" >
+        is_agree = #{isAgree,jdbcType=VARCHAR},
+      </if>
+      <if test="stage != null" >
+        stage = #{stage,jdbcType=VARCHAR},
+      </if>
+      <if test="checkTime != null" >
+        check_time = #{checkTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null" >
+        is_valid = #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="resv1 != null" >
+        resv1 = #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        resv2 = #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        resv3 = #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        resv4 = #{resv4,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where check_id = #{checkId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.InfoCheck" >
+    update t_info_check
+    set info_id = #{infoId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      user_name = #{userName,jdbcType=VARCHAR},
+      opinion = #{opinion,jdbcType=VARCHAR},
+      is_agree = #{isAgree,jdbcType=VARCHAR},
+      stage = #{stage,jdbcType=VARCHAR},
+      check_time = #{checkTime,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=VARCHAR},
+      resv1 = #{resv1,jdbcType=VARCHAR},
+      resv2 = #{resv2,jdbcType=VARCHAR},
+      resv3 = #{resv3,jdbcType=VARCHAR},
+      resv4 = #{resv4,jdbcType=VARCHAR}
+    where check_id = #{checkId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByInfoId" parameterType="cn.com.shukaiken.model.InfoCheck">
+  	update t_info_check
+    <set >
+      <if test="checkId != null" >
+        check_id = #{checkId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="opinion != null" >
+        opinion = #{opinion,jdbcType=VARCHAR},
+      </if>
+      <if test="isAgree != null" >
+        is_agree = #{isAgree,jdbcType=VARCHAR},
+      </if>
+      <if test="stage != null" >
+        stage = #{stage,jdbcType=VARCHAR},
+      </if>
+      <if test="checkTime != null" >
+        check_time = #{checkTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null" >
+        is_valid = #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="resv1 != null" >
+        resv1 = #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        resv2 = #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        resv3 = #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        resv4 = #{resv4,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where info_id = #{infoId,jdbcType=INTEGER}
+  </update>
+</mapper>

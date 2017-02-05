@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.TagDao" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.Tag" >
+    <id column="tag_id" property="tagId" jdbcType="INTEGER" />
+    <result column="tag_name" property="tagName" jdbcType="VARCHAR" />
+    <result column="tag_code" property="tagCode" jdbcType="VARCHAR" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="is_valid" property="isValid" jdbcType="INTEGER" />
+    <result column="resv1" property="resv1" jdbcType="VARCHAR" />
+    <result column="resv2" property="resv2" jdbcType="VARCHAR" />
+    <result column="resv3" property="resv3" jdbcType="VARCHAR" />
+    <result column="resv4" property="resv4" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="QueryResultMap" type="cn.com.shukaiken.model.Tag" >
+    <id column="tag_id" property="tagId" jdbcType="INTEGER" />
+    <result column="tag_name" property="tagName" jdbcType="VARCHAR" />
+    <result column="tag_code" property="tagCode" jdbcType="VARCHAR" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="is_valid" property="isValid" jdbcType="INTEGER" />
+    <result column="resv1" property="resv1" jdbcType="VARCHAR" />
+    <result column="resv2" property="resv2" jdbcType="VARCHAR" />
+    <result column="resv3" property="resv3" jdbcType="VARCHAR" />
+    <result column="resv4" property="resv4" jdbcType="VARCHAR" />
+    <result column="label_id" property="labelId" jdbcType="INTEGER"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    tag_id, tag_name, tag_code, level, create_date, is_valid, resv1, resv2, resv3, resv4
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_tag
+    where tag_id = #{tagId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByCondition" resultMap="BaseResultMap" parameterType="cn.com.shukaiken.model.Tag">
+  	select 
+    <include refid="Base_Column_List" />
+    from t_tag
+    <where>
+    	1=1
+    	<if test="tagId!=null">
+    		and tag_id = #{tagId,jdbcType=INTEGER}
+    	</if>
+    	<if test="tagName != null" >
+        and tag_name = #{tagName,jdbcType=VARCHAR}
+      </if>
+      <if test="tagCode != null" >
+        and tag_code = #{tagCode,jdbcType=VARCHAR}
+      </if>
+      <if test="level != null" >
+        and level = #{level,jdbcType=INTEGER}
+      </if>
+      <if test="createDate != null" >
+       and create_date = #{createDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="isValid != null" >
+        and is_valid = #{isValid,jdbcType=INTEGER}
+      </if>
+      <if test="resv1 != null" >
+        and resv1 = #{resv1,jdbcType=VARCHAR}
+      </if>
+      <if test="resv2 != null" >
+        and resv2 = #{resv2,jdbcType=VARCHAR}
+      </if>
+      <if test="resv3 != null" >
+        and resv3 = #{resv3,jdbcType=VARCHAR}
+      </if>
+      <if test="resv4 != null" >
+        and resv4 = #{resv4,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+  <select id="getAllTagsByLabel" resultMap="QueryResultMap" parameterType="java.lang.Integer">
+  	SELECT t.*,tl.label_id FROM t_tag t LEFT JOIN t_label_tag_rel tl ON t.tag_id= tl.tag_id AND tl.is_valid='0' and tl.label_id=#{labelId,jdbcType=INTEGER} where t.is_valid='0'
+  </select>
+  <select id="selectByInfoId" resultMap="QueryResultMap" parameterType="java.lang.Integer">
+  	SELECT tg.* FROM t_tag tg LEFT JOIN t_info_tag_rel tr ON tg.`tag_id`=tr.`tag_id` AND tr.`is_valid`='0'
+ 		WHERE tg.`is_valid`='0' AND tr.`info_id`=#{infoId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_tag
+    where tag_id = #{tagId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.com.shukaiken.model.Tag" >
+    insert into t_tag (tag_id, tag_name, tag_code, 
+      level, create_date, is_valid, 
+      resv1, resv2, resv3, 
+      resv4)
+    values (#{tagId,jdbcType=INTEGER}, #{tagName,jdbcType=VARCHAR}, #{tagCode,jdbcType=VARCHAR}, 
+      #{level,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{isValid,jdbcType=INTEGER}, 
+      #{resv1,jdbcType=VARCHAR}, #{resv2,jdbcType=VARCHAR}, #{resv3,jdbcType=VARCHAR}, 
+      #{resv4,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.shukaiken.model.Tag" >
+    insert into t_tag
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="tagId != null" >
+        tag_id,
+      </if>
+      <if test="tagName != null" >
+        tag_name,
+      </if>
+      <if test="tagCode != null" >
+        tag_code,
+      </if>
+      <if test="level != null" >
+        level,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+      <if test="isValid != null" >
+        is_valid,
+      </if>
+      <if test="resv1 != null" >
+        resv1,
+      </if>
+      <if test="resv2 != null" >
+        resv2,
+      </if>
+      <if test="resv3 != null" >
+        resv3,
+      </if>
+      <if test="resv4 != null" >
+        resv4,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="tagId != null" >
+        #{tagId,jdbcType=INTEGER},
+      </if>
+      <if test="tagName != null" >
+        #{tagName,jdbcType=VARCHAR},
+      </if>
+      <if test="tagCode != null" >
+        #{tagCode,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        #{level,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null" >
+        #{isValid,jdbcType=INTEGER},
+      </if>
+      <if test="resv1 != null" >
+        #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        #{resv4,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.Tag" >
+    update t_tag
+    <set >
+      <if test="tagName != null" >
+        tag_name = #{tagName,jdbcType=VARCHAR},
+      </if>
+      <if test="tagCode != null" >
+        tag_code = #{tagCode,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null" >
+        is_valid = #{isValid,jdbcType=INTEGER},
+      </if>
+      <if test="resv1 != null" >
+        resv1 = #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        resv2 = #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        resv3 = #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        resv4 = #{resv4,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where tag_id = #{tagId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.Tag" >
+    update t_tag
+    set tag_name = #{tagName,jdbcType=VARCHAR},
+      tag_code = #{tagCode,jdbcType=VARCHAR},
+      level = #{level,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=INTEGER},
+      resv1 = #{resv1,jdbcType=VARCHAR},
+      resv2 = #{resv2,jdbcType=VARCHAR},
+      resv3 = #{resv3,jdbcType=VARCHAR},
+      resv4 = #{resv4,jdbcType=VARCHAR}
+    where tag_id = #{tagId,jdbcType=INTEGER}
+  </update>
+</mapper>

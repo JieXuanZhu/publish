@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.ILogDao" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.Log" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="cust_id" property="custId" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="target_id" property="targetId" jdbcType="INTEGER" />
+    <result column="target_name" property="targetName" jdbcType="VARCHAR" />
+    <result column="behavior" property="behavior" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="category" property="category" jdbcType="VARCHAR" />
+    <result column="operate_type" property="operateType" jdbcType="VARCHAR" />
+    <result column="logs_type" property="logsType" jdbcType="VARCHAR" />
+    <result column="is_valid" property="isValid" jdbcType="VARCHAR" />
+    <result column="logs_from" property="logFrom" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, cust_id, name, target_id, target_name, behavior, create_date, category, operate_type, 
+    logs_type,is_valid,logs_from
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_logs
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectLogByCondition" resultMap="BaseResultMap" parameterType="cn.com.shukaiken.model.Log" >
+  	select 
+  	<include refid="Base_Column_List" />
+    from t_logs
+    <where>
+    	1=1
+   	  <if test="id != null" >
+       and id = #{id,jdbcType=INTEGER}
+     	</if>
+   	  <if test="custId != null" >
+       and cust_id = #{custId,jdbcType=INTEGER}
+      </if>
+      <if test="name != null" >
+        and name like CONCAT('%', #{name,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="targetId != null" >
+        and target_id = #{targetId,jdbcType=INTEGER}
+      </if>
+      <if test="targetName != null" >
+        and target_name like CONCAT('%',  #{targetName,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="behavior != null" >
+        and behavior like CONCAT('%',  #{behavior,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="createDate != null" >
+        and create_date = #{createDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="category != null" >
+        and category = #{category,jdbcType=VARCHAR}
+      </if>
+      <if test="operateType != null" >
+        and operate_type = #{operateType,jdbcType=VARCHAR}
+      </if>
+      <if test="logsType != null" >
+        and logs_type = #{logsType,jdbcType=VARCHAR}
+      </if>
+      <if test="isValid != null" >
+        and is_valid = #{isValid,jdbcType=VARCHAR}
+      </if>
+      <if test="logFrom != null" >
+        and logs_from = #{logFrom,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_logs
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="cn.com.shukaiken.model.Log" >
+    insert into t_logs (id, cust_id, name, 
+      target_id, target_name, behavior, 
+      create_date, category, operate_type, 
+      logs_type,is_valid,logs_from)
+    values (#{id,jdbcType=INTEGER}, #{custId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+      #{targetId,jdbcType=INTEGER}, #{targetName,jdbcType=VARCHAR}, #{behavior,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{category,jdbcType=VARCHAR}, #{operateType,jdbcType=VARCHAR}, 
+      #{logsType,jdbcType=VARCHAR},#{isValid,jdbcType=VARCHAR},#{logFrom,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="cn.com.shukaiken.model.Log" >
+    insert into t_logs
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="custId != null" >
+        cust_id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="targetId != null" >
+        target_id,
+      </if>
+      <if test="targetName != null" >
+        target_name,
+      </if>
+      <if test="behavior != null" >
+        behavior,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+      <if test="category != null" >
+        category,
+      </if>
+      <if test="operateType != null" >
+        operate_type,
+      </if>
+      <if test="logsType != null" >
+        logs_type,
+      </if>
+      <if test="isValid != null" >
+        is_valid,
+      </if>
+      <if test="logFrom != null" >
+        logs_from,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="custId != null" >
+        #{custId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="targetId != null" >
+        #{targetId,jdbcType=INTEGER},
+      </if>
+      <if test="targetName != null" >
+        #{targetName,jdbcType=VARCHAR},
+      </if>
+      <if test="behavior != null" >
+        #{behavior,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="category != null" >
+        #{category,jdbcType=VARCHAR},
+      </if>
+      <if test="operateType != null" >
+        #{operateType,jdbcType=VARCHAR},
+      </if>
+      <if test="logsType != null" >
+        #{logsType,jdbcType=VARCHAR},
+      </if>
+      <if test="isValid != null" >
+       #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="logFrom != null" >
+       #{logFrom,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.Log" >
+    update t_logs
+    <set >
+      <if test="custId != null" >
+        cust_id = #{custId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="targetId != null" >
+        target_id = #{targetId,jdbcType=INTEGER},
+      </if>
+      <if test="targetName != null" >
+        target_name = #{targetName,jdbcType=VARCHAR},
+      </if>
+      <if test="behavior != null" >
+        behavior = #{behavior,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="category != null" >
+        category = #{category,jdbcType=VARCHAR},
+      </if>
+      <if test="operateType != null" >
+        operate_type = #{operateType,jdbcType=VARCHAR},
+      </if>
+      <if test="logsType != null" >
+        logs_type = #{logsType,jdbcType=VARCHAR},
+      </if>
+       <if test="isValid != null" >
+        is_valid = #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="logFrom != null" >
+        logs_from = #{logFrom,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.Log" >
+    update t_logs
+    set cust_id = #{custId,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      target_id = #{targetId,jdbcType=INTEGER},
+      target_name = #{targetName,jdbcType=VARCHAR},
+      behavior = #{behavior,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      category = #{category,jdbcType=VARCHAR},
+      operate_type = #{operateType,jdbcType=VARCHAR},
+      logs_type = #{logsType,jdbcType=VARCHAR},
+      is_valid = #{isValid,jdbcType=VARCHAR},
+      logs_from = #{logFrom,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

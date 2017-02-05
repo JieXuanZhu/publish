@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.CrawlNewsInfoConfigDao" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.CrawlNewsInfoConfig" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="src_id" property="srcId" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="prop" property="prop" jdbcType="VARCHAR" />
+    <result column="selector" property="selector" jdbcType="VARCHAR" />
+    <result column="orSelector" property="orSelector" jdbcType="VARCHAR" />
+    <result column="subReg" property="subReg" jdbcType="VARCHAR" />
+    <result column="is_resv_Html" property="isResvHtml" jdbcType="VARCHAR" />
+    <result column="xml_node" property="xmlNode" jdbcType="VARCHAR" />
+    <result column="resv1" property="resv1" jdbcType="VARCHAR" />
+    <result column="resv2" property="resv2" jdbcType="VARCHAR" />
+    <result column="resv3" property="resv3" jdbcType="VARCHAR" />
+    <result column="resv4" property="resv4" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, src_id,name, prop, selector,orSelector,subReg, is_resv_Html,xml_node, resv1, resv2, resv3, resv4
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_news_info_config
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectConfigsBySourceId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+  	 select 
+    <include refid="Base_Column_List" />
+    from t_news_info_config 
+    <where>
+    	1=1 and src_id=#{srcId,jdbcType=INTEGER}
+    </where>
+    order by id asc
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_news_info_config
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="cn.com.shukaiken.model.CrawlNewsInfoConfig" >
+    insert into t_news_info_config (id, src_id,name, prop, 
+      selector,orSelector,subReg,is_resv_Html, xml_node, resv1, 
+      resv2, resv3, resv4
+      )
+    values (#{id,jdbcType=INTEGER}, #{srcId,jdbcType=INTEGER},#{name,jdbcType=VARCHAR}, #{prop,jdbcType=VARCHAR}, 
+      #{selector,jdbcType=VARCHAR},#{orSelector,jdbcType=VARCHAR},#{subReg,jdbcType=VARCHAR},#{isResvHtml,jdbcType=VARCHAR}, #{xmlNode,jdbcType=VARCHAR}, #{resv1,jdbcType=VARCHAR}, 
+      #{resv2,jdbcType=VARCHAR}, #{resv3,jdbcType=VARCHAR}, #{resv4,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective"  useGeneratedKeys="true" keyProperty="id" parameterType="cn.com.shukaiken.model.CrawlNewsInfoConfig" >
+    insert into t_news_info_config
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="srcId != null" >
+        src_id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="prop != null" >
+        prop,
+      </if>
+      <if test="selector != null" >
+        selector,
+      </if>
+      <if test="orSelector != null" >
+        orSelector,
+      </if>
+      <if test="subReg != null" >
+        subReg,
+      </if>
+      <if test="isResvHtml != null" >
+        is_resv_Html,
+      </if>
+      <if test="xmlNode != null" >
+        xml_node,
+      </if>
+      <if test="resv1 != null" >
+        resv1,
+      </if>
+      <if test="resv2 != null" >
+        resv2,
+      </if>
+      <if test="resv3 != null" >
+        resv3,
+      </if>
+      <if test="resv4 != null" >
+        resv4,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="srcId != null" >
+        #{srcId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="prop != null" >
+        #{prop,jdbcType=VARCHAR},
+      </if>
+      <if test="selector != null" >
+        #{selector,jdbcType=VARCHAR},
+      </if>
+      <if test="orSelector != null" >
+        #{orSelector,jdbcType=VARCHAR},
+      </if>
+      <if test="subReg != null" >
+        #{subReg,jdbcType=VARCHAR},
+      </if>
+      <if test="isResvHtml != null" >
+        #{isResvHtml,jdbcType=VARCHAR},
+      </if>
+      <if test="xmlNode != null" >
+        #{xmlNode,jdbcType=VARCHAR},
+      </if>
+      <if test="resv1 != null" >
+        #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        #{resv4,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.CrawlNewsInfoConfig" >
+    update t_news_info_config
+    <set >
+      <if test="srcId != null" >
+        src_id = #{srcId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="prop != null" >
+        prop = #{prop,jdbcType=VARCHAR},
+      </if>
+      <if test="selector != null" >
+        selector = #{selector,jdbcType=VARCHAR},
+      </if>
+      <if test="orSelector != null" >
+        orSelector = #{orSelector,jdbcType=VARCHAR},
+      </if>
+      <if test="subReg != null" >
+        subReg = #{subReg,jdbcType=VARCHAR},
+      </if>
+      <if test="isResvHtml != null" >
+        is_resv_Html = #{isResvHtml,jdbcType=VARCHAR},
+      </if>
+      <if test="xmlNode != null" >
+        xml_node = #{xmlNode,jdbcType=VARCHAR},
+      </if>
+      <if test="resv1 != null" >
+        resv1 = #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        resv2 = #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        resv3 = #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        resv4 = #{resv4,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.CrawlNewsInfoConfig" >
+    update t_news_info_config
+    set src_id = #{srcId,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      prop = #{prop,jdbcType=VARCHAR},
+      selector = #{selector,jdbcType=VARCHAR},
+      orSelector = #{orSelector,jdbcType=VARCHAR},
+      subReg = #{subReg,jdbcType=VARCHAR},
+      is_resv_Html = #{isResvHtml,jdbcType=VARCHAR},
+      xml_node = #{xmlNode,jdbcType=VARCHAR},
+      resv1 = #{resv1,jdbcType=VARCHAR},
+      resv2 = #{resv2,jdbcType=VARCHAR},
+      resv3 = #{resv3,jdbcType=VARCHAR},
+      resv4 = #{resv4,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

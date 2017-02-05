@@ -1,0 +1,45 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ include file="/WEB-INF/views/general_path.jsp"%>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<title>常见问题</title>
+		<meta name="keywords" content="东翌"/>
+		<meta name="description" content="东翌（上海）投资发展有限公司是..."/>
+		<link rel="stylesheet" type="text/css" href="<%=path %>/front/css/default.css">
+		<link rel="stylesheet" type="text/css" href="<%=path %>/front/css/main.css">
+		<link rel="shortcut icon" type="image/x-icon" href="<%=request.getContextPath()%>/front/images/favicon.ico" />
+	</head>
+	<body>
+		<%@ include file="/WEB-INF/views/front/header.jsp" %>
+		<div class="d_wrapper">
+			<div class="d_detail_cont clearfix">
+				<%@ include file="/WEB-INF/views/front/problems/problems_banner.jsp" %>
+				<%@ include file="/WEB-INF/views/front/problems/problems_left.jsp" %>
+				<form id="id_problems_front" action="<%=path%>/problems" method="post" >
+				<div class="d_detail_fr fr">
+					<div class="d_content_fl_tit"><h2>常见问题</h2></div>
+					<div class="d_main_cont">
+						<div class="d_tab_con fl">
+							
+							<c:forEach var="problems" items="${page.list }" varStatus="problemsStatus">
+								<div class="d_new_cont d_guar_list">
+									<h3>${problems.title }</h3>
+									<p class="">${fn:substring(problems.brief,0,100)}...
+									<a href="<%=path%>/problems/detail?p=${problems.id+47}"><span class="">[详细]</span></a></p>
+								</div>
+							</c:forEach>
+							<div class="paging right"><page:pageinfo pageinfo="${page}"/></div>
+						</div>
+					</div>
+				</div>
+				</form>
+			</div>
+		</div>
+		<%@ include file="/WEB-INF/views/front/footer.jsp" %>
+	</body>
+</html>

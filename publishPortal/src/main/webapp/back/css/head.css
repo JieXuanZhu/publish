@@ -1,0 +1,21 @@
+
+em, cite, th {font-style: normal;font-weight: normal;}
+.lg_body{background:url(../images/bg.jpg) no-repeat top center #ededed;}
+.lg_wrap{width:521px;height:327px; margin:auto; margin-top:221px;background: url(../images/loginbg.png) no-repeat;}
+.lg_cont{width:328px;margin:0px auto;padding:8% 0;}
+.lg_logo{height:90px;}
+.lg_list {margin-bottom:16px;}
+.lg_list label{width:121px;color:#727272;float: left;text-align: center;}
+.lg_list div{float: left;}
+.lg_list .lg_input{background: #fff;box-shadow:inset 0 0 1px -1px #bbbaba;width:207px;height: 24px;border-radius:5px;}
+.lg_fot button{background: #239ad2;color:#fff;border:1px solid #0e8cc7;border-radius:5px;width:80%;height:28px; margin: 10px auto;display: block;}
+.lg_fot a{display:block;color:#727272;line-height: 32px;text-align: right;}
+/*-----------------------end login-------------------------*/
+header{position: relative;z-index: 999}
+.header-top{background: #1B9AD5;border-bottom: 1px solid #118EC9;height: 83px;}
+.logo_div {margin-left: 8px;margin-top: 21px;width: 222px;height: 45px;float: left;background: #ec8a19;border-radius:8px;box-shadow: 0px 3px 0px 0px #ad6113;color:#fff; text-align: center;line-height: 45px;font-size:24px;letter-spacing: 2px}
+.submenu_div{text-align: center;width: 1000px;position: absolute;right: 0px;height: 84px;}
+.submenu_div li{float: right;width: 82px;height: 82px;border-left: 1px solid #27AAE7;border-right: 1px solid #0779BA;}
+.submenu_div li a{color:#fff;text-align: center;}
+.submenu_div li span { margin-top: 6px; display: block;}
+/*-----------------------end header-------------------------*/

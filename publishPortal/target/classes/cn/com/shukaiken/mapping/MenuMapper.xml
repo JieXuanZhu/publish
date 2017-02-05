@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.shukaiken.dao.IMenuDao">
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.Menu">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="p_id" jdbcType="INTEGER" property="p_id" />
+    <result column="menu_name" jdbcType="VARCHAR" property="menu_name" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="create_date" />
+    <result column="is_valid" jdbcType="INTEGER" property="is_valid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, p_id, menu_name, url, create_date, is_valid
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_menu
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_menu
+    where menu_name = #{menu_name,jdbcType=VARCHAR}
+    and is_valid = 0
+  </select>
+  <!-- 获取超级管理员权限 -->
+  <select id="getAdminMenuLs" resultMap="BaseResultMap">
+  	select
+  		<include refid="Base_Column_List" /> 
+	 from t_menu
+	  where is_valid = 0
+	    and p_id !=0
+  </select>
+  <!-- 获取登陆用户权限 -->
+  <select id="getLoginMenuLs" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+	SELECT 
+	   DISTINCT m.id, m.p_id, m.menu_name, m.url, m.is_valid ,m.create_date
+	FROM t_menu m 
+	LEFT JOIN t_role_menu_rel e 
+	ON m.id = e.menu_id
+	WHERE m.is_valid = 0
+	AND EXISTS(
+	SELECT 
+	   o.id
+	FROM t_role o
+	LEFT JOIN t_system_user_role_rel r 
+	ON o.id = r.role_id
+	WHERE o.is_valid = 0
+	AND r.system_user_id = #{id,jdbcType=INTEGER}
+	AND e.role_id  = o.id)
+	ORDER BY m.id 
+  </select>
+  <!-- 查询权限列表 -->
+  <select id="getMenuLs" parameterType="cn.com.shukaiken.model.Menu" resultMap="BaseResultMap">
+   SELECT 
+		m.id, m.menu_name, u.menu_name AS pName, m.p_id, m.url, m.create_date, m.is_valid 
+	FROM 
+	t_menu m
+	LEFT JOIN t_menu u ON m.p_id = u.id 
+	WHERE 1=1
+	 AND m.is_valid !=2 
+	 AND m.id >1 
+	<if test="menu_name != null">
+    	and m.menu_name like CONCAT('%',#{menu_name},'%' ) 
+    </if> 
+    <if test="pName != null">
+    	and m.p_id in (
+	    	SELECT id FROM t_menu 
+	 		WHERE menu_name like CONCAT('%',#{pName},'%' ) 
+	        AND is_valid = 0
+        )
+    </if>
+	 ORDER BY m.id ASC 
+  	<!-- select 
+	    <include refid="Base_Column_List" />	    
+    from t_menu
+    where 1=1
+    and is_valid=0 
+    and p_id !=0
+    <if test="menu_name != null">
+    	and menu_name like CONCAT('%',#{menu_name},'%' ) 
+    </if> 
+     order by id asc
+    -->
+  </select>
+  <!-- 查询权限是否可以删除 -->
+  <select id="canDel" parameterType="java.lang.String" resultType="java.lang.Integer">
+  	select count(*) from t_role_menu_rel
+  	where menu_id = #{id}
+  </select>
+  <!-- 查询某个菜单子菜单的数量-->
+  <select id="getSubCountById" parameterType="cn.com.shukaiken.model.Menu" resultType="java.lang.Integer">
+  	select count(*) from t_menu
+  	where 1=1
+  	<if test="id != null" >
+    	and  p_id = #{id,jdbcType=INTEGER}
+    </if>
+    	and is_valid != 2 
+  </select>
+  <!-- 根据角色查询权限 -->
+  <select id="getRoleMenuLs" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select 
+  		m.id,m.p_id,m.menu_name,ifnull(r.id,0) as url
+  		from t_menu m 
+  		left  JOIN t_role_menu_rel r
+		on m.id = r.menu_id
+		and r.role_id = #{id}
+		where m.is_valid = 0
+		  and m.p_id !=0;
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_menu
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.com.shukaiken.model.Menu">
+    insert into t_menu (id, p_id, menu_name, 
+      url, create_date, is_valid
+      )
+    values (#{id,jdbcType=INTEGER}, #{p_id,jdbcType=INTEGER}, #{menu_name,jdbcType=VARCHAR}, 
+      #{url,jdbcType=VARCHAR}, #{create_date,jdbcType=TIMESTAMP}, #{is_valid,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.shukaiken.model.Menu">
+    insert into t_menu
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="p_id != null">
+        p_id,
+      </if>
+      <if test="menu_name != null">
+        menu_name,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="create_date != null">
+        create_date,
+      </if>
+      <if test="is_valid != null">
+        is_valid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="p_id != null">
+        #{p_id,jdbcType=INTEGER},
+      </if>
+      <if test="menu_name != null">
+        #{menu_name,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="create_date != null">
+        #{create_date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="is_valid != null">
+        #{is_valid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.Menu">
+    update t_menu
+    <set>
+      <if test="p_id != null">
+        p_id = #{p_id,jdbcType=INTEGER},
+      </if>
+      <if test="menu_name != null">
+        menu_name = #{menu_name,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="create_date != null">
+        create_date = #{create_date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="is_valid != null">
+        is_valid = #{is_valid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.Menu">
+    update t_menu
+    set p_id = #{p_id,jdbcType=INTEGER},
+      menu_name = #{menu_name,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      create_date = #{create_date,jdbcType=TIMESTAMP},
+      is_valid = #{is_valid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

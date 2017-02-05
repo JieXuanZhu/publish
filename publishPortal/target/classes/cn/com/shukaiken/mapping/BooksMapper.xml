@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.BooksMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.Books" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="cover" property="cover" jdbcType="VARCHAR" />
+    <result column="brief_introduction" property="brief_introduction" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="create_date" property="create_date" jdbcType="TIMESTAMP" />
+    <result column="is_valid" property="is_valid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, cover, brief_introduction, content, create_date, is_valid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_books
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_books
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.com.shukaiken.model.Books" >
+    insert into t_books (id, cover, brief_introduction, 
+      content, create_date, is_valid
+      )
+    values (#{id,jdbcType=INTEGER}, #{cover,jdbcType=VARCHAR}, #{brief_introduction,jdbcType=VARCHAR}, 
+      #{content,jdbcType=VARCHAR}, #{create_date,jdbcType=TIMESTAMP}, #{is_valid,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.shukaiken.model.Books" >
+    insert into t_books
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="cover != null" >
+        cover,
+      </if>
+      <if test="brief_introduction != null" >
+        brief_introduction,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="create_date != null" >
+        create_date,
+      </if>
+      <if test="is_valid != null" >
+        is_valid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="cover != null" >
+        #{cover,jdbcType=VARCHAR},
+      </if>
+      <if test="brief_introduction != null" >
+        #{brief_introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="create_date != null" >
+        #{create_date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="is_valid != null" >
+        #{is_valid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.Books" >
+    update t_books
+    <set >
+      <if test="cover != null" >
+        cover = #{cover,jdbcType=VARCHAR},
+      </if>
+      <if test="brief_introduction != null" >
+        brief_introduction = #{brief_introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="create_date != null" >
+        create_date = #{create_date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="is_valid != null" >
+        is_valid = #{is_valid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.Books" >
+    update t_books
+    set cover = #{cover,jdbcType=VARCHAR},
+      brief_introduction = #{brief_introduction,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      create_date = #{create_date,jdbcType=TIMESTAMP},
+      is_valid = #{is_valid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

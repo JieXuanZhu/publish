@@ -1,0 +1,157 @@
+body,h1,h2,h3,h4,h5,h6,hr,p,blockquote,dl,dt,dd,ul,ol,li,pre,form,fieldset,legend,button,input,textarea,th,td {
+  margin: 0;
+  padding: 0
+}
+
+html {
+  color: #000;
+  overflow-y: scroll;
+  overflow: -moz-scrollbars-vertical
+}
+body{
+  min-height:100%;_height:100%;
+}
+body,button,input,select,textarea {
+  font-size: 12px;
+ font: 12px "sans-serif","Arial","Verdana";
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-size: 100%
+}
+
+small {
+  font-size: 12px
+}
+
+ul,ol {
+  list-style: none
+}
+
+a {
+  text-decoration: none
+}
+
+a:hover {
+  text-decoration: underline
+}
+
+legend {
+  color: #000
+}
+
+fieldset,img {
+  border: 0
+}
+
+button,input,select,textarea {
+  font-size: 100%
+}
+
+img {
+  -ms-interpolation-mode: bicubic
+}
+
+/* textarea {
+  resize: vertical
+} */
+
+.left {
+  float: left
+}
+
+.right {
+  float: right
+}
+
+.overflow {
+  overflow: hidden
+}
+
+.hide {
+  display: none
+}
+
+.block {
+  display: block
+}
+
+.inline {
+  display: inline
+}
+
+.error {
+  color: #F00;
+  font-size: 12px
+}
+
+label,button {
+  cursor: pointer
+}
+
+.clearfix:after {
+  content: '\20';
+  display: block;
+  height: 0;
+  clear: both
+}
+
+.clearfix {
+  zoom: 1
+}
+
+.clear {
+  clear: both;
+  height: 0;
+  line-height: 0;
+  font-size: 0;
+  visibility: hidden;
+  overflow: hidden
+}
+
+.wordwrap {
+  word-break: break-all;
+  word-wrap: break-word
+}
+
+pre.wordwrap {
+  white-space: pre-wrap
+}
+
+body,form,#s_fm {
+  position: relative
+}
+p, td, div {
+    font: 12px "sans-serif","Arial","Verdana";
+}
+th {
+    font:12px "sans-serif","Arial","Verdana";
+}
+img {
+  border: 0;
+  vertical-align: middle;
+}
+
+button{cursor: pointer;}
+
+.wrap{
+  position: relative;
+  height: 100%
+}
+
+.text-opinion{
+-moz-box-shadow:1px 1px 0 #E7E7E7;
+-moz-box-sizing:border-box;
+border-color:#CCCCCC #999999 #999999 #CCCCCC;
+border-style:solid;
+border-width:1px;
+font-family:arial,sans-serif;
+font-size:13px;
+height:160px;
+margin:10px auto;
+outline-color:-moz-use-text-color;
+outline-style:none;
+outline-width:medium;
+padding:2px;
+width:50%;
+}

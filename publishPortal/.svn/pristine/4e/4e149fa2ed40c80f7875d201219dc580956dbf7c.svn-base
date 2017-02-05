@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.ILabelDao" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.Label" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="label_name" property="label_name" jdbcType="VARCHAR" />
+    <result column="p_id" property="p_id" jdbcType="INTEGER" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+    <result column="create_date" property="create_date" jdbcType="TIMESTAMP" />
+    <result column="is_valid" property="is_valid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, label_name, p_id, level, create_date, is_valid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_label
+    where id = #{id,jdbcType=INTEGER}
+    and is_valid != 2
+  </select>
+  <!-- 根据对象设值查询完整对象信息 -->
+  <select id="selectBySelective" parameterType="cn.com.shukaiken.model.Label" resultMap="BaseResultMap">
+    select 
+    	<include refid="Base_Column_List" />
+    from t_label
+    where 1 = 1
+      <if test="label_name != null" >
+        and label_name = #{label_name,jdbcType=VARCHAR}
+      </if>
+      <if test="p_id != null" >
+        and p_id = #{p_id,jdbcType=INTEGER}
+      </if>
+      <if test="level != null" >
+        and level = #{level,jdbcType=INTEGER}
+      </if>
+      <if test="create_date != null" >
+        and create_date = #{create_date,jdbcType=TIMESTAMP}
+      </if>
+      <if test="is_valid != null" >
+        and is_valid = #{is_valid,jdbcType=INTEGER}
+      </if>
+  </select>
+  <!-- 查询某个标签子标签的数量-->
+  <select id="getSubCountById" parameterType="cn.com.shukaiken.model.Label" resultType="java.lang.Integer">
+  	select count(*) from t_label
+  	where 1=1
+  	<if test="id != null" >
+    	and  p_id = #{id,jdbcType=INTEGER}
+    </if>
+    	and is_valid != 2 
+  </select>
+  <select id="getLevelLs" resultMap="BaseResultMap">
+  	 select 
+  	 	distinct level   
+    from t_label
+    where level !=0
+  </select> 
+  <select id="getLabelLs" parameterType="cn.com.shukaiken.model.Label" resultMap="BaseResultMap">
+  	 select 
+	    t.id, t.label_name, b.label_name AS pName, t.p_id, t.level, t.create_date, t.is_valid 	    
+    from t_label t 
+    left join t_label b
+    on t.p_id = b.id   
+    where 1=1
+    and t.is_valid !=2 
+    and t.id !=1
+    <if test="level != null" >
+        and t.level = #{level,jdbcType=INTEGER}
+    </if>
+    <if test="is_valid != null" >
+       and t.is_valid = #{is_valid,jdbcType=INTEGER}
+    </if>
+    <if test="label_name != null">
+      and t.label_name like CONCAT('%',#{label_name},'%' ) 
+    </if>
+    <if test="pName != null">
+    	and t.p_id in (
+	    	SELECT id FROM t_label 
+	 		WHERE label_name like CONCAT('%',#{pName},'%' ) 
+	        AND is_valid = 0
+        )
+    </if>
+     order by t.id asc
+  </select>
+  <select id="getLabelsByCondition" parameterType="cn.com.shukaiken.model.Label" resultMap="BaseResultMap">
+  	select 
+    	<include refid="Base_Column_List" />
+    from t_label
+    where 1 = 1
+    <if test="id!=null">
+    	and id = #{id,jdbcType=INTEGER}
+    </if>
+      <if test="label_name != null" >
+        and label_name = #{label_name,jdbcType=VARCHAR}
+      </if>
+      <if test="p_id != null" >
+        and p_id = #{p_id,jdbcType=INTEGER}
+      </if>
+      <if test="level != null" >
+        and level = #{level,jdbcType=INTEGER}
+      </if>
+      <if test="create_date != null" >
+        and create_date = #{create_date,jdbcType=TIMESTAMP}
+      </if>
+      <if test="is_valid != null" >
+        and is_valid = #{is_valid,jdbcType=INTEGER}
+      </if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_label
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.com.shukaiken.model.Label" >
+    insert into t_label (id, label_name, p_id, 
+      level, create_date, is_valid)
+    values (#{id,jdbcType=INTEGER}, #{label_name,jdbcType=VARCHAR}, #{p_id,jdbcType=INTEGER}, 
+      #{level,jdbcType=INTEGER}, #{create_date,jdbcType=TIMESTAMP}, #{is_valid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.shukaiken.model.Label" >
+    insert into t_label
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="label_name != null" >
+        label_name,
+      </if>
+      <if test="p_id != null" >
+        p_id,
+      </if>
+      <if test="level != null" >
+        level,
+      </if>
+      <if test="create_date != null" >
+        create_date,
+      </if>
+      <if test="is_valid != null" >
+        is_valid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="label_name != null" >
+        #{label_name,jdbcType=VARCHAR},
+      </if>
+      <if test="p_id != null" >
+        #{p_id,jdbcType=INTEGER},
+      </if>
+      <if test="level != null" >
+        #{level,jdbcType=INTEGER},
+      </if>
+      <if test="create_date != null" >
+        #{create_date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="is_valid != null" >
+        #{is_valid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.Label" >
+    update t_label
+    <set >
+      <if test="label_name != null" >
+        label_name = #{label_name,jdbcType=VARCHAR},
+      </if>
+      <if test="p_id != null" >
+        p_id = #{p_id,jdbcType=INTEGER},
+      </if>
+      <if test="level != null" >
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="create_date != null" >
+        create_date = #{create_date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="is_valid != null" >
+        is_valid = #{is_valid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.Label" >
+    update t_label
+    set label_name = #{label_name,jdbcType=VARCHAR},
+      p_id = #{p_id,jdbcType=INTEGER},
+      level = #{level,jdbcType=INTEGER},
+      create_date = #{create_date,jdbcType=TIMESTAMP},
+      is_valid = #{is_valid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

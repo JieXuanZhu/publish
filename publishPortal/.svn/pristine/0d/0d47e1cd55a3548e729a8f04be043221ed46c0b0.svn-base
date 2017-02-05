@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.InfoContentDao" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.InfoContent" >
+    <id column="content_id" property="contentId" jdbcType="INTEGER" />
+    <result column="info_id" property="infoId" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="brief" property="brief" jdbcType="VARCHAR" />
+    <result column="has_image" property="hasImage" jdbcType="VARCHAR" />
+    <result column="has_video" property="hasVideo" jdbcType="VARCHAR" />
+    <result column="has_flash" property="hasFlash" jdbcType="VARCHAR" />
+    <result column="banner_count" property="bannerCount" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="is_valid" property="isValid" jdbcType="VARCHAR" />
+    <result column="resv1" property="resv1" jdbcType="VARCHAR" />
+    <result column="resv2" property="resv2" jdbcType="VARCHAR" />
+    <result column="resv3" property="resv3" jdbcType="VARCHAR" />
+    <result column="resv4" property="resv4" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="cn.com.shukaiken.model.InfoContent" extends="BaseResultMap" >
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    content_id, info_id, title, brief, has_image, has_video, has_flash, banner_count, 
+    create_time, update_time, is_valid, resv1, resv2, resv3, resv4
+  </sql>
+  <sql id="Blob_Column_List" >
+    content
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_info_content
+    where content_id = #{contentId,jdbcType=INTEGER}
+  </select>
+  <select id="selectInfoDetail" resultMap="BaseResultMap" parameterType="cn.com.shukaiken.model.InfoContent" >
+    select 
+   		c.info_id, c.content, c.title,  DATE_FORMAT(c.create_time,'%Y/%m/%d') AS DATE,
+ 	    DATE_FORMAT(c.create_time,'%H时') AS TIME,t.origin, 
+ 	    (SELECT COUNT(1) FROM t_info_comment e WHERE e.info_id = c.info_id AND e.is_valid = 0) AS comment_count
+ 	    <if test="cust_id != null">
+ 	    ,
+	  	(SELECT IF(#{infoId,jdbcType=INTEGER} IN(SELECT info_id FROM t_cust_info_enshrine_rel  WHERE cust_id = #{cust_id,jdbcType=INTEGER}AND is_valid =0),1,0) )AS is_enshrine 
+	    </if> 
+	    <if test="cust_id == null">
+ 	    ,
+	  	0 AS is_enshrine 
+	    </if> 
+	FROM t_info_content  c
+	LEFT JOIN t_info t ON  t.info_id = c.info_id
+	LEFT JOIN t_info_banner b ON b.info_id = c.info_id
+	WHERE 1=1
+	and  c.info_id = #{infoId,jdbcType=INTEGER}
+	GROUP BY c.info_id
+  </select>
+  <select id="selectByinfoId" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+  	select <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_info_content
+    where info_id = #{infoId,jdbcType=INTEGER} and is_valid= '0'
+  </select>
+  <select id="getHeadBannerInfoLs" resultMap="BaseResultMap" parameterType="cn.com.shukaiken.model.InfoContent">
+     SELECT  c.info_id,c.title  AS title,b.url  AS bannerUrl,b.is_header AS is_header
+	 FROM t_info_content  c 
+	 LEFT JOIN t_info t ON t.info_id = c.info_id 
+	 LEFT JOIN t_info_banner b ON b.info_id = c.info_id  AND b.is_valid='0'
+	 WHERE 1=1
+	 AND c.is_valid = 0
+	 AND t.status = '1102-6'
+	 AND (t.resv2 = '1' OR t.resv2 = '3')
+	 AND b.is_header = 0
+	 ORDER BY b.create_time DESC
+	 LIMIT 0, 4
+  </select>
+  <select id="getCategoryBannerInfoLs" resultMap="BaseResultMap" parameterType="cn.com.shukaiken.model.InfoContent">
+   SELECT tt.* FROM
+	(SELECT  c.info_id,c.title  AS title,b.url  AS bannerUrl,b.is_show AS is_show
+	 FROM t_info_content  c 
+	 LEFT JOIN t_info t ON t.info_id = c.info_id 
+	 LEFT JOIN t_info_banner b ON b.info_id = c.info_id  AND b.is_valid='0'
+	 WHERE 1=1
+	 AND c.is_valid = 0
+	 AND t.status = '1102-6'
+	 AND (t.resv2 = '2' OR t.resv2 = '3')
+	 AND b.is_show != 'null'
+	 ORDER BY b.create_time DESC) tt
+	 GROUP BY tt.is_show
+  </select>
+  <select id="getHeadCategoryInfoLs" resultMap="BaseResultMap" parameterType="cn.com.shukaiken.model.InfoContent">
+	   SELECT 
+	  c.info_id,
+	  IF(b.url IS NULL ,'http://42.96.165.121:8086/upload/20151210/20151210192709_banner_679834.jpg',b.url ) AS bannerUrl,
+	  c.title AS title,
+	  DATE_FORMAT(c.create_time, '%H:%i') AS TIME,
+	  (SELECT 
+	    COUNT(1) 
+	  FROM
+	    t_info_comment e 
+	  WHERE e.info_id = c.info_id 
+	    AND e.is_valid = 0) AS comment_count 
+	FROM
+	  t_info_content c 
+	  LEFT JOIN t_info t 
+	    ON t.info_id = c.info_id 
+	  LEFT JOIN t_info_banner b 
+	    ON b.info_id = c.info_id 
+	    AND b.is_valid = '0'  AND (b.is_header IS NULL AND b.is_show IS NULL)
+	  LEFT JOIN t_info_comment m 
+	    ON m.info_id = c.info_id 
+	WHERE 1 = 1 
+	  AND c.is_valid = 0 
+	  <if test="tagId != null">
+	  	AND t.tag_id  = #{tagId,jdbcType=INTEGER}
+	  </if> 
+	  AND t.status = '1102-6' 
+	  AND c.info_id NOT IN 
+	  (SELECT 
+	    subt.* 
+	  FROM
+	    ((SELECT 
+	      c.info_id 
+	    FROM
+	      t_info_content c 
+	      LEFT JOIN t_info t 
+	        ON t.info_id = c.info_id 
+	      LEFT JOIN t_info_banner b 
+	        ON b.info_id = c.info_id 
+	    WHERE 1 = 1 
+	      AND c.is_valid = 0 
+	      AND t.status = '1102-6' 
+	      AND (t.resv2 = '1' 
+	        OR t.resv2 = '3') 
+	      AND b.is_header = 0 
+	      AND b.is_valid = '0' 
+	    ORDER BY b.create_time DESC 
+	    LIMIT 0, 4) 
+	    UNION
+	    (SELECT 
+	      tt.info_id 
+	    FROM
+	      (SELECT 
+	        c.info_id ,b.`is_show`
+	      FROM
+	        t_info_content c 
+	        LEFT JOIN t_info t 
+	          ON t.info_id = c.info_id 
+	        LEFT JOIN t_info_banner b 
+	          ON b.info_id = c.info_id 
+	      WHERE 1 = 1 
+	        AND c.is_valid = 0 
+	        AND t.status = '1102-6' 
+	        AND (t.resv2 = '2' 
+	          OR t.resv2 = '3') 
+	        AND b.is_show != 'null' 
+	        AND b.is_valid = '0' 
+	      ORDER BY b.create_time DESC) tt 
+	    GROUP BY tt.is_show)) subt) 
+		ORDER BY c.create_time DESC 
+	    <if test="startRow != null">
+			limit #{startRow}
+		</if>
+		<if test="pageSize != null">
+			,${pageSize}
+		</if>
+  </select>
+  <select id="getSearchInfoLs" resultMap="BaseResultMap" parameterType="cn.com.shukaiken.model.InfoContent">
+	  SELECT  
+	     c.info_id,IF(b.url IS NULL ,'http://42.96.165.121:8086/upload/20151210/20151210192709_banner_679834.jpg',b.url )  AS bannerUrl,c.title  AS title,
+	     DATE_FORMAT(c.create_time,'%H:%i') AS TIME,
+	    	(SELECT COUNT(1) FROM t_info_comment e
+	          WHERE e.info_id = c.info_id
+	          AND  e.is_valid=0
+	    	) AS comment_count
+	    FROM  (SELECT fn_t_info_content(f.content) AS content,info_id,title,brief,create_time,is_valid FROM t_info_content f )  c 
+	    LEFT JOIN t_info t ON t.info_id = c.info_id
+	    LEFT JOIN t_info_banner b ON b.info_id = c.info_id  AND b.is_valid='0'  AND (b.is_header IS NULL AND b.is_show IS NULL)
+	    LEFT JOIN t_info_comment m ON m.info_id = c.info_id
+	    WHERE 1=1
+	    AND c.is_valid = 0
+	    AND t.status = '1102-6'
+	    <if test="tagId != null">
+		  AND t.tag_id  = #{tagId,jdbcType=INTEGER}
+	    </if>
+	    AND(c.title like CONCAT('%',#{words},'%' )
+	    OR  c.brief like CONCAT('%',#{words},'%' )
+	    OR  c.content like CONCAT('%',#{words},'%' ))
+	    <if test="startDate != null and  endDate != null">
+  		    and c.create_time between STR_TO_DATE(#{startDate},'%Y-%m-%d %H:%i:%s') and  STR_TO_DATE(#{endDate},'%Y-%m-%d %H:%i:%s')  
+  	    </if>
+	    GROUP BY c.info_id
+	    ORDER BY c.create_time DESC
+	    <if test="startRow != null">
+			limit #{startRow}
+		</if>
+		<if test="pageSize != null">
+			,${pageSize}
+		</if>
+  </select>
+  <select id="getCategoryInfoLs" resultMap="BaseResultMap" parameterType="cn.com.shukaiken.model.InfoContent">
+    SELECT  
+    	c.info_id,IF(b.url IS NULL ,'http://42.96.165.121:8086/upload/20151210/20151210192709_banner_679834.jpg',b.url )  AS bannerUrl,c.title  AS title, DATE_FORMAT(c.create_time,'%Y年%m月%d日') AS DATE,
+    	DATE_FORMAT(c.create_time,'%H:%i') AS TIME,
+    	(
+    	SELECT COUNT(1) FROM t_info_comment e
+          WHERE e.info_id = c.info_id
+          AND  e.is_valid=0
+    	) AS comment_count
+    	
+    FROM t_info_content  c
+    LEFT JOIN t_info t ON t.info_id = c.info_id
+    LEFT JOIN t_info_banner b ON b.info_id = c.info_id  AND b.is_valid='0'  AND (b.is_header IS NULL AND b.is_show IS NULL)
+    LEFT JOIN t_info_comment m ON m.info_id = c.info_id
+    WHERE 1=1
+    AND c.is_valid = 0
+    <if test="tagId != null">
+		 AND t.tag_id  = #{tagId,jdbcType=INTEGER}
+	</if>
+    AND t.status = '1102-6'
+    GROUP BY c.info_id
+    ORDER BY c.create_time DESC
+    <if test="startRow != null">
+		limit #{startRow}
+	</if>
+	<if test="pageSize != null">
+		,${pageSize}
+	</if>
+  </select>
+  <!-- 取最新的一条新闻 -->
+  <select id="getNewestInfo" resultMap="BaseResultMap">
+	  SELECT  
+	     c.info_id,IF(b.url IS NULL ,'http://42.96.165.121:8086/upload/20151210/20151210192709_banner_679834.jpg',b.url )  AS bannerUrl,c.title  AS title, DATE_FORMAT(c.create_time,'%H:%i') AS time,
+	    	(SELECT COUNT(1) FROM t_info_comment e
+	          WHERE e.info_id = c.info_id
+	          AND  e.is_valid=0
+	    	) AS comment_count
+	    FROM t_info_tag_rel r
+	    LEFT JOIN t_info_content  c ON c.info_id = r.info_id
+	    LEFT JOIN t_info t ON t.info_id = r.info_id
+	    LEFT JOIN t_info_banner b ON b.info_id = r.info_id AND b.is_valid='0'
+	    LEFT JOIN t_info_comment m ON m.info_id = r.info_id
+	    WHERE 1=1
+	    AND r.is_valid = 0
+	    AND t.status = '1102-6'
+	    GROUP BY r.info_id
+	    ORDER BY c.create_time DESC
+	    LIMIT 0,1
+  </select>
+  <!-- 取评论数最多的一条新闻（热门） -->
+  <select id="getHotInfo" resultMap="BaseResultMap">
+	  SELECT a.*,MAX( a.comment_count) FROM (SELECT  
+	     c.info_id,IF(b.url IS NULL ,'http://42.96.165.121:8086/upload/20151210/20151210192709_banner_679834.jpg',b.url )  AS bannerUrl,c.title  AS title, DATE_FORMAT(c.create_time,'%H:%i') AS time,
+	    	(SELECT COUNT(1) FROM t_info_comment e
+	          WHERE e.info_id = c.info_id
+	          AND  e.is_valid=0
+	    	) AS comment_count
+	    FROM t_info_content  c
+	    LEFT JOIN t_info t ON t.info_id = c.info_id
+	    LEFT JOIN t_info_banner b ON b.info_id = c.info_id  AND b.is_valid='0'
+	    LEFT JOIN t_info_comment m ON m.info_id = c.info_id
+	    WHERE 1=1
+	    AND c.is_valid = 0
+	    AND t.status = '1102-6'
+	  ) a
+  </select>
+  <select id="selectContentByCondition" resultMap="ResultMapWithBLOBs"  parameterType="cn.com.shukaiken.model.InfoContent" > 
+  	select  <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_info_content
+    <where>
+    	1=1
+    	 <if test="contentId != null" >
+        and content_id = #{contentId,jdbcType=INTEGER}
+      </if>
+    	 <if test="infoId != null" >
+        and info_id = #{infoId,jdbcType=INTEGER}
+      </if>
+      <if test="title != null" >
+        and title like CONCAT('%',#{title,jdbcType=VARCHAR},'%') 
+      </if>
+      <if test="brief != null" >
+        and brief like CONCAT('%', #{brief,jdbcType=VARCHAR},'%') 
+      </if>
+      <if test="hasImage != null" >
+        and has_image = #{hasImage,jdbcType=VARCHAR}
+      </if>
+      <if test="hasVideo != null" >
+        and has_video = #{hasVideo,jdbcType=VARCHAR}
+      </if>
+      <if test="hasFlash != null" >
+        and has_flash = #{hasFlash,jdbcType=VARCHAR}
+      </if>
+      <if test="bannerCount != null" >
+        and banner_count = #{bannerCount,jdbcType=INTEGER}
+      </if>
+      <if test="createTime != null" >
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="updateTime != null" >
+        and update_time = #{updateTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="isValid != null" >
+        and is_valid = #{isValid,jdbcType=VARCHAR}
+      </if>
+      <if test="resv1 != null" >
+        and resv1 = #{resv1,jdbcType=VARCHAR}
+      </if>
+      <if test="resv2 != null" >
+        and resv2 = #{resv2,jdbcType=VARCHAR}
+      </if>
+      <if test="resv3 != null" >
+        and resv3 = #{resv3,jdbcType=VARCHAR}
+      </if>
+      <if test="resv4 != null" >
+        and resv4 = #{resv4,jdbcType=VARCHAR}
+      </if>
+      <if test="content != null" >
+        and content like CONCAT('%', #{content,jdbcType=LONGVARCHAR},'%') 
+      </if>
+    </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_info_content
+    where content_id = #{contentId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="contentId" parameterType="cn.com.shukaiken.model.InfoContent" >
+    insert into t_info_content (content_id, info_id, title, 
+      brief, has_image, has_video, 
+      has_flash, banner_count, create_time, 
+      update_time, is_valid, resv1, 
+      resv2, resv3, resv4, 
+      content)
+    values (#{contentId,jdbcType=INTEGER}, #{infoId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, 
+      #{brief,jdbcType=VARCHAR}, #{hasImage,jdbcType=VARCHAR}, #{hasVideo,jdbcType=VARCHAR}, 
+      #{hasFlash,jdbcType=VARCHAR}, #{bannerCount,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{isValid,jdbcType=VARCHAR}, #{resv1,jdbcType=VARCHAR}, 
+      #{resv2,jdbcType=VARCHAR}, #{resv3,jdbcType=VARCHAR}, #{resv4,jdbcType=VARCHAR}, 
+      #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="contentId" parameterType="cn.com.shukaiken.model.InfoContent" >
+    insert into t_info_content
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="contentId != null" >
+        content_id,
+      </if>
+      <if test="infoId != null" >
+        info_id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="brief != null" >
+        brief,
+      </if>
+      <if test="hasImage != null" >
+        has_image,
+      </if>
+      <if test="hasVideo != null" >
+        has_video,
+      </if>
+      <if test="hasFlash != null" >
+        has_flash,
+      </if>
+      <if test="bannerCount != null" >
+        banner_count,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="isValid != null" >
+        is_valid,
+      </if>
+      <if test="resv1 != null" >
+        resv1,
+      </if>
+      <if test="resv2 != null" >
+        resv2,
+      </if>
+      <if test="resv3 != null" >
+        resv3,
+      </if>
+      <if test="resv4 != null" >
+        resv4,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="contentId != null" >
+        #{contentId,jdbcType=INTEGER},
+      </if>
+      <if test="infoId != null" >
+        #{infoId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="brief != null" >
+        #{brief,jdbcType=VARCHAR},
+      </if>
+      <if test="hasImage != null" >
+        #{hasImage,jdbcType=VARCHAR},
+      </if>
+      <if test="hasVideo != null" >
+        #{hasVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="hasFlash != null" >
+        #{hasFlash,jdbcType=VARCHAR},
+      </if>
+      <if test="bannerCount != null" >
+        #{bannerCount,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null" >
+        #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="resv1 != null" >
+        #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        #{resv4,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.InfoContent" >
+    update t_info_content
+    <set >
+      <if test="infoId != null" >
+        info_id = #{infoId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="brief != null" >
+        brief = #{brief,jdbcType=VARCHAR},
+      </if>
+      <if test="hasImage != null" >
+        has_image = #{hasImage,jdbcType=VARCHAR},
+      </if>
+      <if test="hasVideo != null" >
+        has_video = #{hasVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="hasFlash != null" >
+        has_flash = #{hasFlash,jdbcType=VARCHAR},
+      </if>
+      <if test="bannerCount != null" >
+        banner_count = #{bannerCount,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null" >
+        is_valid = #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="resv1 != null" >
+        resv1 = #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        resv2 = #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        resv3 = #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        resv4 = #{resv4,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where content_id = #{contentId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.com.shukaiken.model.InfoContent" >
+    update t_info_content
+    set info_id = #{infoId,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      brief = #{brief,jdbcType=VARCHAR},
+      has_image = #{hasImage,jdbcType=VARCHAR},
+      has_video = #{hasVideo,jdbcType=VARCHAR},
+      has_flash = #{hasFlash,jdbcType=VARCHAR},
+      banner_count = #{bannerCount,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=VARCHAR},
+      resv1 = #{resv1,jdbcType=VARCHAR},
+      resv2 = #{resv2,jdbcType=VARCHAR},
+      resv3 = #{resv3,jdbcType=VARCHAR},
+      resv4 = #{resv4,jdbcType=VARCHAR},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where content_id = #{contentId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.InfoContent" >
+    update t_info_content
+    set info_id = #{infoId,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      brief = #{brief,jdbcType=VARCHAR},
+      has_image = #{hasImage,jdbcType=VARCHAR},
+      has_video = #{hasVideo,jdbcType=VARCHAR},
+      has_flash = #{hasFlash,jdbcType=VARCHAR},
+      banner_count = #{bannerCount,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=VARCHAR},
+      resv1 = #{resv1,jdbcType=VARCHAR},
+      resv2 = #{resv2,jdbcType=VARCHAR},
+      resv3 = #{resv3,jdbcType=VARCHAR},
+      resv4 = #{resv4,jdbcType=VARCHAR}
+    where content_id = #{contentId,jdbcType=INTEGER}
+  </update>
+</mapper>

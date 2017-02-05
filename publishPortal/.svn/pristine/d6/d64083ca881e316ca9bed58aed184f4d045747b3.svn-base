@@ -1,0 +1,122 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ include file="/WEB-INF/views/general_path.jsp"%>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-widht,minimun-scale=1.0,maximun-scale=1.0,user-scalable=no,initial-scale=1.0" >
+		<title>提取反馈信息需求点</title>
+		<%@include file="/WEB-INF/views/admin/include_css.jsp" %>
+	</head>
+	<body>
+		<div id="slider_content" class="content">
+			<div class="content_div">
+				<h1>
+				    <input id="editor_id" type="hidden" value="${editor.id }"/>
+				    <c:if test="${editor.is_valid ==0 }">
+				    <span class="action-span">
+					    <a href="javascript:void(0);" onclick="changeStatus('2');">
+							<img src="<%=path %>/back/images/no.gif" />不通过
+						</a>
+					</span>
+					</c:if>
+					<c:if test="${editor.is_valid ==0 || editor.is_valid ==2}">
+						<span class="action-span">
+					 		<a href="javascript:void(0);" onclick="changeStatus('1');">
+								<img src="<%=path %>/back/images/yes.gif" />通过展示
+							</a>
+						</span>
+					</c:if>
+					<span class="action-span"><a href="javascript:void(0);" onclick="history.go(-1);">返回</a></span>
+					<span class="action-span1">出版头条管理中心</span>
+					<span class="action-span1 action-span2">-反馈信息分组</span>
+				</h1>
+				<form action="<%=path %>/admin/feed/updateBackFeedWithType" method="post" onsubmit="return checkForm();">
+					<div class="main-div">
+						<table>
+						   <tr>
+								<td class="label">现场采编人：</td>
+								<td>${editor.user_name}</td>
+						   </tr>
+						   <tr>
+								<td class="label">内容：</td>
+								<td>
+									<textarea class="input-textarea">${editor.content }</textarea>
+								</td>
+						   </tr>
+						   <tr>
+								<td class="label">审核理由：</td>
+								<td><textarea id="reason" class="input-textarea">${editor.reason }</textarea></td>
+						   </tr>
+						   <tr>
+								<td class="label">采编时间：</td>
+								<td><fmt:formatDate value="${editor.create_date }" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+						   </tr>
+						   <tr>
+								<td class="label">状态：</td>
+								<td>
+									<c:if test="${editor.is_valid==0}">
+						   				<option value="0">未审核</option>
+								    </c:if>
+								    <c:if test="${editor.is_valid==1}">
+								    	<option value="1">审核通过</option>
+								    </c:if>
+								    <c:if test="${editor.is_valid==2 }">
+								    	<option value="2">审核未通过</option>
+								    </c:if>
+					   			</td>
+						   </tr>
+						   <tr>
+								<td class="label">图片：</td>
+								<td>
+								<ul class="editor_pic">
+									<c:forEach var="img" items="${imgLs }" varStatus="imgStatus">
+										<li>
+											<img src="${img.img_url }" />
+										</li>
+									</c:forEach>
+								</ul>
+					   			</td>
+						   </tr>
+						</table>
+					</div>
+				</form>
+			</div>
+		</div>
+		<%@include file="/WEB-INF/views/admin/include_js.jsp" %>
+		<script type="text/javascript">
+			function changeStatus(is_valid){
+				var editorId = $("#editor_id").val();
+				var reason = $("#reason").val();
+				$.ajax({
+					type:'POST',
+					url:'<%=path%>/admin/editor/changeStatus',
+					data:{
+						"id":editorId,
+						"status":Math.abs(parseInt(is_valid)),
+						"reason":reason
+					},
+					dataType:'json',
+					success:function(data){
+						if(data.success=='true'){
+							layer.alert(data.message,{icon: 6, closeBtn:2,title:'现场采编信息管理'},function(index){
+								window.location.reload();
+								layer.close(index);
+							});
+						}else if(data.success=='false'){
+							layer.alert(data.message,{icon: 5, closeBtn:2,title:'现场采编信息管理'});
+						}
+					},
+					error: function(data) {
+						var message = "";
+						if( typeof(data) == "undefined" || data == null || data.message==null||data.message==''){
+							message = "现场采编信息状态修改失败";
+						}else {
+							message = data.message;
+						}
+						layer.alert(message,{icon: 5, closeBtn:2,title:'票据产品管理'});
+	                }
+				});
+			}
+		</script>
+	</body>
+</html>

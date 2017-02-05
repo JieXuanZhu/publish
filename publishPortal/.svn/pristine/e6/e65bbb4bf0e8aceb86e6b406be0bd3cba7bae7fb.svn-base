@@ -1,0 +1,421 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<input id="currentPageInfo" value="${currentPage}" type="hidden"/>
+<header> 
+			<div class="d_top">
+				<div class="d_top_cont clearfix">
+					<div class="d_top_cont_fl fl">
+						<ul>
+							<li>香港：<span class="flag_bg3" id="hktime"></span></li>
+					        <li>瑞士：<span class="flag_bg5" id="sxtime"></span></li>        
+					        <li>东京：<span class="flag_bg4" id="tytime"></span></li>
+					        <li>北京：<span class="flag_bg1" id="bjtime"></span></li>
+					        <li>伦敦：<span class="flag_bg2" id="ldtime"></span></li>
+					        <li>纽约：<span class="flag_bg6" id="nytime"></span></li>
+						</ul>
+					</div>
+					<div class="d_top_cont_fr fr">
+						<ul>
+							<!-- <li><a href="javascript:void(0);">设为首页</a></li> -->
+							<li><a href="<%=path %>/problems">常见问题</a></li>
+							<li class="last_right"><a href="<%=path%>/front/contactus/contact">联系我们</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="d_logo">
+				<a href="<%=path %>/"><img src="<%=path %>/front/images/d_logo.jpg" alt="东翌（上海）投资发展有限公司" title="东翌（上海）投资发展有限公司" /></a>
+			</div>
+		</header>
+		<nav>
+		<div class="d_nav">
+				<ul class="d_nav_ul">
+					<li><a id="current_index" href="<%=path %>/">网站首页</a></li>
+					<li><a id="current_qygk" href="<%=path%>/front/contactus/aboutUs">企业概况</a>
+						<ul class="d_nav_ul2">
+							<li><a href="<%=path%>/front/contactus/conpanyGroup">公司架构</a></li>
+							<li><a href="<%=path%>/front/contactus/conpanyQualifications">公司资质</a></li>
+							<li><a href="<%=path%>/front/contactus/recruitment">人才招聘</a></li>
+							<li><a href="<%=path%>/front/contactus/secret">隐私保密条款</a></li>
+							<li><a href="<%=path%>/front/contactus/siteMap">网站地图</a></li>
+						</ul>
+					</li>
+					<li><a id="current_jyzn" href="<%=path %>/trading/investment_guaranty">交易指南</a>
+						<ul class="d_nav_ul2">
+							<li><a href="<%=path %>/trading/investment_guaranty">投资保障</a></li>
+							<li><a href="<%=path %>/trading/account_process">开户流程</a></li>
+							<li><a href="<%=path %>/trading/trading_rule">交易产品及规则</a></li>
+							<li><a href="<%=path %>/trading/access_funds">资金存取</a></li>
+							<li><a href="<%=path %>/trading/cash_delivery">现货交割</a></li>
+							<li><a href="<%=path %>/trading/risk_control">风险控制</a></li>
+						</ul>
+					</li>
+					<li><a id="current_khzx" href="<%=path%>/front/user/goCreateAccount">开户中心</a>
+						<ul class="d_nav_ul2">
+							<li><a href="<%=path%>/accol">在线开户</a></li>
+							<li><a href="<%=path%>/front/user/goCreateAccount">预约开户</a></li>
+							<li><a href="<%=path %>/analog/analogApply">申请模拟账号</a></li>
+							<li><a href="<%=path %>/consult/consult">开户咨询</a></li>
+							<li><a href="<%=path %>/consult/process">开户流程</a></li>
+						</ul>
+					</li>
+					<li><a id="current_dyzx" href="<%=path%>/news">东翌资讯</a>
+						<ul id="id_news_sub" class="d_nav_ul2">
+						</ul>
+					</li>
+					<li><a href="<%=path%>/post">邮币卡开户</a>
+					  <!--  <ul class="d_nav_ul2">
+							<li><a href="javascript:void(0);">敬请期待</a></li>
+						</ul> -->
+					</li>
+					<li><a id="current_dygg" href="<%=path%>/notice?c=yhhd">优惠活动</a>
+					</li>
+					<li><a id="current_rjxz" href="<%=path %>/fileOperate/soft_download">软件下载</a></li>
+				</ul>
+			</div>
+		</nav>
+<input id="currentPageInfo" value="${currentPage}" type="hidden"/>
+<script type="text/javascript" src="<%=path %>/front/js/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="<%=path %>/front/js/jquery.bxslider.min.js"></script>
+<script type="text/javascript" src="<%=path %>/front/js/jquery.kinMaxShow-1.1.min.js"></script>
+<script type="text/javascript" src="<%=path %>/front/js/hover.js"></script>
+<script type="text/javascript" src="<%=path %>/front/js/layer/layer.js" ></script>
+<script type="text/javascript" src="<%=path %>/front/js/common_v3.js"></script>
+<script type="text/javascript" src="<%=path %>/front/js/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript">
+	/* 全局变量zmy */
+	var yyz = yyz || {
+		ctx:"${ctx }",//上下文
+		gns:{
+			width:$(window).width(),
+			height:$(window).height(),
+			cwidth:document.body.clientWidth,
+			cheight:document.body.clientHeight,
+			layer:{
+				alert:{
+					index:null,
+				    offsetX:'37%',
+					offsetY:'35%',
+					width:($(window).width()*0.35 > 200)?'26%':'200px',
+					height:($(window).height()*0.35 > 200)?'35%':'200px'
+				},
+				confirm:{
+					index:null,
+				    offsetX:'37%',
+					offsetY:'35%',
+					width:($(window).width()*0.35 > 200)?'26%':'200px',
+					height:'200px'
+					/* height:($(window).height()*0.35 > 200)?'35%':'200px' */
+				},
+				iframe:{
+					index:null,
+				    offsetX: 50,
+					offsetY: 50,
+					width:($(window).width()-2*50+'px'),
+					height:($(window).height()-2*50+'px')
+				}
+			}
+		}
+	};
+</script>
+
+<script type="text/javascript">
+	$(function(){
+		/* initMenu();
+		initLogin();
+
+		//初始化股评类型
+		initStockType();
+		
+		$('.bxslider').bxSlider({
+			auto: true,
+	  		autoControls: true
+		}); */
+		initNewsType();
+		$("#kinMaxShow").kinMaxShow({
+			button:{
+                normal:{right:'25%'}
+			}
+		});
+	});
+
+	/**
+	* 初始化菜单
+	*/
+	function initMenu(){
+		$(".nav_menu li").hover(function(){
+			$(this).find(".submenu").show();
+		}, function(){
+			$(this).find(".submenu").hide();
+		});
+	}
+	function initLogin(){
+		$(".login").hover(function(){
+			$(".login_down").show();
+		}, function(){
+			$(".login_down").hide();
+		});
+	}
+	
+	function initNewsType(){
+		
+		var temp = "";
+		var typeJson;
+		var newsType= '<%=session.getAttribute("senewsType")%>';
+		if(newsType==null|| typeof newsType=='undefined'||newsType==''||newsType=='null'){//如果session过期，那么从后台去取
+			$.ajax({
+				async:false,
+				url:"<%=path%>/index/news_type",
+				type:"post",
+				dataType:'json',
+				success:function(data){
+					typeJson=data.newsType;
+				}
+			});
+		}else {
+			typeJson = jQuery.parseJSON(newsType);
+		}
+		
+		$.each(typeJson, function(i, item) {
+			 temp+="<li><a href='<%=path %>/news?c="+item.code+"'>"+item.name+"</a></li>";
+	     });
+		 $("#id_news_sub").append(temp);
+		// $("#id_stock_sub2").append(temp);
+		
+	}
+
+	function openAlert(options){
+		var setting={
+		    type: 1,
+		    zIndex:55555,
+		    maxmin: false,
+		    shadeClose: false,
+		    title: "警告！",
+		    border: [1],
+		    moveOut: false,
+		    closeBtn: false,
+		    btn: ['确定', '取消'],
+		    shade: [0.75, '#000'],
+		    move: '.xubox_title', 
+		    offset: [yyz.gns.layer.alert.offsetX, yyz.gns.layer.alert.offsetY], //上下垂直居中
+		    area: [yyz.gns.layer.alert.width, yyz.gns.layer.alert.height],
+		    fadeIn: 300,
+		    loading: {
+			    type: 1
+			},
+			content: "你的操作有误！",
+			iframe: {
+		        src: ""
+		    },
+		    success: function(index){//弹出层显示成功
+		    },
+		    yes: function(index){//点击保存按钮
+		    },
+		    cancel: function(index){//点击取消按钮
+		    },
+		    close: function(index){//点击关闭按钮
+		    }
+		};
+		
+		setting=$.extend(setting, options);
+		return layer.open(setting);
+	};
+
+	function openConfirm(options){
+		var setting={
+		    type: 1,
+		    zIndex:55555,
+		    maxmin: false,
+		    shadeClose: false,
+		    title: "您确定么?",
+		    border: [1],
+		    moveOut: false,
+		    closeBtn: false,
+		    btn: ['确定', '取消'],
+		    shade: [0.75, '#000'],
+		    move: '.xubox_title', 
+		    offset: [yyz.gns.layer.confirm.offsetX, yyz.gns.layer.confirm.offsetY], //上下垂直居中
+		    area: [yyz.gns.layer.confirm.width, yyz.gns.layer.confirm.height],
+		    fadeIn: 300,
+		    loading: {
+			    type: 1
+			},
+			content: options.title,
+			iframe: {
+		        src: ""
+		    },
+		    success: function(index){//弹出层显示成功
+		    },
+		    yes: function(index){//点击保存按钮
+		    },
+		    cancel: function(index){//点击取消按钮
+		    },
+		    close: function(index){//点击关闭按钮
+		    }
+		};
+		
+		setting=$.extend(setting, options);
+		return layer.open(setting);
+	};
+	
+
+	function openIframe(options){
+		var setting={
+		    type: 2,// iframe
+		    zIndex:55555,
+		    maxmin: false,
+		    shadeClose: false,
+		    title: "窗口",
+		    border: [1],
+		    moveOut: false,
+		    //closeBtn: [0, true],
+		    closeBtn: false,
+		    btn: ['确定', '取消'],
+		    shade: [0.75, '#000'],
+		    move: '.xubox_title', 
+		    offset: [yyz.gns.layer.iframe.offsetX, yyz.gns.layer.iframe.offsetY], //上下垂直居中
+		    area: [yyz.gns.layer.iframe.width, yyz.gns.layer.iframe.height],
+		    fadeIn: 300,
+		    loading: {
+			    type: 1
+			},
+			content: options.title,
+			iframe: {
+		        src: ""
+		    },
+		    success: function(index){//弹出层显示成功
+		    },
+		    yes: function(index){//点击保存按钮
+		    },
+		    cancel: function(index){//点击取消按钮
+		    },
+		    close: function(index){//点击关闭按钮
+		    }
+		};
+		
+		setting=$.extend(setting, options);
+		return layer.open(setting);
+	};
+	
+	
+	
+	//--------退出登录
+	function logout(){
+		
+	openConfirm({
+		title:'退出登录',
+		content:'<div style="text-align:center;">确定要退出登录？</div>',
+		closeBtn:2,
+		yes:function(index){
+			window.location.href="<%=path %>/custLogOut";
+			layer.close(index);
+		},
+		cancel:function(index){
+			layer.close(index);	
+		}
+		
+	});
+
+	}
+</script>
+
+<script type="text/javascript">
+	$(function() {
+		var sWidth = $("#focus2").width(); //获取焦点图的宽度（显示面积）
+		var len = $("#focus2 ul li").length; //获取焦点图个数
+		var index = 0;
+		var picTimer;
+		
+		//以下代码添加数字按钮和按钮后的半透明条，还有上一页、下一页两个按钮
+		var btn = "<div class='btn'>";
+		for(var i=0; i < len; i++) {
+			btn += "<span></span>";
+		}
+		btn += "</div><div class='preNext pre'></div><div class='preNext next'></div>";
+		$("#focus2").append(btn);
+		
+
+		//为小按钮添加鼠标滑入事件，以显示相应的内容
+		$("#focus2 .btn span").css("opacity",0.4).mouseenter(function() {
+			index = $("#focus2 .btn span").index(this);
+			showPics(index);
+		}).eq(0).trigger("mouseenter");
+
+		//上一页、下一页按钮透明度处理
+		$("#focus2 .preNext").css("opacity",0.2).hover(function() {
+			$(this).stop(true,false).animate({"opacity":"0.5"},300);
+		},function() {
+			$(this).stop(true,false).animate({"opacity":"0.2"},300);
+		});
+
+		//上一页按钮
+		$("#focus2 .pre").click(function() {
+			index -= 1;
+			if(index == -1) {index = len - 1;}
+			showPics(index);
+		});
+
+		//下一页按钮
+		$("#focus2 .next").click(function() {
+			index += 1;
+			if(index == len) {index = 0;}
+			showPics(index);
+		});
+
+		//本例为左右滚动，即所有li元素都是在同一排向左浮动，所以这里需要计算出外围ul元素的宽度
+		$("#focus2 ul").css("width",sWidth * (len));
+		
+		//鼠标滑上焦点图时停止自动播放，滑出时开始自动播放
+		$("#focus2").hover(function() {
+			clearInterval(picTimer);
+		},function() {
+			picTimer = setInterval(function() {
+				showPics(index);
+				index++;
+				if(index == len) {index = 0;}
+			},2000); //此4000代表自动播放的间隔，单位：毫秒
+		}).trigger("mouseleave");
+		
+		//显示图片函数，根据接收的index值显示相应的内容
+		function showPics(index) { //普通切换
+			var nowLeft = -index*sWidth; //根据index值计算ul元素的left值
+			$("#focus2 ul").stop(true,false).animate({"left":nowLeft},300); //通过animate()调整ul元素滚动到计算出的position
+			//$("#focus2 .btn span").removeClass("on").eq(index).addClass("on"); //为当前的按钮切换到选中的效果
+			$("#focus2 .btn span").stop(true,false).animate({"opacity":"0.4"},300).eq(index).stop(true,false).animate({"opacity":"1"},300); //为当前的按钮切换到选中的效果
+		}
+	});
+</script>
+
+<script type="text/javascript">
+function SetHome(obj,url){
+	  try{
+	    obj.style.behavior='url(#default#homepage)';
+	    obj.setHomePage(url);
+	  }catch(e){
+	    if(window.netscape){
+	     try{
+	       netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+	     }catch(e){
+	       layer.alert("抱歉，此操作被浏览器拒绝！\n\n请在浏览器地址栏输入“about:config”并回车然后将[signed.applets.codebase_principal_support]设置为'true'");
+	     }
+	    }else{
+	    layer.alert("抱歉，您所使用的浏览器无法完成此操作。\n\n您需要手动将【"+url+"】设置为首页。");
+	    }
+	 }
+	}
+	  
+	//收藏本站 www.jb51.net
+	function AddFavorite(title, url) {
+	 try {
+	   window.external.addFavorite(url, title);
+	 }
+	catch (e) {
+	   try {
+	    window.sidebar.addPanel(title, url, "");
+	  }
+	   catch (e) {
+	     layer.alert("抱歉，您所使用的浏览器无法完成此操作。\n\n加入收藏失败，请进入新网站后使用Ctrl+D进行添加");
+	   }
+	 }
+	}
+
+</script>

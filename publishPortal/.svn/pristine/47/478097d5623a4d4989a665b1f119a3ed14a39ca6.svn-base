@@ -1,0 +1,86 @@
+/**
+ * @Title: NewsInfoCrawlerJob.java 
+* @Package cn.com.shukaiken.crawler 
+* @Description: <p>TODO</p> 
+* @author zhaox   
+* @date 2015年12月1日 下午1:26:25 
+* @version V1.0 
+ */
+package cn.com.shukaiken.crawler;
+
+import java.util.Date;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import cn.com.shukaiken.model.CrawlNewsInfoSource;
+import cn.com.shukaiken.service.ICrawlNewsInfoService;
+import cn.com.shukaiken.util.ConfigurationUtils;
+import cn.com.shukaiken.util.Constant;
+
+/**
+ * @ClassName: NewsInfoCrawlerJob 
+ * @Description: <p>TODO</p>
+ * @date 2015年12月1日 下午1:26:25 
+ * @author Zhao Xiang
+ *
+ */
+@Service
+public class NewsInfoCrawlerJob {
+	Logger logger = LoggerFactory.getLogger(NewsInfoCrawlerJob.class);
+	@Autowired
+	private ICrawlNewsInfoService crawlNewsInfoService;
+	
+	public void startCrawl() throws Exception{
+		System.err.println("开始执行抓取");
+		CrawlNewsInfoSource source = new CrawlNewsInfoSource();
+		source.setIsValid(Constant.VALID);
+		List<CrawlNewsInfoSource> sourcesList = crawlNewsInfoService.getSourceList(source);
+		if(sourcesList!=null && sourcesList.size()>0){
+			System.err.println("开始");
+			for(int i = 0;i<sourcesList.size();i++){
+				 CrawlNewsInfoSource sr = sourcesList.get(i);
+				String osname = System.getProperty("os.name");
+				String crawlPath = "";
+				if(osname.toLowerCase().indexOf("linux")>-1){
+					crawlPath = ConfigurationUtils.readValue("linux.crawl.path", "config.properties");
+				}else if(osname.toLowerCase().indexOf("windows")>-1){
+					crawlPath = ConfigurationUtils.readValue("windows.crawl.path", "config.properties");
+				}
+				NewsInfoCrawler crawler = new NewsInfoCrawler(crawlPath,crawlNewsInfoService,sr);
+				crawler.setThreads(50);
+		        crawler.setResumable(false);
+		        crawler.start(5);
+		       sr.setLastCrawlTime(new Date());
+		       crawlNewsInfoService.updateNewsInfoSourceById(sr);
+		        
+			}
+		}
+	}
+
+	/**
+	 * @Title: createStartUrl 
+	 * @Description: TODO
+	 * @param @param j
+	 * @param @param startUrl
+	 * @param @param resv4
+	 * @param @return
+	 * @return String
+	 * @throws 
+	 */
+/*	private String createStartUrl(int pagenum, String startUrl, String pageReg) {
+		if(pagenum==1){
+			startUrl = startUrl.replace("{{page}}", "");
+		}else {
+			logger.info("pagenum="+pagenum);
+			pageReg = pageReg.replace("{{pagenum}}", Integer.toString(pagenum));
+			logger.info("pageReg"+pageReg);
+			startUrl = startUrl.replace("{{page}}", pageReg);
+			logger.info("startUrl"+startUrl);
+		}
+		return startUrl;
+	}*/
+}

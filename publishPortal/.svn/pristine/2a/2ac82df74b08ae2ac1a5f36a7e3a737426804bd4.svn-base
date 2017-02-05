@@ -1,0 +1,9 @@
+$(function(){
+	var currentPage = document.getElementById("currentPageInfo").value;
+	
+	selectedPage(currentPage);
+});
+
+function selectedPage(selector){
+	$("#"+selector).addClass("selected");
+}

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.InfoViewDao" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.InfoView" >
+    <id column="view_id" property="viewId" jdbcType="INTEGER" />
+    <result column="info_id" property="infoId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="user" property="user" jdbcType="VARCHAR" />
+    <result column="ip" property="ip" jdbcType="VARCHAR" />
+    <result column="view_time" property="viewTime" jdbcType="TIMESTAMP" />
+    <result column="is_comment" property="isComment" jdbcType="VARCHAR" />
+    <result column="is_forward" property="isForward" jdbcType="VARCHAR" />
+    <result column="resv1" property="resv1" jdbcType="VARCHAR" />
+    <result column="resv2" property="resv2" jdbcType="VARCHAR" />
+    <result column="resv3" property="resv3" jdbcType="VARCHAR" />
+    <result column="resv4" property="resv4" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    view_id, info_id, user_id, user, ip, view_time, is_comment, is_forward, resv1, resv2, 
+    resv3, resv4
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_info_view
+    where view_id = #{viewId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_info_view
+    where view_id = #{viewId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="viewId" parameterType="cn.com.shukaiken.model.InfoView" >
+    insert into t_info_view (view_id, info_id, user_id, 
+      user, ip, view_time, 
+      is_comment, is_forward, resv1, 
+      resv2, resv3, resv4
+      )
+    values (#{viewId,jdbcType=INTEGER}, #{infoId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
+      #{user,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{viewTime,jdbcType=TIMESTAMP}, 
+      #{isComment,jdbcType=VARCHAR}, #{isForward,jdbcType=VARCHAR}, #{resv1,jdbcType=VARCHAR}, 
+      #{resv2,jdbcType=VARCHAR}, #{resv3,jdbcType=VARCHAR}, #{resv4,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective"  useGeneratedKeys="true" keyProperty="viewId" parameterType="cn.com.shukaiken.model.InfoView" >
+    insert into t_info_view
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="viewId != null" >
+        view_id,
+      </if>
+      <if test="infoId != null" >
+        info_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="user != null" >
+        user,
+      </if>
+      <if test="ip != null" >
+        ip,
+      </if>
+      <if test="viewTime != null" >
+        view_time,
+      </if>
+      <if test="isComment != null" >
+        is_comment,
+      </if>
+      <if test="isForward != null" >
+        is_forward,
+      </if>
+      <if test="resv1 != null" >
+        resv1,
+      </if>
+      <if test="resv2 != null" >
+        resv2,
+      </if>
+      <if test="resv3 != null" >
+        resv3,
+      </if>
+      <if test="resv4 != null" >
+        resv4,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="viewId != null" >
+        #{viewId,jdbcType=INTEGER},
+      </if>
+      <if test="infoId != null" >
+        #{infoId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="user != null" >
+        #{user,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null" >
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="viewTime != null" >
+        #{viewTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isComment != null" >
+        #{isComment,jdbcType=VARCHAR},
+      </if>
+      <if test="isForward != null" >
+        #{isForward,jdbcType=VARCHAR},
+      </if>
+      <if test="resv1 != null" >
+        #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        #{resv4,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.InfoView" >
+    update t_info_view
+    <set >
+      <if test="infoId != null" >
+        info_id = #{infoId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="user != null" >
+        user = #{user,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null" >
+        ip = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="viewTime != null" >
+        view_time = #{viewTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isComment != null" >
+        is_comment = #{isComment,jdbcType=VARCHAR},
+      </if>
+      <if test="isForward != null" >
+        is_forward = #{isForward,jdbcType=VARCHAR},
+      </if>
+      <if test="resv1 != null" >
+        resv1 = #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        resv2 = #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        resv3 = #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        resv4 = #{resv4,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where view_id = #{viewId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.InfoView" >
+    update t_info_view
+    set info_id = #{infoId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      user = #{user,jdbcType=VARCHAR},
+      ip = #{ip,jdbcType=VARCHAR},
+      view_time = #{viewTime,jdbcType=TIMESTAMP},
+      is_comment = #{isComment,jdbcType=VARCHAR},
+      is_forward = #{isForward,jdbcType=VARCHAR},
+      resv1 = #{resv1,jdbcType=VARCHAR},
+      resv2 = #{resv2,jdbcType=VARCHAR},
+      resv3 = #{resv3,jdbcType=VARCHAR},
+      resv4 = #{resv4,jdbcType=VARCHAR}
+    where view_id = #{viewId,jdbcType=INTEGER}
+  </update>
+</mapper>

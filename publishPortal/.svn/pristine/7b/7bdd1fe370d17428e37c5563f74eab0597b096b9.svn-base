@@ -1,0 +1,111 @@
+package cn.com.shukaiken.model;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import cn.com.shukaiken.util.ValidateUtils;
+
+public class Log implements Serializable{
+   
+	private static final long serialVersionUID = 9097462874545664940L;
+
+	private Integer id;//主键
+
+    private Integer custId;//操作员Id
+
+    private String name;//操作员姓名
+
+    private Integer targetId;//被操作对象ID
+
+    private String targetName;//被操作对象姓名
+
+    private String behavior;//操作记录
+
+    private Date createDate;//操作时间
+
+    private Integer category;//日志分类，如客户分类等
+
+    private Integer operateType;//操作类型，新增，更新，删除等
+
+    private Integer logsType;//日志类型，正常还是错误类型等
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getCustId() {
+        return custId;
+    }
+
+    public void setCustId(Integer custId) {
+        this.custId = custId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = ValidateUtils.isEmpty(name)  ? null : name.trim();
+    }
+
+    public Integer getTargetId() {
+        return targetId;
+    }
+
+    public void setTargetId(Integer targetId) {
+        this.targetId = targetId;
+    }
+
+    public String getTargetName() {
+        return targetName;
+    }
+
+    public void setTargetName(String targetName) {
+        this.targetName = ValidateUtils.isEmpty(targetName)? null : targetName.trim();
+    }
+
+    public String getBehavior() {
+        return behavior;
+    }
+
+    public void setBehavior(String behavior) {
+        this.behavior = ValidateUtils.isEmpty(behavior) ? null : behavior.trim();
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Integer getCategory() {
+        return category;
+    }
+
+    public void setCategory(Integer category) {
+        this.category = category;
+    }
+
+    public Integer getOperateType() {
+        return operateType;
+    }
+
+    public void setOperateType(Integer operateType) {
+        this.operateType = operateType;
+    }
+
+    public Integer getLogsType() {
+        return logsType;
+    }
+
+    public void setLogsType(Integer logsType) {
+        this.logsType = logsType;
+    }
+}

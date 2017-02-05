@@ -1,0 +1,186 @@
+package cn.com.shukaiken.model;
+
+import java.util.Date;
+
+public class Cust {
+    private Integer id;
+
+    private String user_name;
+
+    private String nick_name;
+
+    private String salt;
+
+    private String password;
+    
+    private Integer level;
+
+    private String level_name;
+
+    private Integer level_id;
+
+    private Date create_date;
+
+    private Date last_login_date;
+
+    private Integer is_valid;
+    
+    private String head_img_url;
+    
+    private String wei_xin;
+    
+    private String qq;
+    
+    private String sina_wei_bo;
+    
+    private Integer is_wei_xin;
+    
+    private Integer is_wei_qq;
+    
+    private Integer is_sina_wei_bo;
+    
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getUser_name() {
+		return user_name;
+	}
+
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
+	}
+
+	public String getNick_name() {
+        return nick_name;
+    }
+
+    public void setNick_name(String nick_name) {
+        this.nick_name = nick_name == null ? null : nick_name.trim();
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt == null ? null : salt.trim();
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password == null ? null : password.trim();
+    }
+
+    public String getLevel_name() {
+		return level_name;
+	}
+
+	public void setLevel_name(String level_name) {
+		this.level_name = level_name;
+	}
+
+	public Integer getLevel_id() {
+        return level_id;
+    }
+
+    public void setLevel_id(Integer level_id) {
+        this.level_id = level_id;
+    }
+
+    public Date getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(Date create_date) {
+        this.create_date = create_date;
+    }
+
+    public Date getLast_login_date() {
+        return last_login_date;
+    }
+
+    public void setLast_login_date(Date last_login_date) {
+        this.last_login_date = last_login_date;
+    }
+
+    public Integer getIs_valid() {
+        return is_valid;
+    }
+
+    public void setIs_valid(Integer is_valid) {
+        this.is_valid = is_valid;
+    }
+
+	public Integer getLevel() {
+		return level;
+	}
+
+	public void setLevel(Integer level) {
+		this.level = level;
+	}
+
+	public String getHead_img_url() {
+		return head_img_url;
+	}
+
+	public void setHead_img_url(String head_img_url) {
+		this.head_img_url = head_img_url;
+	}
+
+	public String getWei_xin() {
+		return wei_xin;
+	}
+
+	public void setWei_xin(String wei_xin) {
+		this.wei_xin = wei_xin;
+	}
+
+	public String getQq() {
+		return qq;
+	}
+
+	public void setQq(String qq) {
+		this.qq = qq;
+	}
+
+	public String getSina_wei_bo() {
+		return sina_wei_bo;
+	}
+
+	public void setSina_wei_bo(String sina_wei_bo) {
+		this.sina_wei_bo = sina_wei_bo;
+	}
+
+	public Integer getIs_wei_xin() {
+		return is_wei_xin;
+	}
+
+	public void setIs_wei_xin(Integer is_wei_xin) {
+		this.is_wei_xin = is_wei_xin;
+	}
+
+	public Integer getIs_wei_qq() {
+		return is_wei_qq;
+	}
+
+	public void setIs_wei_qq(Integer is_wei_qq) {
+		this.is_wei_qq = is_wei_qq;
+	}
+
+	public Integer getIs_sina_wei_bo() {
+		return is_sina_wei_bo;
+	}
+
+	public void setIs_sina_wei_bo(Integer is_sina_wei_bo) {
+		this.is_sina_wei_bo = is_sina_wei_bo;
+	}
+	
+}

@@ -1,0 +1,100 @@
+
+function initForm(){
+	$("#login_mobile_id").bind("blur",function(){
+		checkMobile($("#login_mobile_id").val());
+	});
+	$("#login_password_id").bind("blur",function(){
+		checkPassword($("#login_password_id").val());
+	});
+}
+
+function login(rootUrl){
+	errClass("#id_login_error_mark",1,"wrong");
+	errClass("#id_login_error_mark",1,"pass");
+	$("#mobile_error_mark").html("");
+	var phone = $("#login_mobile_id").val();
+	var password = $("#login_password_id").val();
+	if(checkMobile(phone) && checkPassword(password)){
+		$.ajax({
+			url:rootUrl+"/cust/login",
+			data:$("#id_login_form").serializeArray(),
+			type:'post',
+			dataType:'json',
+			success:function(data){
+				if(data.success=='true'){
+					window.location.href=rootUrl+"/index/main";
+				}else{
+					/*errClass("#id_login_error_mark",0,"wrong");
+					$("#id_login_error_mark").append(data.message);*/
+					layer.alert(data.message,{
+						title:'登陆失败',
+						icon:5
+						//time:4000
+					});
+				}
+			},
+			error:function(data){
+				
+			}
+		});
+	}else {
+	}
+}
+
+/**
+ * 
+ * @param rootUrl 远程验证根路径
+ * @param remoteCheck//是否需要远程验证
+ * @param checkType//手机号验证类型，1表示验证存不存在，2表示有没有注册过
+ */
+function checkMobile(phone){
+	errClass("#mobile_error_mark",1,"wrong");
+	errClass("#mobile_error_mark",1,"pass");
+	if(isEmpty(phone)){
+		layer.tips('请输入手机号', '#login_mobile_id', {
+		    tips: 4,
+		    time:4000
+		});
+		errClass("#mobile_error_mark",0,"wrong");
+		return false;
+	} else if(!checkphone(phone)){
+		layer.tips('请输入正确手机号码', '#login_mobile_id', {
+		    tips: 4,
+		    time:4000
+		});
+		errClass("#mobile_error_mark",0,"wrong");
+		return false;
+	} else {
+		errClass("#mobile_error_mark",0,"pass");
+		//
+	}
+	return true;
+}
+
+function checkPassword(password){
+	errClass("#password_error_mark",1,"wrong");
+	errClass("#password_error_mark",1,"pass");
+	if(isEmpty(password)){
+		layer.tips('请输入密码', "#login_password_id", {
+		    tips: 4,
+		    time:4000
+		});
+		errClass("#password_error_mark",0,"wrong");
+		return false;
+	}else {
+		errClass("#password_error_mark",0,"pass");
+	}
+	return true;
+}
+
+function errClass(selector,type,className){
+	if(0==type){
+		$(selector).addClass(className);
+	}else if(1==type){
+		$(selector).removeClass(className);
+	}
+}
+
+function forget(rootUrl){
+	window.location.href=rootUrl+"/toForget";
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd"
+	default-lazy-init="true">
+
+	<bean id="newsInfoCrawlerJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+		<property name="targetObject">
+			<bean class="cn.com.shukaiken.crawler.NewsInfoCrawlerJob"></bean>
+		</property>  
+		<property name="targetMethod" value="startCrawl" />  
+		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->  
+	</bean>
+	
+	<bean id="newsInfoCrawlerTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+		<property name="jobDetail" ref="newsInfoCrawlerJob" />  
+		<property name="cronExpression" >
+		<value>* 0 2 * * ?</value>
+		</property> 
+	</bean>
+
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">  
+		<property name="triggers">  
+			<list>  
+				  <ref bean="newsInfoCrawlerTrigger" /> 
+			</list>  
+		</property>  
+	</bean> 
+	<!-- <bean id="newsCrawlerService" class="cn.com.shukaiken.crawler.NewsInfoCrawlerJob"></bean> -->
+</beans>

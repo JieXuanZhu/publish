@@ -1,0 +1,114 @@
+/**
+*首页展示新闻和常见问题的js
+*/
+
+var id_news_jyrl = "#id_news_jyrl";//交易日历
+var id_news_jshq = "#id_news_jshq";//即时行情
+var id_news_dydt = "#id_news_dydt";//东翌动态
+var id_news_riping = "#id_news_riping";//日评
+var id_news_xwdt = "#id_news_xwdt";//新闻动态
+var id_cjwt = "#id_cjwt";//常见问题
+var id_news_jshq_title = "#id_news_jshq_title";
+
+var jyrl_code = "jyrl";//交易日历编号
+var news_jshq_code = "jshq";//即时行情编号
+var news_dydt_code = "dydt";//东翌动态编号
+var news_riping_code = "dyrp";//日评编号
+var news_xwdt_code = "xwdt";//新闻动态编号
+
+function initNews(rootPath){
+	getNews(id_news_jyrl,jyrl_code,rootPath,5);
+	getNews(id_news_jshq,news_jshq_code,rootPath,6);
+	getNews(id_news_dydt,news_dydt_code,rootPath,5);
+	getNews(id_news_riping,news_riping_code,rootPath,5);
+	getNews(id_news_xwdt,news_xwdt_code,rootPath,5);
+	getProblems(id_cjwt,rootPath,4);
+}
+
+function getNews(selector,code,rootPath,num){
+	var temp="";
+	$.ajax({
+		url:rootPath+"/index/getNews",
+		data:{
+			"code":code,
+			"num":num
+		},
+		type:"post",
+		dataType:'json',
+		success:function(data){
+			if(data.newsJson!=null && data.newsJson!='' && data.newsJson !='[]'){
+				$.each(data.newsJson, function(i, item) {
+					if(code=='jshq' && i==0){
+						$(id_news_jshq_title).html("<p>"+subStr(item.title,12)+"</p><span><a href="+rootPath+"/news/detail?s="+(parseInt(item.id)+47)+">[详细]</a><span>");
+					}else {
+						temp+="<li><a href="+rootPath+"/news/detail?s="+(parseInt(item.id)+47)+">"+subStr(item.title,12)+"</a><span class='fr'>"+new Date(item.create_date).Format('yyyy-M-d')+"</span></li>";
+					}
+					 
+			     });
+				 $(selector).html(temp);
+			}
+			
+		}
+	});
+}
+
+function getProblems(selector,rootPath,num){
+	var temp="";
+	$.ajax({
+		url:rootPath+"/index/getProblems",
+		data:{
+			"num":num
+		},
+		type:"post",
+		dataType:'json',
+		success:function(data){
+			if(data.problemJson!=null && data.problemJson!='' && data.problemJson !='[]'){
+				$.each(data.problemJson, function(i, item) {
+					 temp+="<li><a href="+rootPath+"/problems/detail?p="+(parseInt(item.id)+47)+">"+subStr(item.title,12)+"</a><span class='fr'>"+new Date(item.create_date).Format('yyyy-M-d')+"</span></li>";
+			     });
+				 $(selector).html(temp);
+			}
+		}
+	});
+}
+
+function moreNews(code,rootPath){
+	window.location.href=rootPath+"/news?c="+code;
+}
+function moreProblems(rootPath){
+	window.location.href=rootPath+"/problems";
+}
+function queryJYRL(rootPath){
+	var queryDate = $("#id_jyrl_date").val();
+	window.location.href=rootPath+"/news?c=jyrl&d="+queryDate;
+}
+/**
+ * 如果超过长度用...代替
+ * @param text
+ * @param len
+ * @returns
+ */
+function subStr(text,len){
+	if(text.length>parseInt(len)){
+		return text.substring(0,len)+"...";
+	}else {
+		return text;
+	}
+}
+
+Date.prototype.Format = function (fmt) { //author: meizz 
+    var o = {
+        "M+": this.getMonth() + 1, //月份 
+        "d+": this.getDate(), //日 
+        "h+": this.getHours(), //小时 
+        "m+": this.getMinutes(), //分 
+        "s+": this.getSeconds(), //秒 
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+        "S": this.getMilliseconds() //毫秒 
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
+

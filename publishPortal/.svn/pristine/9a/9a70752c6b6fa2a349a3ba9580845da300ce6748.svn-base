@@ -1,0 +1,53 @@
+package cn.com.shukaiken.service;
+
+import java.util.List;
+import java.util.Map;
+
+import cn.com.shukaiken.model.InfoEnshrine;
+
+
+public interface IInfoEnshrineService {
+	/**
+	 * 根据对象设值查询完整对象信息 
+	 * @param infoEnshrine
+	 * @return
+	 */
+	InfoEnshrine selectByInfoEnshrine(InfoEnshrine infoEnshrine);
+	/**
+	 * 添加一条收藏新闻到用户收藏新闻关联关系表
+	 * @param infoEnshrine
+	 * @return
+	 */
+	int addInfoEnshrine(InfoEnshrine infoEnshrine);
+	
+	/**
+	 * 根据用户收藏新闻关联关系表查询收藏的新闻详情
+	 * @param infoEnshrine
+	 * @return
+	 */
+	InfoEnshrine viewEnshrineInfo(InfoEnshrine infoEnshrine);
+	
+	
+	/**
+	 * 根据用户id分页查询用户收藏的所有新闻信息
+	 * @param custId
+	 * @return
+	 */
+	List<InfoEnshrine> getEnshrineInfoLs(InfoEnshrine infoEnshrine);
+	
+	
+	/**
+	 * 批量修改用户收藏新闻的状态为未收藏
+	 * @param infoEnshrine
+	 * @return
+	 */
+	int updateEnshrineInfoStatusByMap(Map<String,Object> map);
+	
+	/**
+	 * 取消收藏一条新闻
+	 * @param record
+	 * @return
+	 */
+	int cancelEnshrine(InfoEnshrine record);
+
+}

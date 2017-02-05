@@ -1,0 +1,664 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.IDataDao" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.Data" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="category_id" property="category_id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="author" property="author" jdbcType="VARCHAR" />
+    <result column="cover" property="cover" jdbcType="VARCHAR" />
+    <result column="capture_date" property="capture_date" jdbcType="TIMESTAMP" />
+    <result column="publisher" property="publisher" jdbcType="VARCHAR" />
+    <result column="sub_title" property="sub_title" jdbcType="VARCHAR" />
+    <result column="original_titile" property="original_titile" jdbcType="VARCHAR" />
+    <result column="translator" property="translator" jdbcType="VARCHAR" />
+    <result column="publish_year" property="publish_year" jdbcType="DATE" />
+    <result column="page_size" property="page_size" jdbcType="INTEGER" />
+    <result column="price" property="price" jdbcType="DOUBLE" />
+    <result column="bind" property="bind" jdbcType="VARCHAR" />
+    <result column="book_category" property="book_category" jdbcType="VARCHAR" />
+    <result column="isbn" property="isbn" jdbcType="VARCHAR" />
+    <result column="content_brief" property="content_brief" jdbcType="VARCHAR" />
+    <result column="author_brief" property="author_brief" jdbcType="VARCHAR" />
+    <result column="score_number" property="score_number" jdbcType="VARCHAR" />
+    <result column="score_detail" property="score_detail" jdbcType="VARCHAR" />
+    <result column="where_buy" property="where_buy" jdbcType="VARCHAR" />
+    <result column="douban_label" property="douban_label" jdbcType="VARCHAR" />
+    <result column="reading_number" property="reading_number" jdbcType="INTEGER" />
+    <result column="readed_numer" property="readed_numer" jdbcType="INTEGER" />
+    <result column="want_reading_number" property="want_reading_number" jdbcType="INTEGER" />
+    <result column="subordinate_series" property="subordinate_series" jdbcType="VARCHAR" />
+    <result column="view_count" property="view_count" jdbcType="INTEGER" />
+    <result column="dianzan_count" property="dianzan_count" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="vedio_image_url" property="vedio_image_url" jdbcType="VARCHAR" />
+    <result column="is_valid" property="is_valid" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="cn.com.shukaiken.model.Data" extends="BaseResultMap" >
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, category_id, title, author, cover, capture_date, publisher, sub_title, original_titile, 
+    translator, publish_year, page_size, price, bind, book_category, isbn, content_brief, 
+    author_brief, score_number, score_detail, where_buy, douban_label, reading_number, 
+    readed_numer, want_reading_number, subordinate_series, view_count, dianzan_count, 
+    status, vedio_image_url, is_valid
+  </sql>
+  <sql id="Blob_Column_List" >
+    content
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_data
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <!-- 根据对象设值查询完整对象信息 -->
+  <select id="selectBySelective" parameterType="cn.com.shukaiken.model.Data" resultMap="ResultMapWithBLOBs">
+    select 
+   	<include refid="Base_Column_List" />
+   	 ,
+    <include refid="Blob_Column_List" />
+    from t_data 
+    where 1 = 1
+      <if test="category_id != null" >
+        and category_id = #{category_id,jdbcType=INTEGER}
+      </if>
+      <if test="title != null" >
+        and title = #{title,jdbcType=VARCHAR}
+      </if>
+      <if test="author != null" >
+        and author = #{author,jdbcType=VARCHAR}
+      </if>
+      <if test="cover != null" >
+        and cover = #{cover,jdbcType=VARCHAR}
+      </if>
+      <if test="capture_date != null" >
+        and capture_date = #{capture_date,jdbcType=TIMESTAMP}
+      </if>
+      <if test="publisher != null" >
+        and publisher = #{publisher,jdbcType=VARCHAR}
+      </if>
+      <if test="sub_title != null" >
+        and sub_title = #{sub_title,jdbcType=VARCHAR}
+      </if>
+      <if test="original_titile != null" >
+        and original_titile = #{original_titile,jdbcType=VARCHAR}
+      </if>
+      <if test="translator != null" >
+        and translator = #{translator,jdbcType=VARCHAR}
+      </if>
+      <if test="publish_year != null" >
+        and publish_year = #{publish_year,jdbcType=DATE}
+      </if>
+      <if test="page_size != null" >
+        and page_size = #{page_size,jdbcType=INTEGER}
+      </if>
+      <if test="price != null" >
+        and price = #{price,jdbcType=DOUBLE}
+      </if>
+      <if test="bind != null" >
+        and bind = #{bind,jdbcType=VARCHAR}
+      </if>
+      <if test="book_category != null" >
+        and book_category = #{book_category,jdbcType=VARCHAR}
+      </if>
+      <if test="isbn != null" >
+        and isbn = #{isbn,jdbcType=VARCHAR}
+      </if>
+      <if test="content_brief != null" >
+        and content_brief = #{content_brief,jdbcType=VARCHAR}
+      </if>
+      <if test="author_brief != null" >
+        and author_brief = #{author_brief,jdbcType=VARCHAR}
+      </if>
+      <if test="score_number != null" >
+        and score_number = #{score_number,jdbcType=VARCHAR}
+      </if>
+      <if test="score_detail != null" >
+        and score_detail = #{score_detail,jdbcType=VARCHAR}
+      </if>
+      <if test="where_buy != null" >
+        and where_buy = #{where_buy,jdbcType=VARCHAR}
+      </if>
+      <if test="douban_label != null" >
+        and douban_label = #{douban_label,jdbcType=VARCHAR}
+      </if>
+      <if test="reading_number != null" >
+        and reading_number = #{reading_number,jdbcType=INTEGER}
+      </if>
+      <if test="readed_numer != null" >
+        and readed_numer = #{readed_numer,jdbcType=INTEGER}
+      </if>
+      <if test="want_reading_number != null" >
+        and want_reading_number = #{want_reading_number,jdbcType=INTEGER}
+      </if>
+      <if test="subordinate_series != null" >
+        and subordinate_series = #{subordinate_series,jdbcType=VARCHAR}
+      </if>
+      <if test="view_count != null" >
+        and view_count = #{view_count,jdbcType=INTEGER}
+      </if> 
+      <if test="dianzan_count != null" >
+        and dianzan_count = #{dianzan_count,jdbcType=INTEGER}
+      </if>
+      <if test="status != null" >
+        and status = #{status,jdbcType=INTEGER}
+      </if>
+      <if test="vedio_image_url != null" >
+        and vedio_image_url = #{vedio_image_url,jdbcType=VARCHAR}
+      </if>
+      <if test="content != null" >
+        and content = #{content,jdbcType=LONGVARCHAR}
+      </if>
+      <if test="is_valid != null" >
+        and is_valid = #{is_valid,jdbcType=INTEGER}
+      </if>
+  </select>
+  <select id="getDataLs" parameterType="cn.com.shukaiken.model.Data" resultMap="ResultMapWithBLOBs">
+  	 select 
+	    t.id, t.category_id, t.title, t.author, t.cover, t.capture_date, t.publisher, t.sub_title, t.original_titile, 
+    t.translator, t.publish_year, t.page_size, t.price, t.bind, t.book_category, t.isbn, t.content_brief, 
+    t.author_brief, t.score_number, t.score_detail, t.where_buy, t.douban_label, t.reading_number, 
+    t.readed_numer, t.want_reading_number, t.subordinate_series, t.view_count, t.dianzan_count, 
+    t.status, t.vedio_image_url, t.is_valid, c.category_name as category_name	    
+    from t_data t
+    left join t_data_category c
+    on t.category_id = c.id
+    where 1=1
+    and t.is_valid=0 
+      <if test="category_id != null" >
+        and t.category_id = #{category_id,jdbcType=INTEGER}
+      </if>
+      <if test="title != null" >
+        and t.title like CONCAT('%',#{title},'%' ) 
+      </if>
+      <if test="author != null" >
+        and t.author = #{author,jdbcType=VARCHAR}
+      </if>
+      <if test="cover != null" >
+        and t.cover = #{cover,jdbcType=VARCHAR}
+      </if>
+      <if test="capture_date != null" >
+        and t.capture_date = #{capture_date,jdbcType=TIMESTAMP}
+      </if>
+      <if test="publisher != null" >
+        and t.publisher = #{publisher,jdbcType=VARCHAR}
+      </if>
+      <if test="sub_title != null" >
+        and t.sub_title = #{sub_title,jdbcType=VARCHAR}
+      </if>
+      <if test="original_titile != null" >
+        and t.original_titile = #{original_titile,jdbcType=VARCHAR}
+      </if>
+      <if test="translator != null" >
+        and t.translator = #{translator,jdbcType=VARCHAR}
+      </if>
+      <if test="publish_year != null" >
+        and t.publish_year = #{publish_year,jdbcType=DATE}
+      </if>
+      <if test="page_size != null" >
+        and t.page_size = #{page_size,jdbcType=INTEGER}
+      </if>
+      <if test="price != null" >
+        and t.price = #{price,jdbcType=DOUBLE}
+      </if>
+      <if test="bind != null" >
+        and t.bind = #{bind,jdbcType=VARCHAR}
+      </if>
+      <if test="book_category != null" >
+        and t.book_category = #{book_category,jdbcType=VARCHAR}
+      </if>
+      <if test="isbn != null" >
+        and t.isbn = #{isbn,jdbcType=VARCHAR}
+      </if>
+      <if test="content_brief != null" >
+        and t.content_brief = #{content_brief,jdbcType=VARCHAR}
+      </if>
+      <if test="author_brief != null" >
+        and t.author_brief = #{author_brief,jdbcType=VARCHAR}
+      </if>
+      <if test="score_number != null" >
+        and t.score_number = #{score_number,jdbcType=VARCHAR}
+      </if>
+      <if test="score_detail != null" >
+        and t.score_detail = #{score_detail,jdbcType=VARCHAR}
+      </if>
+      <if test="where_buy != null" >
+        and t.where_buy = #{where_buy,jdbcType=VARCHAR}
+      </if>
+      <if test="douban_label != null" >
+        and t.douban_label = #{douban_label,jdbcType=VARCHAR}
+      </if>
+      <if test="reading_number != null" >
+        and t.reading_number = #{reading_number,jdbcType=INTEGER}
+      </if>
+      <if test="readed_numer != null" >
+        and t.readed_numer = #{readed_numer,jdbcType=INTEGER}
+      </if>
+      <if test="want_reading_number != null" >
+        and t.want_reading_number = #{want_reading_number,jdbcType=INTEGER}
+      </if>
+      <if test="subordinate_series != null" >
+        and t.subordinate_series = #{subordinate_series,jdbcType=VARCHAR}
+      </if>
+      <if test="view_count != null" >
+        and t.view_count = #{view_count,jdbcType=INTEGER}
+      </if> 
+      <if test="dianzan_count != null" >
+        and t.dianzan_count = #{dianzan_count,jdbcType=INTEGER}
+      </if>
+      <if test="status != null" >
+        and t.status = #{status,jdbcType=INTEGER}
+      </if>
+      <if test="vedio_image_url != null" >
+        and t.vedio_image_url = #{vedio_image_url,jdbcType=VARCHAR}
+      </if>
+      <if test="content != null" >
+        and t.content = #{content,jdbcType=LONGVARCHAR}
+      </if>
+      <if test="is_valid != null" >
+        and t.is_valid = #{is_valid,jdbcType=INTEGER}
+      </if>
+     order by t.id 
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_data
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.com.shukaiken.model.Data" >
+    insert into t_data (id, category_id, title, 
+      author, cover, capture_date, 
+      publisher, sub_title, original_titile, 
+      translator, publish_year, page_size, 
+      price, bind, book_category, 
+      isbn, content_brief, author_brief, 
+      score_number, score_detail, where_buy, 
+      douban_label, reading_number, readed_numer, 
+      want_reading_number, subordinate_series, 
+      view_count, dianzan_count, status, 
+      vedio_image_url, is_valid, content
+      )
+    values (#{id,jdbcType=INTEGER}, #{category_id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, 
+      #{author,jdbcType=VARCHAR}, #{cover,jdbcType=VARCHAR}, #{capture_date,jdbcType=TIMESTAMP}, 
+      #{publisher,jdbcType=VARCHAR}, #{sub_title,jdbcType=VARCHAR}, #{original_titile,jdbcType=VARCHAR}, 
+      #{translator,jdbcType=VARCHAR}, #{publish_year,jdbcType=DATE}, #{page_size,jdbcType=INTEGER}, 
+      #{price,jdbcType=DOUBLE}, #{bind,jdbcType=VARCHAR}, #{book_category,jdbcType=VARCHAR}, 
+      #{isbn,jdbcType=VARCHAR}, #{content_brief,jdbcType=VARCHAR}, #{author_brief,jdbcType=VARCHAR}, 
+      #{score_number,jdbcType=VARCHAR}, #{score_detail,jdbcType=VARCHAR}, #{where_buy,jdbcType=VARCHAR}, 
+      #{douban_label,jdbcType=VARCHAR}, #{reading_number,jdbcType=INTEGER}, #{readed_numer,jdbcType=INTEGER}, 
+      #{want_reading_number,jdbcType=INTEGER}, #{subordinate_series,jdbcType=VARCHAR}, 
+      #{view_count,jdbcType=INTEGER}, #{dianzan_count,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+      #{vedio_image_url,jdbcType=VARCHAR}, #{is_valid,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.shukaiken.model.Data" >
+    insert into t_data
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="category_id != null" >
+        category_id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="author != null" >
+        author,
+      </if>
+      <if test="cover != null" >
+        cover,
+      </if>
+      <if test="capture_date != null" >
+        capture_date,
+      </if>
+      <if test="publisher != null" >
+        publisher,
+      </if>
+      <if test="sub_title != null" >
+        sub_title,
+      </if>
+      <if test="original_titile != null" >
+        original_titile,
+      </if>
+      <if test="translator != null" >
+        translator,
+      </if>
+      <if test="publish_year != null" >
+        publish_year,
+      </if>
+      <if test="page_size != null" >
+        page_size,
+      </if>
+      <if test="price != null" >
+        price,
+      </if>
+      <if test="bind != null" >
+        bind,
+      </if>
+      <if test="book_category != null" >
+        book_category,
+      </if>
+      <if test="isbn != null" >
+        isbn,
+      </if>
+      <if test="content_brief != null" >
+        content_brief,
+      </if>
+      <if test="author_brief != null" >
+        author_brief,
+      </if>
+      <if test="score_number != null" >
+        score_number,
+      </if>
+      <if test="score_detail != null" >
+        score_detail,
+      </if>
+      <if test="where_buy != null" >
+        where_buy,
+      </if>
+      <if test="douban_label != null" >
+        douban_label,
+      </if>
+      <if test="reading_number != null" >
+        reading_number,
+      </if>
+      <if test="readed_numer != null" >
+        readed_numer,
+      </if>
+      <if test="want_reading_number != null" >
+        want_reading_number,
+      </if>
+      <if test="subordinate_series != null" >
+        subordinate_series,
+      </if>
+      <if test="view_count != null" >
+        view_count,
+      </if>
+      <if test="dianzan_count != null" >
+        dianzan_count,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="vedio_image_url != null" >
+        vedio_image_url,
+      </if>
+      <if test="is_valid != null" >
+        is_valid,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="category_id != null" >
+        #{category_id,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="cover != null" >
+        #{cover,jdbcType=VARCHAR},
+      </if>
+      <if test="capture_date != null" >
+        #{capture_date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="publisher != null" >
+        #{publisher,jdbcType=VARCHAR},
+      </if>
+      <if test="sub_title != null" >
+        #{sub_title,jdbcType=VARCHAR},
+      </if>
+      <if test="original_titile != null" >
+        #{original_titile,jdbcType=VARCHAR},
+      </if>
+      <if test="translator != null" >
+        #{translator,jdbcType=VARCHAR},
+      </if>
+      <if test="publish_year != null" >
+        #{publish_year,jdbcType=DATE},
+      </if>
+      <if test="page_size != null" >
+        #{page_size,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="bind != null" >
+        #{bind,jdbcType=VARCHAR},
+      </if>
+      <if test="book_category != null" >
+        #{book_category,jdbcType=VARCHAR},
+      </if>
+      <if test="isbn != null" >
+        #{isbn,jdbcType=VARCHAR},
+      </if>
+      <if test="content_brief != null" >
+        #{content_brief,jdbcType=VARCHAR},
+      </if>
+      <if test="author_brief != null" >
+        #{author_brief,jdbcType=VARCHAR},
+      </if>
+      <if test="score_number != null" >
+        #{score_number,jdbcType=VARCHAR},
+      </if>
+      <if test="score_detail != null" >
+        #{score_detail,jdbcType=VARCHAR},
+      </if>
+      <if test="where_buy != null" >
+        #{where_buy,jdbcType=VARCHAR},
+      </if>
+      <if test="douban_label != null" >
+        #{douban_label,jdbcType=VARCHAR},
+      </if>
+      <if test="reading_number != null" >
+        #{reading_number,jdbcType=INTEGER},
+      </if>
+      <if test="readed_numer != null" >
+        #{readed_numer,jdbcType=INTEGER},
+      </if>
+      <if test="want_reading_number != null" >
+        #{want_reading_number,jdbcType=INTEGER},
+      </if>
+      <if test="subordinate_series != null" >
+        #{subordinate_series,jdbcType=VARCHAR},
+      </if>
+      <if test="view_count != null" >
+        #{view_count,jdbcType=INTEGER},
+      </if>
+      <if test="dianzan_count != null" >
+        #{dianzan_count,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="vedio_image_url != null" >
+        #{vedio_image_url,jdbcType=VARCHAR},
+      </if>
+      <if test="is_valid != null" >
+        #{is_valid,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.Data" >
+    update t_data
+    <set >
+      <if test="category_id != null" >
+        category_id = #{category_id,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        author = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="cover != null" >
+        cover = #{cover,jdbcType=VARCHAR},
+      </if>
+      <if test="capture_date != null" >
+        capture_date = #{capture_date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="publisher != null" >
+        publisher = #{publisher,jdbcType=VARCHAR},
+      </if>
+      <if test="sub_title != null" >
+        sub_title = #{sub_title,jdbcType=VARCHAR},
+      </if>
+      <if test="original_titile != null" >
+        original_titile = #{original_titile,jdbcType=VARCHAR},
+      </if>
+      <if test="translator != null" >
+        translator = #{translator,jdbcType=VARCHAR},
+      </if>
+      <if test="publish_year != null" >
+        publish_year = #{publish_year,jdbcType=DATE},
+      </if>
+      <if test="page_size != null" >
+        page_size = #{page_size,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        price = #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="bind != null" >
+        bind = #{bind,jdbcType=VARCHAR},
+      </if>
+      <if test="book_category != null" >
+        book_category = #{book_category,jdbcType=VARCHAR},
+      </if>
+      <if test="isbn != null" >
+        isbn = #{isbn,jdbcType=VARCHAR},
+      </if>
+      <if test="content_brief != null" >
+        content_brief = #{content_brief,jdbcType=VARCHAR},
+      </if>
+      <if test="author_brief != null" >
+        author_brief = #{author_brief,jdbcType=VARCHAR},
+      </if>
+      <if test="score_number != null" >
+        score_number = #{score_number,jdbcType=VARCHAR},
+      </if>
+      <if test="score_detail != null" >
+        score_detail = #{score_detail,jdbcType=VARCHAR},
+      </if>
+      <if test="where_buy != null" >
+        where_buy = #{where_buy,jdbcType=VARCHAR},
+      </if>
+      <if test="douban_label != null" >
+        douban_label = #{douban_label,jdbcType=VARCHAR},
+      </if>
+      <if test="reading_number != null" >
+        reading_number = #{reading_number,jdbcType=INTEGER},
+      </if>
+      <if test="readed_numer != null" >
+        readed_numer = #{readed_numer,jdbcType=INTEGER},
+      </if>
+      <if test="want_reading_number != null" >
+        want_reading_number = #{want_reading_number,jdbcType=INTEGER},
+      </if>
+      <if test="subordinate_series != null" >
+        subordinate_series = #{subordinate_series,jdbcType=VARCHAR},
+      </if>
+      <if test="view_count != null" >
+        view_count = #{view_count,jdbcType=INTEGER},
+      </if>
+      <if test="dianzan_count != null" >
+        dianzan_count = #{dianzan_count,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="vedio_image_url != null" >
+        vedio_image_url = #{vedio_image_url,jdbcType=VARCHAR},
+      </if>
+      <if test="is_valid != null" >
+        is_valid = #{is_valid,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.com.shukaiken.model.Data" >
+    update t_data
+    set category_id = #{category_id,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      author = #{author,jdbcType=VARCHAR},
+      cover = #{cover,jdbcType=VARCHAR},
+      capture_date = #{capture_date,jdbcType=TIMESTAMP},
+      publisher = #{publisher,jdbcType=VARCHAR},
+      sub_title = #{sub_title,jdbcType=VARCHAR},
+      original_titile = #{original_titile,jdbcType=VARCHAR},
+      translator = #{translator,jdbcType=VARCHAR},
+      publish_year = #{publish_year,jdbcType=DATE},
+      page_size = #{page_size,jdbcType=INTEGER},
+      price = #{price,jdbcType=DOUBLE},
+      bind = #{bind,jdbcType=VARCHAR},
+      book_category = #{book_category,jdbcType=VARCHAR},
+      isbn = #{isbn,jdbcType=VARCHAR},
+      content_brief = #{content_brief,jdbcType=VARCHAR},
+      author_brief = #{author_brief,jdbcType=VARCHAR},
+      score_number = #{score_number,jdbcType=VARCHAR},
+      score_detail = #{score_detail,jdbcType=VARCHAR},
+      where_buy = #{where_buy,jdbcType=VARCHAR},
+      douban_label = #{douban_label,jdbcType=VARCHAR},
+      reading_number = #{reading_number,jdbcType=INTEGER},
+      readed_numer = #{readed_numer,jdbcType=INTEGER},
+      want_reading_number = #{want_reading_number,jdbcType=INTEGER},
+      subordinate_series = #{subordinate_series,jdbcType=VARCHAR},
+      view_count = #{view_count,jdbcType=INTEGER},
+      dianzan_count = #{dianzan_count,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      vedio_image_url = #{vedio_image_url,jdbcType=VARCHAR},
+      is_valid = #{is_valid,jdbcType=INTEGER},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.Data" >
+    update t_data
+    set category_id = #{category_id,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      author = #{author,jdbcType=VARCHAR},
+      cover = #{cover,jdbcType=VARCHAR},
+      capture_date = #{capture_date,jdbcType=TIMESTAMP},
+      publisher = #{publisher,jdbcType=VARCHAR},
+      sub_title = #{sub_title,jdbcType=VARCHAR},
+      original_titile = #{original_titile,jdbcType=VARCHAR},
+      translator = #{translator,jdbcType=VARCHAR},
+      publish_year = #{publish_year,jdbcType=DATE},
+      page_size = #{page_size,jdbcType=INTEGER},
+      price = #{price,jdbcType=DOUBLE},
+      bind = #{bind,jdbcType=VARCHAR},
+      book_category = #{book_category,jdbcType=VARCHAR},
+      isbn = #{isbn,jdbcType=VARCHAR},
+      content_brief = #{content_brief,jdbcType=VARCHAR},
+      author_brief = #{author_brief,jdbcType=VARCHAR},
+      score_number = #{score_number,jdbcType=VARCHAR},
+      score_detail = #{score_detail,jdbcType=VARCHAR},
+      where_buy = #{where_buy,jdbcType=VARCHAR},
+      douban_label = #{douban_label,jdbcType=VARCHAR},
+      reading_number = #{reading_number,jdbcType=INTEGER},
+      readed_numer = #{readed_numer,jdbcType=INTEGER},
+      want_reading_number = #{want_reading_number,jdbcType=INTEGER},
+      subordinate_series = #{subordinate_series,jdbcType=VARCHAR},
+      view_count = #{view_count,jdbcType=INTEGER},
+      dianzan_count = #{dianzan_count,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      vedio_image_url = #{vedio_image_url,jdbcType=VARCHAR},
+      is_valid = #{is_valid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

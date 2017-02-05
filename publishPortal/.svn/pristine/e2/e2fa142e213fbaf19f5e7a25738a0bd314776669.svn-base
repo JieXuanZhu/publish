@@ -1,0 +1,131 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+	<footer>
+			<div class="d_footer">
+				<div class="d_foot_modle clearfix">
+					<div class="d_foot_link">
+						<h2>企业概况</h2>
+						<ul>
+							<li><a href="<%=path%>/front/contactus/aboutUs">东翌简介</a></li>
+							<li><a href="<%=path%>/front/contactus/conpanyGroup">公司架构</a></li>
+							<li><a href="<%=path%>/front/contactus/conpanyQualifications">公司资质</a></li>
+							<li><a href="<%=path%>/front/contactus/recruitment">人才招聘</a></li>
+							<li><a href="<%=path%>/front/contactus/secret">隐私保密条款</a></li>
+							<li><a href="<%=path%>/front/contactus/siteMap">网站地图</a></li>
+						</ul>
+					</div>
+					<div class="d_foot_link">
+						<h2>交易指南</h2>
+						<ul>
+						    <li><a href="<%=path %>/trading/investment_guaranty">投资保障</a></li>
+							<li><a href="<%=path %>/trading/account_process">开户流程</a></li>
+							<li><a href="<%=path %>/trading/trading_rule">交易产品及规则</a></li>
+							<li><a href="<%=path %>/trading/access_funds">资金存取</a></li>
+							<li><a href="<%=path %>/trading/cash_delivery">现货交割</a></li>
+							<li><a href="<%=path %>/trading/risk_control">风险控制</a></li>
+						</ul>
+					</div>
+					<div class="d_foot_link">
+						<h2>开户中心</h2>
+						<ul>
+						    <li><a href="<%=path%>/accol">在线开户</a></li>
+							<li><a href="<%=path%>/front/user/goCreateAccount">预约开户</a></li>
+							<li><a href="<%=path %>/analog/analogApply">申请模拟账户</a></li>
+							<li><a href="<%=path %>/consult/consult">开户咨询</a></li>
+							<li><a href="<%=path %>/consult/process">开户流程</a></li>
+						</ul>
+					</div>
+					<div class="d_foot_link">
+						<a href="<%=path%>/news"><h2>东翌资讯</h2></a>
+						<ul>
+							<li><a href="<%=path%>/news?c=dydt">东翌动态</a></li>
+							<li><a href="<%=path%>/news?c=dyrp">东翌日评</a></li>
+							<li><a href="<%=path%>/news?c=xwdt">新闻动态</a></li>
+							<li><a href="<%=path%>/news?c=jshq">即时行情</a></li>
+							<li><a href="<%=path%>/news?c=jyrl">交易日历</a></li>
+							<!-- <li><a href="">实盘解读</a></li> -->
+						</ul>
+					</div>
+					<div class="d_foot_link">
+						<a href="<%=path%>/post"><h2>邮币卡开户</h2></a>
+						<ul>
+							<li><a href="<%=path%>/post">邮币卡在线开户</a></li>
+							<!-- <li><a href="javascript:void(0);">在线发言</a></li>
+							<li><a href="javascript:void(0);">分析师简介</a></li>
+							<li><a href="javascript:void(0);">直播课程表</a></li> -->
+						</ul>
+					</div>
+					<div class="d_foot_link">
+						<h2>优惠活动</h2>
+						<ul>
+							<li><a href="<%=path%>/notice?c=yhhd">优惠活动</a></li>
+							<!-- <li><a href="javascript:void(0);">登录&注册</a></li>
+							<li><a href="javascript:void(0);">忘记密码</a></li> -->
+						</ul>
+					</div>
+					<div class="d_foot_link">
+						<h2>软件下载</h2>
+						<ul>
+							<li><a href="<%=path %>/fileOperate/soft_download">交易软件</a></li>
+						</ul>
+					</div>
+					<div class="copy"><p>版权所有 2015 东翌（上海）投资发展有限公司 
+					<br />
+					 &nbsp;&nbsp; 沪ICP备15046715号-1 &nbsp;&nbsp; <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256598278'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256598278%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> </p>
+					
+					</div>
+				</div>
+				
+			</div>
+</footer>
+<div class="keifu">
+<div class="kefu_inner clearfix">
+	<div class="icon_keifu"></div>
+	<div class="keifu_box">
+		<div class="keifu_head"><a href="javascript:void(0)" class="keifu_close"></a></div>
+		<ul class="keifu_con">
+			<li class="clearfix"><a href="tencent://message/?uin=2478577467&Site=www.songyi.net&Menu=yes"><em>咨询</em>东翌-中华<span>QQ:2478577467</span></a></li>
+			<li><a href="tencent://message/?uin=2483904804&Site=www.songyi.net&Menu=yes"><em>咨询</em>东翌-兆勇<span>QQ:2483904804</span></a></li>
+			<li><a href="tencent://message/?uin=2483959129&Site=www.songyi.net&Menu=yes"><em>咨询</em>东方太阳<span>QQ:2483959129</span></a></li>
+			<li><a href="tencent://message/?uin=2477984660&Site=www.songyi.net&Menu=yes"><em>咨询</em>东翌-小娟<span>QQ:2477984660</span></a></li>
+			<li><a href="tencent://message/?uin=2481678510&Site=www.songyi.net&Menu=yes"><em>咨询</em>翌进<span>QQ:2481678510</span></a></li>
+			<li><a href="tencent://message/?uin=2593761550&Site=www.songyi.net&Menu=yes"><em>咨询</em>磊磊<span>QQ:2593761550</span></a></li>
+		</ul>
+		<div class="kefu_text"><p>24小时免费咨询热线</p><p class="kefu_tel">400-113-9118</p></div>
+		<div class="weixin text_center"><img src="<%=path %>/front/images/kf_er.jpg" alt="官方微信" /></div>
+		<div class="kefu_text"><p>微信扫一扫二维码</p></div>
+	</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		var KF = $(".keifu");
+		var wkbox = $(".keifu_box");
+		var kf_close = $(".keifu .keifu_close");
+		var icon_keifu = $(".icon_keifu");
+		var kH = wkbox.height();
+		var kW = wkbox.width();
+		var wH = $(window).height();
+		KF.css({height:kH});
+		icon_keifu.css("top",parseInt((kH-100)/2));
+		var KF_top = (wH-kH)/2;
+		if(KF_top<0) KF_top=0;
+		KF.css("top",KF_top);
+		
+		$(kf_close).click(function(){
+			KF.animate({width:"0"},200,function(){
+				wkbox.hide();
+				icon_keifu.show();
+				KF.animate({width:26},300);	
+				$('.keifu').find('div').removeClass('kefu_inner');
+			});	
+		});
+		
+		$(icon_keifu).hover(function(){
+			$(this).hide();
+			wkbox.show();
+			KF.animate({width:kW},200);
+			$('.keifu').children('div').addClass('kefu_inner');
+		});
+		
+	});
+</script>

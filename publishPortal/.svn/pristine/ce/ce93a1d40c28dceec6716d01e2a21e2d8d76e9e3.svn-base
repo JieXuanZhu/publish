@@ -1,0 +1,370 @@
+var InterValObj; //timer变量，控制时间
+var curCount = 0;//当前剩余秒数
+var registerInputSelector = "#code_id";//
+var registerBtnSelector = "#id_sendCode_button";//注册页面的发送按钮的
+
+var mobileCheckFlag = false;
+var passwordCheckFlag = false;
+var rePasswordCheckFlag = false;
+var codeCheckFlag = false;
+
+function registerSendCode(rootUrl,mobT) {
+	var phone = $("#mobile_id").val();
+	if(checkMobile(phone,rootUrl,true,mobT)){
+		curCount = 1*60;
+		setInput(registerInputSelector);
+		setButton(registerBtnSelector,1*60);
+		registerSendMsg(rootUrl,phone);
+	}
+}
+
+function register(rootUrl) {
+	var phone = $("#mobile_id").val();
+	if(checkRegisterForm(rootUrl,true,1)){
+		$.ajax({
+			url:rootUrl+"/register",
+			data:$("#cust_register_id").serializeArray(),
+			type:'post',
+			dataType:'json',
+			success:function(data){
+				if(data.success=='true'){
+					window.location.href=rootUrl+"/reg_succ?p="+phone;
+				}else{
+				}
+			},
+			error:function(data){
+			}
+		});
+	}
+}
+
+function modify(rootUrl){
+	var phone = $("#mobile_id").val();
+	if(checkRegisterForm(rootUrl,false,2)){
+		$.ajax({
+			url:rootUrl+"/modify",
+			data:$("#cust_register_id").serializeArray(),
+			type:'post',
+			dataType:'json',
+			success:function(data){
+				if(data.success=='true'){
+					layer.alert(data.message,{icon:6,closeBtn:2},function(index){
+						window.location.href=rootUrl+"/toLogin";
+						layer.close(index);
+					})
+					
+				}else{
+					
+				}
+			},
+			error:function(data){
+			}
+		});
+	}
+}
+
+function checkRegisterForm(rootUrl,agree,moT){
+	if(!mobileCheckFlag && !checkMobile($("#mobile_id").val(),rootUrl,true,moT)){
+		return false;
+	}
+	if(!passwordCheckFlag && !checkPassword("#password_id")){
+		return false;
+	}
+	if(!rePasswordCheckFlag && !checkRePassword("#password_id","#repassword_id")){
+		return false;
+	}
+	if(!codeCheckFlag && !checkCode(rootUrl,"#mobile_id","#code_id")){
+		return false;
+	}
+	if(agree && !$("#check_agreement")[0].checked){
+		layer.tips('请仔细阅读《用户注册协议》,并同意', '#check_agreement', {
+		    tips: 4,
+		    time:4000
+		});
+		return false;
+	}
+	return true;
+}
+
+function registerSendMsg(rootUrl,phone){
+	$.ajax({ 
+    	type: "Post", 
+    	url: rootUrl+"/front/sendMessage?p="+phone+"&t=0", 
+    	contentType: "application/json; charset=utf-8", 
+    	dataType: "json", 
+    	success: function(msg) {
+    		if(msg.success){
+    			layer.msg("短信发送成功");
+    		}else {
+    			setButton(registerBtnSelector,0);
+    			setInput(registerInputSelector);
+    		}
+    		//$('#phone_code_info').html(result[1]);
+    	}, 
+    	error: function(err) { 
+    		setButton(registerBtnSelector,0);
+			setInput(registerInputSelector);
+    	},
+    } ); 
+	
+}
+
+/**
+ * 设置发送验证码的按钮
+ * @param btnSelector
+ * @param time
+ */
+function setButton(btnSelector,time){
+	curCount = time;
+	$(btnSelector).attr("disabled", "disabled");
+    $(btnSelector).html(curCount + "秒后重新发送");
+    var InterValObj = window.setInterval(function(){
+    	if(curCount==0){
+    		window.clearInterval(InterValObj);//停止计时器
+    		$(btnSelector).removeAttr("disabled");//启用按钮
+            $(btnSelector).html("重新发送验证码");
+    	}else {
+    		curCount--;
+            $(btnSelector).html(curCount + "秒后重新发送");
+    	}
+    }, 1000); //启动计时器，1秒执行一次
+}
+
+/**
+ * 设置验证码的输入框的显示
+ * @param inputSelector
+ */
+function setInput(inputSelector){
+	if(curCount==0){
+		$(inputSelector).attr("disabled","disabled");
+	}else {
+		$(inputSelector).removeAttr("disabled");
+	}
+}
+
+
+function errClass(selector,type,className){
+	if(0==type){
+		$(selector).addClass(className);
+	}else if(1==type){
+		$(selector).removeClass(className);
+	}
+}
+
+/**
+ * 
+ * @param rootUrl 远程验证根路径
+ * @param remoteCheck//是否需要远程验证
+ * @param checkType//手机号验证类型，1表示验证存不存在，2表示有没有注册过
+ */
+function checkMobile(phone,rootUrl,remoteCheck,checkType){
+	errClass("#mobile_error_mark",1,"wrong");
+	errClass("#mobile_error_mark",1,"pass");
+	if(isEmpty(phone)){
+		layer.tips('请输入注册手机号', '#mobile_id', {
+		    tips: 4,
+		    time:4000
+		});
+		errClass("#mobile_error_mark",0,"wrong");
+		return false;
+	} else if(!checkphone(phone)){
+		layer.tips('请输入正确手机号码', '#mobile_id', {
+		    tips: 4,
+		    time:4000
+		});
+		errClass("#mobile_error_mark",0,"wrong");
+		return false;
+	}else if(remoteCheck){//需要远程验证
+		if(checkRemoteMobile(rootUrl,phone)>=1 && checkType==1){
+			layer.tips('该手机号码已经被注册,请使用其他手机号注册', '#mobile_id', {//在注册的时候需要验证手机号码是否已经存在
+			    tips: 4,
+			    time:4000
+			});
+			errClass("#mobile_error_mark",0,"wrong");
+			return false;
+		}else if(checkRemoteMobile(rootUrl,phone)<=0 && checkType==2){//修改密码
+			layer.tips('该手机号码暂未注册,请仔细确认手机号码', '#mobile_id', {//在修改密码的时候需要验证手机号码有没有注册过
+			    tips: 4,
+			    time:4000
+			});
+			
+			errClass("#mobile_error_mark",0,"wrong");
+			return false;
+		}else {
+			mobileCheckFlag = true;
+			errClass("#mobile_error_mark",0,"pass");
+		}
+		
+	} else {
+		mobileCheckFlag = true;
+		errClass("#mobile_error_mark",0,"pass");
+	}
+	return true;
+}
+
+/**
+ * 验证手机号码是否已经存在
+ * @param rootUrl
+ * @param phone
+ * @returns 
+ */
+function checkRemoteMobile(rootUrl,phone){
+	var checkResult = 0;
+	$.ajax({
+		async:false,
+		url:rootUrl+"/checkMobile",
+		data:{
+			"phone":phone
+		},
+		type:"POST",
+		dataType:"json",
+		
+		success:function(msg){
+				checkResult = parseInt(msg.length);//返回获取的手机号码的个数
+		},
+		error:function(msg){
+		}
+	});
+	return checkResult;
+}
+
+function initRegister(rootUrl){
+	$("#mobile_id").bind("blur",function(){
+		checkMobile($("#mobile_id").val(),rootUrl,true,1)
+	});
+	$("#password_id").bind("blur",function(){
+		checkPassword("#password_id");
+	});
+	$("#repassword_id").bind("blur",function(){
+		checkRePassword("#password_id","#repassword_id");
+	});
+	$("#code_id").bind("blur",function(){
+		checkCode(rootUrl,"#mobile_id","#code_id");
+	});
+}
+
+function initforget(rootUrl){
+	$("#mobile_id").bind("blur",function(){
+		checkMobile($("#mobile_id").val(),rootUrl,true,2)
+	});
+	$("#password_id").bind("blur",function(){
+		checkPassword("#password_id");
+	});
+	$("#repassword_id").bind("blur",function(){
+		checkRePassword("#password_id","#repassword_id");
+	});
+	$("#code_id").bind("blur",function(){
+		checkCode(rootUrl,"#mobile_id","#code_id");
+	});
+}
+
+function checkPassword(password_id){
+	errClass("#password_error_mark",1,"wrong");
+	errClass("#password_error_mark",1,"pass");
+	if(isEmpty($(password_id).val())){
+		layer.tips('请输入密码', password_id, {
+		    tips: 4,
+		    time:4000
+		});
+		errClass("#password_error_mark",0,"wrong");
+		return false;
+	}else {
+		passwordCheckFlag = true;
+		errClass("#password_error_mark",0,"pass");
+	}
+	return true;
+}
+
+function checkRePassword(password_id,repassword_id){
+	errClass("#code_error_mark",1,"wrong");
+	errClass("#code_error_mark",1,"pass");
+	if(isEmpty($(repassword_id).val())){
+		layer.tips('请输入密码', repassword_id, {
+		    tips: 4,
+		    time:4000
+		});
+		errClass("#repassword_error_mark",0,"wrong");
+		return false;
+	}else if($(repassword_id).val()!=$(password_id).val()){
+		layer.tips('该密码与前面输入密码不一致', repassword_id, {
+		    tips: 4,
+		    time:4000
+		});
+		errClass("#repassword_error_mark",0,"wrong");
+		return false;
+	}else {
+		repasswordCheckFlag = true;
+		errClass("#repassword_error_mark",0,"pass");
+	}
+	return true;
+}
+
+function checkCode(rootUrl,phone_id,code_id){
+	errClass("#code_error_mark",1,"wrong");
+	errClass("#code_error_mark",1,"pass");
+	if(isEmpty($(code_id).val())){
+		layer.tips('请输入短信验证码', code_id, {
+		    tips: 4,
+		    time:4000
+		});
+		errClass("#code_error_mark",0,"wrong");
+		return false;
+	} else if(curCount==0){
+		layer.tips('短信验证码验证失败', code_id, {
+		    tips: 4,
+		    time:4000
+		});
+		errClass("#code_error_mark",0,"wrong");
+		return false;
+	} else if(!checkRemoteCode(rootUrl,$(phone_id).val(),$(code_id).val())){
+		layer.tips('短信验证码验证失败', code_id, {
+		    tips: 4,
+		    time:4000
+		});
+		errClass("#code_error_mark",0,"wrong");
+		return false;
+	}else {
+		codeCheckFlag = true;
+		errClass("#code_error_mark",0,"pass");
+	}
+	return true;
+}
+
+
+function checkRemoteCode(rootUrl,phone,code){
+	var checkResult = false;
+	$.ajax({
+		async:false,
+		url:rootUrl+"/checkVerifyCode",
+		data:{
+			"phone":phone,
+			"code":code
+		},
+		type:"POST",
+		dataType:"json",
+		success:function(msg){
+				checkResult = msg.success;//返回验证码验证结果
+				if(checkResult){
+				}
+		},
+		error:function(msg){
+		}
+	});
+	return checkResult;
+}
+
+
+function layerpro(rootUrl){
+	openIframe({
+	    title: "用户协议",
+	    closeBtn:2,
+	    content:rootUrl+"/reP",
+	    btn:false
+	   /* offset:[0, 0],
+	    area:[$(window).width()+"px", $(window).height()+"px"],*/
+	   /* iframe:{
+	    	src:"/reP"
+	    } */
+	   
+	});
+}

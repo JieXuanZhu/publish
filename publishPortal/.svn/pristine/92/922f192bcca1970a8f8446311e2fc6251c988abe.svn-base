@@ -1,0 +1,126 @@
+
+function sendMsg(rootUrl,phone,type){
+	var sendSuccess = false;
+	$.ajax({ 
+		async:false,
+    	type: "Post", 
+    	url: rootUrl+"/front/sendMessage?p="+phone+"&t="+type, //type表示发送的类型，主要是要判断发送什么内容
+    	contentType: "application/json; charset=utf-8", 
+    	dataType: "json", 
+    	success: function(msg) {
+    		if(msg.success){
+    			//layer.msg("短信发送成功");
+    			sendSuccess = true;
+    		}else {
+    			/*setButton(registerBtnSelector,0);
+    			setInput(registerInputSelector);*/
+    			sendSuccess = false;
+    		}
+    	}, 
+    	error: function(err) { 
+    		/*setButton(registerBtnSelector,0);
+			setInput(registerInputSelector);*/
+    		sendSuccess = false;
+    	},
+    } ); 
+	
+	return sendSuccess;
+}
+
+/**
+ * 设置发送验证码的按钮
+ * @param btnSelector
+ * @param time
+ */
+function setButton(btnSelector,time){
+	curCount = time;
+	$(btnSelector).attr("disabled", "disabled");
+    $(btnSelector).html(curCount + "秒后重新发送");
+    var InterValObj = window.setInterval(function(){
+    	if(curCount==0){
+    		window.clearInterval(InterValObj);//停止计时器
+    		$(btnSelector).removeAttr("disabled");//启用按钮
+            $(btnSelector).html("重新发送验证码");
+    	}else {
+    		curCount--;
+            $(btnSelector).html(curCount + "秒后重新发送");
+    	}
+    }, 1000); //启动计时器，1秒执行一次
+}
+
+/**
+ * 设置验证码的输入框的显示
+ * @param inputSelector
+ */
+function setInput(inputSelector){
+	if(curCount==0){
+		$(inputSelector).attr("disabled","disabled");
+	}else {
+		$(inputSelector).removeAttr("disabled");
+	}
+}
+
+
+/**
+ * 
+ * @param rootUrl 远程验证根路径
+ * @param remoteCheck//是否需要远程验证
+ * @param checkType//手机号验证类型，1表示验证存不存在，2表示有没有注册过
+ */
+function checkMobile(phone,rootUrl,remoteCheck,checkType){
+	
+	if(isEmpty(phone)){
+		layer.tips('请输入注册手机号', '#mobile_id', {
+		    tips: 4,
+		    time:4000
+		});
+		return false;
+	} else if(!checkphone(phone)){
+		layer.tips('请输入正确手机号码', '#mobile_id', {
+		    tips: 4,
+		    time:4000
+		});
+		return false;
+	}else if(remoteCheck){//需要远程验证
+		if(checkRemoteMobile(rootUrl,phone)>=1 && checkType==1){
+			layer.tips('该手机号码已经被注册,请使用其他手机号注册', '#mobile_id', {//在注册的时候需要验证手机号码是否已经存在
+			    tips: 4,
+			    time:4000
+			});
+			return false;
+		}else if(checkRemoteMobile(rootUrl,phone)<=0 && checkType==2){//修改密码
+			layer.tips('该手机号码暂未注册,请仔细确认手机号码', '#mobile_id', {//在修改密码的时候需要验证手机号码有没有注册过
+			    tips: 4,
+			    time:4000
+			});
+			return false;
+		}
+	}
+	return true;
+}
+
+/**
+ * 验证手机号码是否已经存在
+ * @param rootUrl
+ * @param phone
+ * @returns 
+ */
+function checkRemoteMobile(rootUrl,phone){
+	var checkResult = 0;
+	$.ajax({
+		aysnc:false,
+		url:rootUrl+"/checkMobile",
+		data:{
+			"phone":phone
+		},
+		type:"POST",
+		dataType:"json",
+		
+		success:function(msg){
+				checkResult = parseInt(msg.length);//返回获取的手机号码的个数
+		},
+		error:function(msg){
+		}
+	});
+	return checkResult;
+}

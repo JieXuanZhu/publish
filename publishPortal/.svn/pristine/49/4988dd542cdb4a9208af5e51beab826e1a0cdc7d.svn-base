@@ -1,0 +1,106 @@
+/*
+ * 初始化购物车
+ * */
+function initContact(options){
+	var setting={
+		title:{
+			weixinGZ:"扫一扫，关注东翌官方微信",
+			weiboGZ:"扫一扫，关注东翌官方微博",
+			qq_tencent:"在线客服<br>点击交谈",
+			suspension_code:"东翌官网-二维码",
+			tel:"电话",
+			tel_server:"<strong>服务热线：</strong><p>400-113-9118</p><i></i>",
+			code:"二维码",
+			wxin:"<strong>服务热线：</strong><p>400-113-9118</p><i></i>",
+			top:"回到顶部",
+			tencent:"QQ",
+			qq:"QQ"
+		},
+		url:{
+			tencent:"http://wpa.qq.com/msgrd?v=3&uin=2927532008&site=qq&menu=yes",
+			qqLink:"http://wpa.qq.com/msgrd?v=3&uin=2927532008&site=qq&menu=yes",
+			weiXinLink:"http://wpa.qq.com/msgrd?v=3&uin=3187996736&site=qq&menu=yes"
+		},
+		images:{
+			trangle_right_suspension:"../front/js/suspension/images/trangle-right-suspension.png",
+			suspension_code:"../front/js/suspension/images/suspension-code.png",
+			suspension_bg:"../front/js/suspension/images/suspension-bg.png",
+			circle_tencent:"../front/js/suspension/images/circle-tencent.png",
+			qq_tencent:"../front/js/suspension/images/qq-tencent.png",
+			wxin:"../front/js/suspension/images/suspension-webo.png"
+		},
+		exts:{
+		}
+	};
+	
+	if(options) {
+		$.extend(settings, options);
+	}
+	
+	var str = '<style type="text/css">.suspension { position: fixed; z-index: 55; right: 10px; top: 60.3333%; width: 80px; height: 355px; }.suspension-box { position: relative; float: right; }.suspension-box a.a { display: block; width: 50px; height: 50px; background-color: #B5B5B5; margin-bottom: 1px; cursor: pointer; }.suspension-box a.back_top { background-color: #797979; }.suspension-box a.qq:hover,.suspension-box a.tel:hover,.suspension-box a.code:hover { opacity: 0.8; filter: alpha(opacity=80); }.suspension-box a.back_top:hover { background-color: #FC7878; }.suspension-box a i { display: block; float: left; width: 25px; height:20px; margin-left: 15px; margin-top: 15px; background-image: url('+setting.images.suspension_bg+'); background-repeat: no-repeat; text-indent: -9999px; } .suspension-box a.cart i { background-position: 0 0; background-image: url('+setting.images.cart+'); background-repeat: no-repeat; text-indent: -9999px; } .suspension-box a.qq i { background-position: 0 0; } .suspension-box a.tel i { background-position: -25px 0; }.suspension-box a.code i { background-position: 0 -25px; }.suspension-box a.wxin i { background-position: -56px 0px; }.suspension-box a.back_top i { background-position: -28px -25px; } .suspension-box div.code p,.suspension-box div.wxin p { width: 155px; margin-top: 5px;}.suspension-box div.code i,.suspension-box div.wxin i { width: 8px; height: 15px; position: absolute; top: 118px; right: -8px; background-image: url('+setting.images.trangle_right_suspension+'); background-repeat: no-repeat; }  .suspension-box div.tencent { position: absolute; left: -187px; top: 0px; width: 177px; height: 85px; display:none; background-color: #fff; border: 1px solid #D7D7D7; }.suspension-box div.tencent p.tencent-p { width: 75px; float: right; margin-right: 18px; margin-top: 18px; font-size: 16px; color: #333; }.suspension-box div.tencent i.tencent-i { width: 8px; height: 15px; position: absolute; top: 10px; right: -8px; text-indent: -9999px; background-image: url('+setting.images.trangle_right_suspension+'); background-repeat: no-repeat; }.suspension-box div.tencent b.tencent-b { position: absolute; left: 10px; top: 10px; width: 62px; height: 64px; background-image: url('+setting.images.circle_tencent+'); background-repeat: no-repeat; }.suspension-box div.tencent span.tencent-span { position: absolute; left: 8px; top: 7px; border-radius: 22px; width: 45px; height: 48px; text-align: center; z-index: 99; overflow: hidden; }.suspension-box div.tencent .tencent-qq {position: absolute; left: 3px;top:0px; height: 45px; width: 39px; }.suspension-box div.tel { position: absolute; left: -187px; top: 50px; display: none; width: 177px; height: 85px; background-color: #fff; border: 1px solid #D7D7D7; }.suspension-box div.tel i { width: 8px; height: 15px; position: absolute; top: 20px; right: -8px; background-image: url('+setting.images.trangle_right_suspension+'); background-repeat: no-repeat; }.suspension-box div.tel strong { display: block; margin-left: 17px; margin-top: 16px; font-size: 16px; font-weight: normal; }.suspension-box div.tel p { margin-left: 17px; font-size: 23px; font-family: arial; color: #FD696D; }.icon { margin-top:-5px; }.nav a.cart-title-name { color: #000; text-decoration: none; line-height: normal; }.nav a.cart-title-name:hover { color: #ef353d; text-decoration: underline; line-height: normal; }.nav a font { padding: 8px 15px; background:#fd7878; border-radius: 5px; }.nav a font:hover { padding: 8px 15px; background:#ea5050; border-radius: 5px; }</style>';
+	str += '<div class="suspension"><div class="suspension-box">';
+	
+	str += '<a class="qq j-icon a" target="_blank" href="'+setting.url.qqLink+'" ><i>'+setting.title.qq+'</i></a>';
+	str += '<a class="a tel j-icon a"><i>'+setting.title.tel+'</i></a>';
+	str += '<a class="code j-icon a"><i>'+setting.title.code+'</i></a>';
+	str += '<a class="wxin j-icon a"><i>'+setting.title.code+'</i></a>';
+	str += '<a class="back_top j-back-top a"><i>'+setting.title.top+'</i></a>';
+	
+	
+	str += '<div class="tencent j-tencent j-box">';
+	str += '<a href="'+setting.url.tencent+'" target="_blank">';
+	str += '<i class="tencent-i">'+setting.title.tencent+'</i><b class="tencent-b"><span class="tencent-span"><img class="tencent-qq" src="'+setting.images.qq_tencent+'" alt=""></span></b><p class="tencent-p">'+setting.title.qq_tencent+'</p></a>';
+	str += '</div>';
+
+	str += '<div class="tel j-box">'+setting.title.tel_server+'</div>';
+
+	str += '<div class="code j-box"><img src="'+setting.images.suspension_code+'" title="'+setting.title.suspension_code+'"><p>'+setting.title.weixinGZ+'</p><i></i></div>';
+	str += '<div class="wxin j-box"><img src="'+setting.images.wxin+'" title="'+setting.title.suspension_code+'"><p>'+setting.title.weiboGZ+'</p><i></i></div>';
+	str += '</div></div>';
+	//加载字符串
+	$("body").append(str);
+}
+
+
+$(function(){
+	//初始化联系悬浮框
+	initContact();
+	
+	// 效果
+	$(".suspension").find(".j-icon").mouseover(
+	    function(){
+	        $(".suspension").find(".j-box").eq($(this).index()).show().siblings(".j-box").hide();
+	    }
+	);
+	//判断ie浏览器
+		
+	if(navigator.appVersion.match(/11./i) == '11.' || navigator.appVersion.match(/10./i) == '10.') {
+		$(".suspension").css("right","30px");
+	}
+
+	$(".suspension .j-back-top").hide();
+
+	$(window).scroll(function(){
+	    if($(window).scrollTop() > 100){
+	        $(".suspension .j-back-top").fadeIn()
+	    }else {
+	        $(".suspension .j-back-top").fadeOut()
+	    }
+	});
+
+	$(".j-tencent").hover(function(){
+	    $(".tencent-qq").stop(true,false).animate({width:"51",height:"59",left:"-3"});
+	},function(){
+	    $(".tencent-qq").stop(true,false).animate({width:"39",height:"45",left:"3"});
+	});
+
+	// 效果
+	$(".suspension").mouseleave(function(event){
+	    event.preventDefault();
+	    $(".suspension").find(".j-box").hide();
+	});
+
+	$(".j-back-top").click(function(){
+	    $("html,body").animate({scrollTop:0},500);
+	});
+});

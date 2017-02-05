@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.InfoCommentDao" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.InfoComment" >
+    <id column="comment_id" property="commentId" jdbcType="INTEGER" />
+    <result column="info_id" property="infoId" jdbcType="INTEGER" />
+    <result column="parent_comment_id" property="parentCommentId" jdbcType="INTEGER" />
+    <result column="author_id" property="authorId" jdbcType="INTEGER" />
+    <result column="author" property="author" jdbcType="VARCHAR" />
+    <result column="cust_id" property="cust_id" jdbcType="INTEGER" />
+    <result column="user_name" property="user_name" jdbcType="VARCHAR" />
+    <result column="comment_content" property="comment_content" jdbcType="VARCHAR" />
+    <result column="ip" property="ip" jdbcType="VARCHAR" />
+    <result column="ups" property="ups" jdbcType="INTEGER" />
+    <result column="downs" property="downs" jdbcType="INTEGER" />
+    <result column="is_check" property="isCheck" jdbcType="VARCHAR" />
+    <result column="check_status" property="checkStatus" jdbcType="VARCHAR" />
+    <result column="is_recommend" property="isRecommend" jdbcType="VARCHAR" />
+    <result column="is_valid" property="isValid" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="resv1" property="resv1" jdbcType="VARCHAR" />
+    <result column="resv2" property="resv2" jdbcType="VARCHAR" />
+    <result column="resv3" property="resv3" jdbcType="VARCHAR" />
+    <result column="resv4" property="resv4" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    comment_id, info_id, parent_comment_id, author_id, author, cust_id,user_name,comment_content,ip, ups, downs, is_check, 
+    check_status, is_recommend, is_valid, create_time, resv1, resv2, resv3, resv4
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_info_comment
+    where comment_id = #{commentId,jdbcType=INTEGER}
+  </select>
+  <select id="getCommentLs" parameterType="cn.com.shukaiken.model.InfoComment" resultMap="BaseResultMap">
+  	 select 
+	    m.info_id, m.comment_id, m.author_id, m.author , m.comment_content, m.create_time,c.head_img_url as head_img_url
+    FROM t_info_comment m
+    LEFT JOIN t_cust c ON  c.id = m.author_id
+    where 1=1
+    <if test="infoId != null">
+    	and m.info_id = #{infoId,jdbcType=INTEGER}
+    </if>
+    <if test="isValid != null">
+   		and m.is_valid = #{isValid,jdbcType=INTEGER}
+    </if>
+     order by m.comment_id
+    <if test="startRow != null">
+		limit #{startRow}
+	</if>
+	<if test="pageSize != null">
+		,${pageSize}
+	</if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_info_comment
+    where comment_id = #{commentId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="commentId" parameterType="cn.com.shukaiken.model.InfoComment" >
+    insert into t_info_comment (comment_id, info_id, parent_comment_id, 
+      author_id, author, cust_id, user_name, comment_content, ip, 
+      ups, downs, is_check, 
+      check_status, is_recommend, is_valid, 
+      create_time, resv1, resv2, 
+      resv3, resv4)
+    values (#{commentId,jdbcType=INTEGER}, #{infoId,jdbcType=INTEGER}, #{parentCommentId,jdbcType=INTEGER}, 
+      #{authorId,jdbcType=INTEGER}, #{author,jdbcType=VARCHAR}, #{cust_id,jdbcType=INTEGER}, 
+      #{user_name,jdbcType=VARCHAR}, #{comment_content,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, 
+      #{ups,jdbcType=INTEGER}, #{downs,jdbcType=INTEGER}, #{isCheck,jdbcType=VARCHAR}, 
+      #{checkStatus,jdbcType=VARCHAR}, #{isRecommend,jdbcType=VARCHAR}, #{isValid,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{resv1,jdbcType=VARCHAR}, #{resv2,jdbcType=VARCHAR}, 
+      #{resv3,jdbcType=VARCHAR}, #{resv4,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="commentId" parameterType="cn.com.shukaiken.model.InfoComment" >
+    insert into t_info_comment
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="commentId != null" >
+        comment_id,
+      </if>
+      <if test="infoId != null" >
+        info_id,
+      </if>
+      <if test="parentCommentId != null" >
+        parent_comment_id,
+      </if>
+      <if test="authorId != null" >
+        author_id,
+      </if>
+      <if test="author != null" >
+        author,
+      </if>
+      <if test="cust_id != null" >
+        cust_id,
+      </if>
+      <if test="user_name != null" >
+        user_name,
+      </if>
+      <if test="comment_content != null" >
+        comment_content,
+      </if>
+      <if test="ip != null" >
+        ip,
+      </if>
+      <if test="ups != null" >
+        ups,
+      </if>
+      <if test="downs != null" >
+        downs,
+      </if>
+      <if test="isCheck != null" >
+        is_check,
+      </if>
+      <if test="checkStatus != null" >
+        check_status,
+      </if>
+      <if test="isRecommend != null" >
+        is_recommend,
+      </if>
+      <if test="isValid != null" >
+        is_valid,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="resv1 != null" >
+        resv1,
+      </if>
+      <if test="resv2 != null" >
+        resv2,
+      </if>
+      <if test="resv3 != null" >
+        resv3,
+      </if>
+      <if test="resv4 != null" >
+        resv4,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="commentId != null" >
+        #{commentId,jdbcType=INTEGER},
+      </if>
+      <if test="infoId != null" >
+        #{infoId,jdbcType=INTEGER},
+      </if>
+      <if test="parentCommentId != null" >
+        #{parentCommentId,jdbcType=INTEGER},
+      </if>
+      <if test="authorId != null" >
+        #{authorId,jdbcType=INTEGER},
+      </if>
+      <if test="author != null" >
+        #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="cust_id != null" >
+        #{cust_id,jdbcType=INTEGER},
+      </if>
+      <if test="user_name != null" >
+        #{user_name,jdbcType=VARCHAR},
+      </if>
+      <if test="comment_content != null" >
+        #{comment_content,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null" >
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="ups != null" >
+        #{ups,jdbcType=INTEGER},
+      </if>
+      <if test="downs != null" >
+        #{downs,jdbcType=INTEGER},
+      </if>
+      <if test="isCheck != null" >
+        #{isCheck,jdbcType=VARCHAR},
+      </if>
+      <if test="checkStatus != null" >
+        #{checkStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="isRecommend != null" >
+        #{isRecommend,jdbcType=VARCHAR},
+      </if>
+      <if test="isValid != null" >
+        #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resv1 != null" >
+        #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        #{resv4,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.InfoComment" >
+    update t_info_comment
+    <set >
+      <if test="infoId != null" >
+        info_id = #{infoId,jdbcType=INTEGER},
+      </if>
+      <if test="parentCommentId != null" >
+        parent_comment_id = #{parentCommentId,jdbcType=INTEGER},
+      </if>
+      <if test="authorId != null" >
+        author_id = #{authorId,jdbcType=INTEGER},
+      </if>
+      <if test="author != null" >
+        author = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="cust_id != null" >
+        cust_id = #{cust_id,jdbcType=INTEGER},
+      </if>
+      <if test="user_name != null" >
+        user_name = #{user_name,jdbcType=VARCHAR},
+      </if>
+      <if test="comment_content != null" >
+        comment_content = #{comment_content,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null" >
+        ip = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="ups != null" >
+        ups = #{ups,jdbcType=INTEGER},
+      </if>
+      <if test="downs != null" >
+        downs = #{downs,jdbcType=INTEGER},
+      </if>
+      <if test="isCheck != null" >
+        is_check = #{isCheck,jdbcType=VARCHAR},
+      </if>
+      <if test="checkStatus != null" >
+        check_status = #{checkStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="isRecommend != null" >
+        is_recommend = #{isRecommend,jdbcType=VARCHAR},
+      </if>
+      <if test="isValid != null" >
+        is_valid = #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resv1 != null" >
+        resv1 = #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        resv2 = #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        resv3 = #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        resv4 = #{resv4,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where comment_id = #{commentId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.InfoComment" >
+    update t_info_comment
+    set info_id = #{infoId,jdbcType=INTEGER},
+      parent_comment_id = #{parentCommentId,jdbcType=INTEGER},
+      author_id = #{authorId,jdbcType=INTEGER},
+      author = #{author,jdbcType=VARCHAR},
+      cust_id = #{cust_id,jdbcType=INTEGER},
+      user_name = #{user_name,jdbcType=VARCHAR},
+      comment_content = #{comment_content,jdbcType=VARCHAR},
+      ip = #{ip,jdbcType=VARCHAR},
+      ups = #{ups,jdbcType=INTEGER},
+      downs = #{downs,jdbcType=INTEGER},
+      is_check = #{isCheck,jdbcType=VARCHAR},
+      check_status = #{checkStatus,jdbcType=VARCHAR},
+      is_recommend = #{isRecommend,jdbcType=VARCHAR},
+      is_valid = #{isValid,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      resv1 = #{resv1,jdbcType=VARCHAR},
+      resv2 = #{resv2,jdbcType=VARCHAR},
+      resv3 = #{resv3,jdbcType=VARCHAR},
+      resv4 = #{resv4,jdbcType=VARCHAR}
+    where comment_id = #{commentId,jdbcType=INTEGER}
+  </update>
+</mapper>

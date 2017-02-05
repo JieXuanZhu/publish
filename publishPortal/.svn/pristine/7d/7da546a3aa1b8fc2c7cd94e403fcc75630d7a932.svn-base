@@ -1,0 +1,75 @@
+@charset "utf-8";
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, textarea, p, blockquote, th, td {
+    font-family: "Microsoft YaHei",Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+fieldset, img {
+    border: 0 none;
+}
+address, caption, cite, code, dfn, em, strong, th, var {
+    font-style: normal;
+    font-weight: normal;
+}
+ol, ul {
+    list-style: outside none none;
+}
+caption, th {
+    text-align: left;
+}
+h1, h2, h3, h4, h5, h6 {
+    font-size: 100%;
+    font-weight: normal;
+}
+q::before, q::after {
+    content: "";
+}
+abbr, acronym {
+    border: 0 none;
+}
+a img {
+    border: medium none;
+    margin: auto;
+}
+img{width:100%;}
+ul, ol {
+    list-style: outside none none;
+}
+input, textarea {
+    outline: medium none;
+}
+a:link, a:visited, a:active {
+    color: #815902;
+    text-decoration: none;
+}
+a {
+}
+.red {
+    color: #ff0000;
+}
+.clear {
+    clear: both;
+}
+.clearfix:after {
+  content: '\20';
+  display: block;
+  height: 0;
+  clear: both
+}
+.clearfix {
+  zoom: 1
+}
+.fl{
+    float: left;
+}
+.fr{
+    float: right;
+}
+.text_center{
+    text-align: center;
+}

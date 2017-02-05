@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.InfoCountDao" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.InfoCount" >
+    <id column="count_id" property="countId" jdbcType="INTEGER" />
+    <result column="info_id" property="infoId" jdbcType="INTEGER" />
+    <result column="views" property="views" jdbcType="INTEGER" />
+    <result column="views_month" property="viewsMonth" jdbcType="INTEGER" />
+    <result column="views_week" property="viewsWeek" jdbcType="INTEGER" />
+    <result column="views_day" property="viewsDay" jdbcType="INTEGER" />
+    <result column="comments" property="comments" jdbcType="INTEGER" />
+    <result column="comments_month" property="commentsMonth" jdbcType="INTEGER" />
+    <result column="comments_week" property="commentsWeek" jdbcType="INTEGER" />
+    <result column="comments_day" property="commentsDay" jdbcType="INTEGER" />
+    <result column="downloads" property="downloads" jdbcType="INTEGER" />
+    <result column="downloads_month" property="downloadsMonth" jdbcType="INTEGER" />
+    <result column="downloads_week" property="downloadsWeek" jdbcType="INTEGER" />
+    <result column="downloads_day" property="downloadsDay" jdbcType="INTEGER" />
+    <result column="ups" property="ups" jdbcType="INTEGER" />
+    <result column="ups_month" property="upsMonth" jdbcType="INTEGER" />
+    <result column="ups_week" property="upsWeek" jdbcType="INTEGER" />
+    <result column="ups_day" property="upsDay" jdbcType="INTEGER" />
+    <result column="downs" property="downs" jdbcType="INTEGER" />
+    <result column="downs_month" property="downsMonth" jdbcType="INTEGER" />
+    <result column="downs_week" property="downsWeek" jdbcType="INTEGER" />
+    <result column="downs_day" property="downsDay" jdbcType="INTEGER" />
+    <result column="count_date" property="countDate" jdbcType="TIMESTAMP" />
+    <result column="is_valid" property="isValid" jdbcType="VARCHAR" />
+    <result column="resv1" property="resv1" jdbcType="VARCHAR" />
+    <result column="resv2" property="resv2" jdbcType="VARCHAR" />
+    <result column="resv3" property="resv3" jdbcType="VARCHAR" />
+    <result column="resv4" property="resv4" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    count_id, info_id, views, views_month, views_week, views_day, comments, comments_month, 
+    comments_week, comments_day, downloads, downloads_month, downloads_week, downloads_day, 
+    ups, ups_month, ups_week, ups_day, downs, downs_month, downs_week, downs_day, count_date, 
+    is_valid, resv1, resv2, resv3, resv4
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_info_count
+    where count_id = #{countId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_info_count
+    where count_id = #{countId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="countId" parameterType="cn.com.shukaiken.model.InfoCount" >
+    insert into t_info_count (count_id, info_id, views, 
+      views_month, views_week, views_day, 
+      comments, comments_month, comments_week, 
+      comments_day, downloads, downloads_month, 
+      downloads_week, downloads_day, ups, 
+      ups_month, ups_week, ups_day, 
+      downs, downs_month, downs_week, 
+      downs_day, count_date, is_valid, 
+      resv1, resv2, resv3, 
+      resv4)
+    values (#{countId,jdbcType=INTEGER}, #{infoId,jdbcType=INTEGER}, #{views,jdbcType=INTEGER}, 
+      #{viewsMonth,jdbcType=INTEGER}, #{viewsWeek,jdbcType=INTEGER}, #{viewsDay,jdbcType=INTEGER}, 
+      #{comments,jdbcType=INTEGER}, #{commentsMonth,jdbcType=INTEGER}, #{commentsWeek,jdbcType=INTEGER}, 
+      #{commentsDay,jdbcType=INTEGER}, #{downloads,jdbcType=INTEGER}, #{downloadsMonth,jdbcType=INTEGER}, 
+      #{downloadsWeek,jdbcType=INTEGER}, #{downloadsDay,jdbcType=INTEGER}, #{ups,jdbcType=INTEGER}, 
+      #{upsMonth,jdbcType=INTEGER}, #{upsWeek,jdbcType=INTEGER}, #{upsDay,jdbcType=INTEGER}, 
+      #{downs,jdbcType=INTEGER}, #{downsMonth,jdbcType=INTEGER}, #{downsWeek,jdbcType=INTEGER}, 
+      #{downsDay,jdbcType=INTEGER}, #{countDate,jdbcType=TIMESTAMP}, #{isValid,jdbcType=VARCHAR}, 
+      #{resv1,jdbcType=VARCHAR}, #{resv2,jdbcType=VARCHAR}, #{resv3,jdbcType=VARCHAR}, 
+      #{resv4,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="countId" parameterType="cn.com.shukaiken.model.InfoCount" >
+    insert into t_info_count
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="countId != null" >
+        count_id,
+      </if>
+      <if test="infoId != null" >
+        info_id,
+      </if>
+      <if test="views != null" >
+        views,
+      </if>
+      <if test="viewsMonth != null" >
+        views_month,
+      </if>
+      <if test="viewsWeek != null" >
+        views_week,
+      </if>
+      <if test="viewsDay != null" >
+        views_day,
+      </if>
+      <if test="comments != null" >
+        comments,
+      </if>
+      <if test="commentsMonth != null" >
+        comments_month,
+      </if>
+      <if test="commentsWeek != null" >
+        comments_week,
+      </if>
+      <if test="commentsDay != null" >
+        comments_day,
+      </if>
+      <if test="downloads != null" >
+        downloads,
+      </if>
+      <if test="downloadsMonth != null" >
+        downloads_month,
+      </if>
+      <if test="downloadsWeek != null" >
+        downloads_week,
+      </if>
+      <if test="downloadsDay != null" >
+        downloads_day,
+      </if>
+      <if test="ups != null" >
+        ups,
+      </if>
+      <if test="upsMonth != null" >
+        ups_month,
+      </if>
+      <if test="upsWeek != null" >
+        ups_week,
+      </if>
+      <if test="upsDay != null" >
+        ups_day,
+      </if>
+      <if test="downs != null" >
+        downs,
+      </if>
+      <if test="downsMonth != null" >
+        downs_month,
+      </if>
+      <if test="downsWeek != null" >
+        downs_week,
+      </if>
+      <if test="downsDay != null" >
+        downs_day,
+      </if>
+      <if test="countDate != null" >
+        count_date,
+      </if>
+      <if test="isValid != null" >
+        is_valid,
+      </if>
+      <if test="resv1 != null" >
+        resv1,
+      </if>
+      <if test="resv2 != null" >
+        resv2,
+      </if>
+      <if test="resv3 != null" >
+        resv3,
+      </if>
+      <if test="resv4 != null" >
+        resv4,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="countId != null" >
+        #{countId,jdbcType=INTEGER},
+      </if>
+      <if test="infoId != null" >
+        #{infoId,jdbcType=INTEGER},
+      </if>
+      <if test="views != null" >
+        #{views,jdbcType=INTEGER},
+      </if>
+      <if test="viewsMonth != null" >
+        #{viewsMonth,jdbcType=INTEGER},
+      </if>
+      <if test="viewsWeek != null" >
+        #{viewsWeek,jdbcType=INTEGER},
+      </if>
+      <if test="viewsDay != null" >
+        #{viewsDay,jdbcType=INTEGER},
+      </if>
+      <if test="comments != null" >
+        #{comments,jdbcType=INTEGER},
+      </if>
+      <if test="commentsMonth != null" >
+        #{commentsMonth,jdbcType=INTEGER},
+      </if>
+      <if test="commentsWeek != null" >
+        #{commentsWeek,jdbcType=INTEGER},
+      </if>
+      <if test="commentsDay != null" >
+        #{commentsDay,jdbcType=INTEGER},
+      </if>
+      <if test="downloads != null" >
+        #{downloads,jdbcType=INTEGER},
+      </if>
+      <if test="downloadsMonth != null" >
+        #{downloadsMonth,jdbcType=INTEGER},
+      </if>
+      <if test="downloadsWeek != null" >
+        #{downloadsWeek,jdbcType=INTEGER},
+      </if>
+      <if test="downloadsDay != null" >
+        #{downloadsDay,jdbcType=INTEGER},
+      </if>
+      <if test="ups != null" >
+        #{ups,jdbcType=INTEGER},
+      </if>
+      <if test="upsMonth != null" >
+        #{upsMonth,jdbcType=INTEGER},
+      </if>
+      <if test="upsWeek != null" >
+        #{upsWeek,jdbcType=INTEGER},
+      </if>
+      <if test="upsDay != null" >
+        #{upsDay,jdbcType=INTEGER},
+      </if>
+      <if test="downs != null" >
+        #{downs,jdbcType=INTEGER},
+      </if>
+      <if test="downsMonth != null" >
+        #{downsMonth,jdbcType=INTEGER},
+      </if>
+      <if test="downsWeek != null" >
+        #{downsWeek,jdbcType=INTEGER},
+      </if>
+      <if test="downsDay != null" >
+        #{downsDay,jdbcType=INTEGER},
+      </if>
+      <if test="countDate != null" >
+        #{countDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null" >
+        #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="resv1 != null" >
+        #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        #{resv4,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.InfoCount" >
+    update t_info_count
+    <set >
+      <if test="infoId != null" >
+        info_id = #{infoId,jdbcType=INTEGER},
+      </if>
+      <if test="views != null" >
+        views = #{views,jdbcType=INTEGER},
+      </if>
+      <if test="viewsMonth != null" >
+        views_month = #{viewsMonth,jdbcType=INTEGER},
+      </if>
+      <if test="viewsWeek != null" >
+        views_week = #{viewsWeek,jdbcType=INTEGER},
+      </if>
+      <if test="viewsDay != null" >
+        views_day = #{viewsDay,jdbcType=INTEGER},
+      </if>
+      <if test="comments != null" >
+        comments = #{comments,jdbcType=INTEGER},
+      </if>
+      <if test="commentsMonth != null" >
+        comments_month = #{commentsMonth,jdbcType=INTEGER},
+      </if>
+      <if test="commentsWeek != null" >
+        comments_week = #{commentsWeek,jdbcType=INTEGER},
+      </if>
+      <if test="commentsDay != null" >
+        comments_day = #{commentsDay,jdbcType=INTEGER},
+      </if>
+      <if test="downloads != null" >
+        downloads = #{downloads,jdbcType=INTEGER},
+      </if>
+      <if test="downloadsMonth != null" >
+        downloads_month = #{downloadsMonth,jdbcType=INTEGER},
+      </if>
+      <if test="downloadsWeek != null" >
+        downloads_week = #{downloadsWeek,jdbcType=INTEGER},
+      </if>
+      <if test="downloadsDay != null" >
+        downloads_day = #{downloadsDay,jdbcType=INTEGER},
+      </if>
+      <if test="ups != null" >
+        ups = #{ups,jdbcType=INTEGER},
+      </if>
+      <if test="upsMonth != null" >
+        ups_month = #{upsMonth,jdbcType=INTEGER},
+      </if>
+      <if test="upsWeek != null" >
+        ups_week = #{upsWeek,jdbcType=INTEGER},
+      </if>
+      <if test="upsDay != null" >
+        ups_day = #{upsDay,jdbcType=INTEGER},
+      </if>
+      <if test="downs != null" >
+        downs = #{downs,jdbcType=INTEGER},
+      </if>
+      <if test="downsMonth != null" >
+        downs_month = #{downsMonth,jdbcType=INTEGER},
+      </if>
+      <if test="downsWeek != null" >
+        downs_week = #{downsWeek,jdbcType=INTEGER},
+      </if>
+      <if test="downsDay != null" >
+        downs_day = #{downsDay,jdbcType=INTEGER},
+      </if>
+      <if test="countDate != null" >
+        count_date = #{countDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null" >
+        is_valid = #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="resv1 != null" >
+        resv1 = #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        resv2 = #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        resv3 = #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        resv4 = #{resv4,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where count_id = #{countId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.InfoCount" >
+    update t_info_count
+    set info_id = #{infoId,jdbcType=INTEGER},
+      views = #{views,jdbcType=INTEGER},
+      views_month = #{viewsMonth,jdbcType=INTEGER},
+      views_week = #{viewsWeek,jdbcType=INTEGER},
+      views_day = #{viewsDay,jdbcType=INTEGER},
+      comments = #{comments,jdbcType=INTEGER},
+      comments_month = #{commentsMonth,jdbcType=INTEGER},
+      comments_week = #{commentsWeek,jdbcType=INTEGER},
+      comments_day = #{commentsDay,jdbcType=INTEGER},
+      downloads = #{downloads,jdbcType=INTEGER},
+      downloads_month = #{downloadsMonth,jdbcType=INTEGER},
+      downloads_week = #{downloadsWeek,jdbcType=INTEGER},
+      downloads_day = #{downloadsDay,jdbcType=INTEGER},
+      ups = #{ups,jdbcType=INTEGER},
+      ups_month = #{upsMonth,jdbcType=INTEGER},
+      ups_week = #{upsWeek,jdbcType=INTEGER},
+      ups_day = #{upsDay,jdbcType=INTEGER},
+      downs = #{downs,jdbcType=INTEGER},
+      downs_month = #{downsMonth,jdbcType=INTEGER},
+      downs_week = #{downsWeek,jdbcType=INTEGER},
+      downs_day = #{downsDay,jdbcType=INTEGER},
+      count_date = #{countDate,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=VARCHAR},
+      resv1 = #{resv1,jdbcType=VARCHAR},
+      resv2 = #{resv2,jdbcType=VARCHAR},
+      resv3 = #{resv3,jdbcType=VARCHAR},
+      resv4 = #{resv4,jdbcType=VARCHAR}
+    where count_id = #{countId,jdbcType=INTEGER}
+  </update>
+</mapper>

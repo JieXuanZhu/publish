@@ -1,0 +1,904 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.InfoDao" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.Info" >
+    <id column="main_info_id" property="infoId" jdbcType="INTEGER" />
+    <result column="main_author_id" property="authorId" jdbcType="INTEGER" />
+    <result column="main_author_type" property="authorType" jdbcType="VARCHAR" />
+    <result column="main_author_name" property="authorName" jdbcType="VARCHAR" />
+    <result column="main_tag_id" property="tagId" jdbcType="INTEGER" />
+    <result column="main_has_banner" property="hasBanner" jdbcType="VARCHAR" />
+    <result column="main_has_image" property="hasImage" jdbcType="VARCHAR" />
+    <result column="main_has_video" property="hasVideo" jdbcType="VARCHAR" />
+    <result column="main_has_flash" property="hasFlash" jdbcType="VARCHAR" />
+    <result column="main_search_word" property="searchWord" jdbcType="VARCHAR" />
+    <result column="main_search_tag" property="searchTag" jdbcType="VARCHAR" />
+    <result column="main_origin" property="origin" jdbcType="VARCHAR" />
+    <result column="main_origin_url" property="originUrl" jdbcType="VARCHAR" />
+    <result column="main_origin_name" property="originName" jdbcType="VARCHAR" />
+    <result column="main_stage" property="stage" jdbcType="VARCHAR" />
+    <result column="main_status" property="status" jdbcType="VARCHAR" />
+    <result column="main_is_valid" property="isValid" jdbcType="VARCHAR" />
+    <result column="main_create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="main_update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="main_publish_time" property="publishTime" jdbcType="TIMESTAMP" />
+    <result column="main_rollback_time" property="rollbackTime" jdbcType="TIMESTAMP" />
+    <result column="main_resv1" property="resv1" jdbcType="VARCHAR" />
+    <result column="main_resv2" property="resv2" jdbcType="VARCHAR" />
+    <result column="main_resv3" property="resv3" jdbcType="VARCHAR" />
+    <result column="main_resv4" property="resv4" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="QueryResultMap" type="cn.com.shukaiken.model.Info" >
+    <id column="main_info_id" property="infoId" jdbcType="INTEGER" />
+    <result column="main_author_id" property="authorId" jdbcType="INTEGER" />
+    <result column="main_author_type" property="authorType" jdbcType="VARCHAR" />
+    <result column="main_author_name" property="authorName" jdbcType="VARCHAR" />
+    <result column="main_tag_id" property="tagId" jdbcType="INTEGER" />
+    <result column="main_has_banner" property="hasBanner" jdbcType="VARCHAR" />
+    <result column="main_has_image" property="hasImage" jdbcType="VARCHAR" />
+    <result column="main_has_video" property="hasVideo" jdbcType="VARCHAR" />
+    <result column="main_has_flash" property="hasFlash" jdbcType="VARCHAR" />
+    <result column="main_search_word" property="searchWord" jdbcType="VARCHAR" />
+    <result column="main_search_tag" property="searchTag" jdbcType="VARCHAR" />
+    <result column="main_origin" property="origin" jdbcType="VARCHAR" />
+    <result column="main_origin_url" property="originUrl" jdbcType="VARCHAR" />
+    <result column="main_origin_name" property="originName" jdbcType="VARCHAR" />
+    <result column="main_stage" property="stage" jdbcType="VARCHAR" />
+    <result column="main_status" property="status" jdbcType="VARCHAR" />
+    <result column="main_is_valid" property="isValid" jdbcType="VARCHAR" />
+    <result column="main_create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="main_update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="main_publish_time" property="publishTime" jdbcType="TIMESTAMP" />
+    <result column="main_rollback_time" property="rollbackTime" jdbcType="TIMESTAMP" />
+    <result column="main_resv1" property="resv1" jdbcType="VARCHAR" />
+    <result column="main_resv2" property="resv2" jdbcType="VARCHAR" />
+    <result column="main_resv3" property="resv3" jdbcType="VARCHAR" />
+    <result column="main_resv4" property="resv4" jdbcType="VARCHAR" />
+    <association property="infoContent" column="main_info_id" javaType="cn.com.shukaiken.model.InfoContent" select="cn.com.shukaiken.dao.InfoContentDao.selectByinfoId"/>
+    <association property="infoLabel" column="main_tag_id" javaType="cn.com.shukaiken.model.Label" select="cn.com.shukaiken.dao.ILabelDao.selectByPrimaryKey"/>
+    <collection property="infoTags" column="main_info_id" ofType="cn.com.shukaiken.model.Tag" select="cn.com.shukaiken.dao.TagDao.selectByInfoId"></collection>
+    <collection property="searchWords" column="main_info_id" ofType="cn.com.shukaiken.model.InfoSearchWord" select="cn.com.shukaiken.dao.InfoSerarchWordDao.selectByInfoId"/>
+  </resultMap>
+  <resultMap id="ViewMap" type="cn.com.shukaiken.model.Info" >
+    <id column="main_info_id" property="infoId" jdbcType="INTEGER" />
+    <result column="main_author_id" property="authorId" jdbcType="INTEGER" />
+    <result column="main_author_type" property="authorType" jdbcType="VARCHAR" />
+    <result column="main_author_name" property="authorName" jdbcType="VARCHAR" />
+    <result column="main_tag_id" property="tagId" jdbcType="INTEGER" />
+    <result column="main_has_banner" property="hasBanner" jdbcType="VARCHAR" />
+    <result column="main_has_image" property="hasImage" jdbcType="VARCHAR" />
+    <result column="main_has_video" property="hasVideo" jdbcType="VARCHAR" />
+    <result column="main_has_flash" property="hasFlash" jdbcType="VARCHAR" />
+    <result column="main_search_word" property="searchWord" jdbcType="VARCHAR" />
+    <result column="main_search_tag" property="searchTag" jdbcType="VARCHAR" />
+    <result column="main_origin" property="origin" jdbcType="VARCHAR" />
+    <result column="main_origin_url" property="originUrl" jdbcType="VARCHAR" />
+    <result column="main_origin_name" property="originName" jdbcType="VARCHAR" />
+    <result column="main_stage" property="stage" jdbcType="VARCHAR" />
+    <result column="main_status" property="status" jdbcType="VARCHAR" />
+    <result column="main_is_valid" property="isValid" jdbcType="VARCHAR" />
+    <result column="main_create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="main_update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="main_publish_time" property="publishTime" jdbcType="TIMESTAMP" />
+    <result column="main_rollback_time" property="rollbackTime" jdbcType="TIMESTAMP" />
+    <result column="main_resv1" property="resv1" jdbcType="VARCHAR" />
+    <result column="main_resv2" property="resv2" jdbcType="VARCHAR" />
+    <result column="main_resv3" property="resv3" jdbcType="VARCHAR" />
+    <result column="main_resv4" property="resv4" jdbcType="VARCHAR" />
+    <association property="infoContent" column="main_info_id" javaType="cn.com.shukaiken.model.InfoContent" select="cn.com.shukaiken.dao.InfoContentDao.selectByinfoId"/>
+    <association property="infoLabel" column="main_tag_id" javaType="cn.com.shukaiken.model.Label" select="cn.com.shukaiken.dao.ILabelDao.selectByPrimaryKey"/>
+    <collection property="infoTags" column="main_info_id" ofType="cn.com.shukaiken.model.Tag" select="cn.com.shukaiken.dao.TagDao.selectByInfoId"/>
+    <collection property="infoBanners" column="main_info_id" ofType="cn.com.shukaiken.model.InfoBanner" select="cn.com.shukaiken.dao.InfoBannerDao.selectByInfoId"/>
+    <collection property="searchWords" column="main_info_id" ofType="cn.com.shukaiken.model.InfoSearchWord" select="cn.com.shukaiken.dao.InfoSerarchWordDao.selectByInfoId"/>
+    <collection property="infoChecks" column="main_info_id" ofType="cn.com.shukaiken.model.InfoCheck" select="cn.com.shukaiken.dao.InfoCheckDao.selectByInfoId"></collection>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    info_id as main_info_id, author_id as main_author_id, author_type as main_author_type, author_name as main_author_name, tag_id as main_tag_id, has_banner as main_has_banner, has_image as main_has_image, has_video as main_has_video, 
+    has_flash as main_has_flash, search_word as main_search_word, search_tag as main_search_tag, origin as main_origin, origin_url as main_origin_url, origin_name as main_origin_name, stage as main_stage, status as main_status, 
+    is_valid as main_is_valid, create_time as main_create_time, update_time as main_update_time, publish_time as main_publish_time, rollback_time as main_rollback_time, resv1 as main_resv1, resv2 as main_resv2, resv3 as main_resv3, 
+    resv4 as main_resv4
+  </sql>
+  <sql id="Query_Column_List" >
+   <!--  info_id as main_info_id, author_id as main_author_id, author_type as main_author_type, author_name as main_author_name, tag_id as main_tag_id, has_banner as main_has_banner, has_image as main_has_image, has_video as main_has_video, 
+    has_flash as main_has_flash, search_word as main_search_word, search_tag as main_search_tag, origin as main_origin, origin_url as main_origin_url, origin_name as main_origin_name, stage as main_stage, status as main_status, 
+    is_valid as main_is_valid, create_time as main_create_time, update_time as main_update_time, publish_time as main_publish_time, rollback_time as main_rollback_time, resv1 as main_resv1, resv2 as main_resv2, resv3 as main_resv3, 
+    resv4 as main_resv4 -->
+    info.info_id as main_info_id, info.author_id as main_author_id, info.author_type as main_author_type, info.author_name as main_author_name, info.tag_id as main_tag_id, info.has_banner as main_has_banner, info.has_image as main_has_image, info.has_video as main_has_video, 
+info.has_flash as main_has_flash, info.search_word as main_search_word, info.search_tag as main_search_tag, info.origin as main_origin, info.origin_url as main_origin_url, info.origin_name as main_origin_name, info.stage as main_stage, info.status as main_status,
+ info.is_valid as main_is_valid, info.create_time as main_create_time, info.update_time as main_update_time, info.publish_time as main_publish_time, info.rollback_time as main_rollback_time, info.resv1 as main_resv1, info.resv2 as main_resv2, info.resv3 as main_resv3, 
+ info.resv4 as main_resv4
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_info 
+    where info_id = #{infoId,jdbcType=INTEGER}
+  </select>
+  <select id="selectInfos">
+  	select 
+    <include refid="Base_Column_List" />
+    from t_info info
+    <where>
+    	1=1
+    	 <if test="infoId != null" >
+        and info_id = #{infoId,jdbcType=INTEGER}
+      </if>
+    	 <if test="authorId != null" >
+        and author_id = #{authorId,jdbcType=INTEGER}
+      </if>
+      <if test="authorType != null" >
+        and author_type = #{authorType,jdbcType=VARCHAR}
+      </if>
+      <if test="authorName != null" >
+        and author_name = #{authorName,jdbcType=VARCHAR}
+      </if>
+      <if test="tagId != null" >
+        and tag_id = #{tagId,jdbcType=INTEGER}
+      </if>
+      <if test="hasBanner != null" >
+        and has_banner = #{hasBanner,jdbcType=VARCHAR}
+      </if>
+      <if test="hasImage != null" >
+        and has_image = #{hasImage,jdbcType=VARCHAR}
+      </if>
+      <if test="hasVideo != null" >
+        and has_video = #{hasVideo,jdbcType=VARCHAR}
+      </if>
+      <if test="hasFlash != null" >
+       and  has_flash = #{hasFlash,jdbcType=VARCHAR}
+      </if>
+      <if test="searchWord != null" >
+       and  search_word = #{searchWord,jdbcType=VARCHAR}
+      </if>
+      <if test="searchTag != null" >
+        and search_tag = #{searchTag,jdbcType=VARCHAR}
+      </if>
+      <if test="origin != null" >
+        and origin = #{origin,jdbcType=VARCHAR}
+      </if>
+      <if test="originUrl != null" >
+        and origin_url = #{originUrl,jdbcType=VARCHAR}
+      </if>
+      <if test="originName != null" >
+        and origin_name = #{originName,jdbcType=VARCHAR}
+      </if>
+      <if test="stage != null" >
+        and stage = #{stage,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null" >
+        and status = #{status,jdbcType=VARCHAR}
+      </if>
+      <if test="isValid != null" >
+        and is_valid = #{isValid,jdbcType=VARCHAR}
+      </if>
+      <if test="createTime != null" >
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="updateTime != null" >
+       and  update_time = #{updateTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="publishTime != null" >
+        and publish_time = #{publishTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="rollbackTime != null" >
+       and  rollback_time = #{rollbackTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="resv1 != null" >
+       and  resv1 = #{resv1,jdbcType=VARCHAR}
+      </if>
+      <if test="resv2 != null" >
+        and resv2 = #{resv2,jdbcType=VARCHAR}
+      </if>
+      <if test="resv3 != null" >
+        and resv3 = #{resv3,jdbcType=VARCHAR}
+      </if>
+      <if test="resv4 != null" >
+        and resv4 = #{resv4,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+  <select id="getInfoById" resultMap="ViewMap" parameterType="java.lang.Integer">
+  	select 
+    <include refid="Base_Column_List" />
+    from t_info 
+    where info_id = #{infoId,jdbcType=INTEGER}
+  </select>
+  <select id="selectInfosByCondition" resultMap="QueryResultMap" parameterType="cn.com.shukaiken.model.Info">
+  	select <include refid="Query_Column_List" />
+    from t_info info left join t_info_content con on info.info_id=con.info_id
+    <where>
+    	1=1
+    	<if test="infoId != null" >
+        and info.info_id = #{infoId,jdbcType=INTEGER}
+      	</if>
+    	<if test="authorId != null" >
+        and info.author_id = #{authorId,jdbcType=INTEGER}
+      </if>
+      <if test="authorType != null" >
+        and info.author_type = #{authorType,jdbcType=VARCHAR}
+      </if>
+      <if test="authorName != null" >
+        and info.author_name = #{authorName,jdbcType=VARCHAR}
+      </if>
+      <if test="tagId != null" >
+        and info.tag_id = #{tagId,jdbcType=INTEGER}
+      </if>
+      <if test="hasBanner != null" >
+        and info.has_banner = #{hasBanner,jdbcType=VARCHAR}
+      </if>
+      <if test="hasImage != null" >
+        and info.has_image = #{hasImage,jdbcType=VARCHAR}
+      </if>
+      <if test="hasVideo != null" >
+        and info.has_video = #{hasVideo,jdbcType=VARCHAR}
+      </if>
+      <if test="hasFlash != null" >
+       and  info.has_flash = #{hasFlash,jdbcType=VARCHAR}
+      </if>
+      <if test="searchWord != null" >
+       and  info.search_word = #{searchWord,jdbcType=VARCHAR}
+      </if>
+      <if test="searchTag != null" >
+        and info.search_tag = #{searchTag,jdbcType=VARCHAR}
+      </if>
+      <if test="origin != null" >
+        and info.origin = #{origin,jdbcType=VARCHAR}
+      </if>
+      <if test="originUrl != null" >
+        and info.origin_url = #{originUrl,jdbcType=VARCHAR}
+      </if>
+      <if test="originName != null" >
+        and info.origin_name = #{originName,jdbcType=VARCHAR}
+      </if>
+      <if test="stage != null" >
+        and info.stage = #{stage,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null" >
+        and info.status = #{status,jdbcType=VARCHAR}
+      </if>
+      <if test="statusMap != null">
+      	and info.status in 
+      	<foreach collection="statusMap" item="item" index="index" open="(" close=")" separator=",">
+      		#{item,jdbcType=VARCHAR}
+      	</foreach>
+      </if>
+      <if test="isValid != null" >
+        and info.is_valid = #{isValid,jdbcType=VARCHAR}
+      </if>
+      <if test="createTime != null" >
+        and info.create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="updateTime != null" >
+       and  info.update_time = #{updateTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="publishTime != null" >
+        and info.publish_time = #{publishTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="rollbackTime != null" >
+       and  info.rollback_time = #{rollbackTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="resv1 != null" >
+       and  info.resv1 = #{resv1,jdbcType=VARCHAR}
+      </if>
+      <if test="resv2 != null" >
+        and info.resv2 = #{resv2,jdbcType=VARCHAR}
+      </if>
+      <if test="resv3 != null" >
+        and info.resv3 = #{resv3,jdbcType=VARCHAR}
+      </if>
+      <if test="resv4 != null" >
+        and info.resv4 = #{resv4,jdbcType=VARCHAR}
+      </if>
+      <if test="infoContent != null and infoContent.contentId != null" >
+        and con.content_id = #{infoContent.contentId,jdbcType=INTEGER}
+      </if>
+    	 <if test="infoContent != null and infoContent.infoId != null" >
+        and con.info_id = #{infoContent.infoId,jdbcType=INTEGER}
+      </if>
+      <if test="infoContent != null and infoContent.title != null" >
+        and con.title like CONCAT('%',#{infoContent.title,jdbcType=VARCHAR},'%') 
+      </if>
+      <if test="infoContent != null and infoContent.brief != null" >
+        and con.brief like CONCAT('%', #{infoContent.brief,jdbcType=VARCHAR},'%') 
+      </if>
+      <if test="infoContent != null and infoContent.hasImage != null" >
+        and con.has_image = #{infoContent.hasImage,jdbcType=VARCHAR}
+      </if>
+      <if test="infoContent != null and infoContent.hasVideo != null" >
+        and con.has_video = #{infoContent.hasVideo,jdbcType=VARCHAR}
+      </if>
+      <if test="infoContent != null and infoContent.hasFlash != null" >
+        and con.has_flash = #{infoContent.hasFlash,jdbcType=VARCHAR}
+      </if>
+      <if test="infoContent != null and infoContent.bannerCount != null" >
+        and con.banner_count = #{infoContent.bannerCount,jdbcType=INTEGER}
+      </if>
+      <if test="infoContent != null and infoContent.createTime != null" >
+        and con.create_time = #{infoContent.createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="infoContent != null and infoContent.updateTime != null" >
+        and con.update_time = #{infoContent.updateTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="infoContent != null and infoContent.isValid != null" >
+        and con.is_valid = #{infoContent.isValid,jdbcType=VARCHAR}
+      </if>
+      <if test="infoContent != null and infoContent.resv1 != null" >
+        and con.resv1 = #{infoContent.resv1,jdbcType=VARCHAR}
+      </if>
+      <if test="infoContent != null and infoContent.resv2 != null" >
+        and con.resv2 = #{infoContent.resv2,jdbcType=VARCHAR}
+      </if>
+      <if test="infoContent != null and infoContent.resv3 != null" >
+        and con.resv3 = #{infoContent.resv3,jdbcType=VARCHAR}
+      </if>
+      <if test="infoContent != null and infoContent.resv4 != null" >
+        and con.resv4 = #{infoContent.resv4,jdbcType=VARCHAR}
+      </if>
+      <if test="infoContent != null and infoContent.content != null" >
+        and con.content like CONCAT('%', #{infoContent.content,jdbcType=LONGVARCHAR},'%') 
+      </if>
+    </where>
+  </select>
+  <select id="searchInfos" resultMap="QueryResultMap" parameterType="java.util.Map" >
+  	select <include refid="Query_Column_List" />
+  	FROM 
+		t_info info 
+	LEFT JOIN t_info_tag_rel tr ON info.`info_id`=tr.`info_id` AND tr.`is_valid`='0' 
+	LEFT JOIN t_tag tg ON tr.`tag_id` = tg.`tag_id`
+	LEFT JOIN t_info_content con ON info.`info_id`=con.`info_id` AND con.`is_valid`='0'
+	<where>
+		1=1 AND info.`is_valid`='0'
+		<if test="keyWord!=null and keyWord!=''">
+			AND (con.`content` LIKE CONCAT('%',#{keyWord,jdbcType=VARCHAR},'%') OR con.`title` LIKE CONCAT('%',#{keyWord,jdbcType=VARCHAR},'%') OR con.`brief` LIKE CONCAT('%',#{keyWord,jdbcType=VARCHAR},'%'))
+		</if>
+		<if test="status!=null and status!=''">
+			AND info.`status`=#{status,jdbcType=VARCHAR}
+		</if>
+		<if test="labelId!=null">
+			AND info.`tag_id`=#{labelId,jdbcType=INTEGER}
+		</if>
+		<if test="tagId!=null">
+			AND tg.`tag_id`=#{tagId,jdbcType=INTEGER}
+		</if>
+		<if test="secondkeyWord!=null and secondkeyWord!=''">
+			AND (con.`content` LIKE CONCAT('%',#{secondkeyWord,jdbcType=VARCHAR},'%') OR con.`title` LIKE CONCAT('%',#{secondkeyWord,jdbcType=VARCHAR},'%') OR con.`brief` LIKE CONCAT('%',#{secondkeyWord,jdbcType=VARCHAR},'%'))
+		</if>
+		<if test="thirdkeyWord!=null and thirdkeyWord!=''">
+			AND (con.`content` LIKE CONCAT('%',#{thirdkeyWord,jdbcType=VARCHAR},'%') OR con.`title` LIKE CONCAT('%',#{thirdkeyWord,jdbcType=VARCHAR},'%') OR con.`brief` LIKE CONCAT('%',#{thirdkeyWord,jdbcType=VARCHAR},'%'))
+		</if>
+	</where>
+		GROUP BY info.`info_id`
+	<if test="orderBy!=null and orderBy=='1'">
+		order by info.create_time DESC
+	</if>
+	<if test="orderBy!=null and orderBy=='2'">
+		order by info.create_time ASC
+	</if>
+	
+	
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_info
+    where info_id = #{infoId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="infoId" parameterType="cn.com.shukaiken.model.Info" >
+    insert into t_info (info_id, author_id, author_type, 
+      author_name, tag_id, has_banner, 
+      has_image, has_video, has_flash, 
+      search_word, search_tag, origin, 
+      origin_url, origin_name, stage, 
+      status, is_valid, create_time, 
+      update_time, publish_time, rollback_time, 
+      resv1, resv2, resv3, 
+      resv4)
+    values (#{infoId,jdbcType=INTEGER}, #{authorId,jdbcType=INTEGER}, #{authorType,jdbcType=VARCHAR}, 
+      #{authorName,jdbcType=VARCHAR}, #{tagId,jdbcType=INTEGER}, #{hasBanner,jdbcType=VARCHAR}, 
+      #{hasImage,jdbcType=VARCHAR}, #{hasVideo,jdbcType=VARCHAR}, #{hasFlash,jdbcType=VARCHAR}, 
+      #{searchWord,jdbcType=VARCHAR}, #{searchTag,jdbcType=VARCHAR}, #{origin,jdbcType=VARCHAR}, 
+      #{originUrl,jdbcType=VARCHAR}, #{originName,jdbcType=VARCHAR}, #{stage,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{isValid,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{publishTime,jdbcType=TIMESTAMP}, #{rollbackTime,jdbcType=TIMESTAMP}, 
+      #{resv1,jdbcType=VARCHAR}, #{resv2,jdbcType=VARCHAR}, #{resv3,jdbcType=VARCHAR}, 
+      #{resv4,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="infoId" parameterType="cn.com.shukaiken.model.Info" >
+    insert into t_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="infoId != null" >
+        info_id,
+      </if>
+      <if test="authorId != null" >
+        author_id,
+      </if>
+      <if test="authorType != null" >
+        author_type,
+      </if>
+      <if test="authorName != null" >
+        author_name,
+      </if>
+      <if test="tagId != null" >
+        tag_id,
+      </if>
+      <if test="hasBanner != null" >
+        has_banner,
+      </if>
+      <if test="hasImage != null" >
+        has_image,
+      </if>
+      <if test="hasVideo != null" >
+        has_video,
+      </if>
+      <if test="hasFlash != null" >
+        has_flash,
+      </if>
+      <if test="searchWord != null" >
+        search_word,
+      </if>
+      <if test="searchTag != null" >
+        search_tag,
+      </if>
+      <if test="origin != null" >
+        origin,
+      </if>
+      <if test="originUrl != null" >
+        origin_url,
+      </if>
+      <if test="originName != null" >
+        origin_name,
+      </if>
+      <if test="stage != null" >
+        stage,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="isValid != null" >
+        is_valid,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="publishTime != null" >
+        publish_time,
+      </if>
+      <if test="rollbackTime != null" >
+        rollback_time,
+      </if>
+      <if test="resv1 != null" >
+        resv1,
+      </if>
+      <if test="resv2 != null" >
+        resv2,
+      </if>
+      <if test="resv3 != null" >
+        resv3,
+      </if>
+      <if test="resv4 != null" >
+        resv4,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="infoId != null" >
+        #{infoId,jdbcType=INTEGER},
+      </if>
+      <if test="authorId != null" >
+        #{authorId,jdbcType=INTEGER},
+      </if>
+      <if test="authorType != null" >
+        #{authorType,jdbcType=VARCHAR},
+      </if>
+      <if test="authorName != null" >
+        #{authorName,jdbcType=VARCHAR},
+      </if>
+      <if test="tagId != null" >
+        #{tagId,jdbcType=INTEGER},
+      </if>
+      <if test="hasBanner != null" >
+        #{hasBanner,jdbcType=VARCHAR},
+      </if>
+      <if test="hasImage != null" >
+        #{hasImage,jdbcType=VARCHAR},
+      </if>
+      <if test="hasVideo != null" >
+        #{hasVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="hasFlash != null" >
+        #{hasFlash,jdbcType=VARCHAR},
+      </if>
+      <if test="searchWord != null" >
+        #{searchWord,jdbcType=VARCHAR},
+      </if>
+      <if test="searchTag != null" >
+        #{searchTag,jdbcType=VARCHAR},
+      </if>
+      <if test="origin != null" >
+        #{origin,jdbcType=VARCHAR},
+      </if>
+      <if test="originUrl != null" >
+        #{originUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="originName != null" >
+        #{originName,jdbcType=VARCHAR},
+      </if>
+      <if test="stage != null" >
+        #{stage,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="isValid != null" >
+        #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="publishTime != null" >
+        #{publishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rollbackTime != null" >
+        #{rollbackTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resv1 != null" >
+        #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        #{resv4,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.Info" >
+    update t_info
+    <set >
+      <if test="authorId != null" >
+        author_id = #{authorId,jdbcType=INTEGER},
+      </if>
+      <if test="authorType != null" >
+        author_type = #{authorType,jdbcType=VARCHAR},
+      </if>
+      <if test="authorName != null" >
+        author_name = #{authorName,jdbcType=VARCHAR},
+      </if>
+      <if test="tagId != null" >
+        tag_id = #{tagId,jdbcType=INTEGER},
+      </if>
+      <if test="hasBanner != null" >
+        has_banner = #{hasBanner,jdbcType=VARCHAR},
+      </if>
+      <if test="hasImage != null" >
+        has_image = #{hasImage,jdbcType=VARCHAR},
+      </if>
+      <if test="hasVideo != null" >
+        has_video = #{hasVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="hasFlash != null" >
+        has_flash = #{hasFlash,jdbcType=VARCHAR},
+      </if>
+      <if test="searchWord != null" >
+        search_word = #{searchWord,jdbcType=VARCHAR},
+      </if>
+      <if test="searchTag != null" >
+        search_tag = #{searchTag,jdbcType=VARCHAR},
+      </if>
+      <if test="origin != null" >
+        origin = #{origin,jdbcType=VARCHAR},
+      </if>
+      <if test="originUrl != null" >
+        origin_url = #{originUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="originName != null" >
+        origin_name = #{originName,jdbcType=VARCHAR},
+      </if>
+      <if test="stage != null" >
+        stage = #{stage,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="isValid != null" >
+        is_valid = #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="publishTime != null" >
+        publish_time = #{publishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rollbackTime != null" >
+        rollback_time = #{rollbackTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resv1 != null" >
+        resv1 = #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        resv2 = #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        resv3 = #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        resv4 = #{resv4,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where info_id = #{infoId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.Info" >
+    update t_info
+    set author_id = #{authorId,jdbcType=INTEGER},
+      author_type = #{authorType,jdbcType=VARCHAR},
+      author_name = #{authorName,jdbcType=VARCHAR},
+      tag_id = #{tagId,jdbcType=INTEGER},
+      has_banner = #{hasBanner,jdbcType=VARCHAR},
+      has_image = #{hasImage,jdbcType=VARCHAR},
+      has_video = #{hasVideo,jdbcType=VARCHAR},
+      has_flash = #{hasFlash,jdbcType=VARCHAR},
+      search_word = #{searchWord,jdbcType=VARCHAR},
+      search_tag = #{searchTag,jdbcType=VARCHAR},
+      origin = #{origin,jdbcType=VARCHAR},
+      origin_url = #{originUrl,jdbcType=VARCHAR},
+      origin_name = #{originName,jdbcType=VARCHAR},
+      stage = #{stage,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      is_valid = #{isValid,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      publish_time = #{publishTime,jdbcType=TIMESTAMP},
+      rollback_time = #{rollbackTime,jdbcType=TIMESTAMP},
+      resv1 = #{resv1,jdbcType=VARCHAR},
+      resv2 = #{resv2,jdbcType=VARCHAR},
+      resv3 = #{resv3,jdbcType=VARCHAR},
+      resv4 = #{resv4,jdbcType=VARCHAR}
+    where info_id = #{infoId,jdbcType=INTEGER}
+  </update>
+  <update id="updateInfoByInfoIds" parameterType="java.util.Map">
+  	 update t_info
+    <set >
+      <if test="info.authorId != null" >
+        author_id = #{info.authorId,jdbcType=INTEGER},
+      </if>
+      <if test="info.authorType != null" >
+        author_type = #{info.authorType,jdbcType=VARCHAR},
+      </if>
+      <if test="info.authorName != null" >
+        author_name = #{info.authorName,jdbcType=VARCHAR},
+      </if>
+      <if test="info.tagId != null" >
+        tag_id = #{info.tagId,jdbcType=INTEGER},
+      </if>
+      <if test="info.hasBanner != null" >
+        has_banner = #{info.hasBanner,jdbcType=VARCHAR},
+      </if>
+      <if test="info.hasImage != null" >
+        has_image = #{info.hasImage,jdbcType=VARCHAR},
+      </if>
+      <if test="info.hasVideo != null" >
+        has_video = #{info.hasVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="info.hasFlash != null" >
+        has_flash = #{info.hasFlash,jdbcType=VARCHAR},
+      </if>
+      <if test="info.searchWord != null" >
+        search_word = #{info.searchWord,jdbcType=VARCHAR},
+      </if>
+      <if test="info.searchTag != null" >
+        search_tag = #{info.searchTag,jdbcType=VARCHAR},
+      </if>
+      <if test="info.origin != null" >
+        origin = #{info.origin,jdbcType=VARCHAR},
+      </if>
+      <if test="info.originUrl != null" >
+        origin_url = #{info.originUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="info.originName != null" >
+        origin_name = #{info.originName,jdbcType=VARCHAR},
+      </if>
+      <if test="info.stage != null" >
+        stage = #{info.stage,jdbcType=VARCHAR},
+      </if>
+      <if test="info.status != null" >
+        status = #{info.status,jdbcType=VARCHAR},
+      </if>
+      <if test="info.isValid != null" >
+        is_valid = #{info.isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="info.createTime != null" >
+        create_time = #{info.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="info.updateTime != null" >
+        update_time = #{info.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="info.publishTime != null" >
+        publish_time = #{info.publishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="info.rollbackTime != null" >
+        rollback_time = #{info.rollbackTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="info.resv1 != null" >
+        resv1 = #{info.resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="info.resv2 != null" >
+        resv2 = #{info.resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="info.resv3 != null" >
+        resv3 = #{info.resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="info.resv4 != null" >
+        resv4 = #{info.resv4,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <where>
+    	info_id in
+    	<foreach collection="infoIdArr" item="item" index="index" open="(" close=")" separator=",">
+    		#{item,jdbcType=INTEGER}
+    	</foreach>
+    </where>
+  </update>
+  <update id="updateInfoByInfo" parameterType="java.util.Map">
+  	update t_info 
+  	<set>
+  		<if test="info.authorId != null" >
+        author_id = #{info.authorId,jdbcType=INTEGER},
+      </if>
+      <if test="info.authorType != null" >
+        author_type = #{info.authorType,jdbcType=VARCHAR},
+      </if>
+      <if test="info.authorName != null" >
+        author_name = #{info.authorName,jdbcType=VARCHAR},
+      </if>
+      <if test="info.tagId != null" >
+        tag_id = #{info.tagId,jdbcType=INTEGER},
+      </if>
+      <if test="info.hasBanner != null" >
+        has_banner = #{info.hasBanner,jdbcType=VARCHAR},
+      </if>
+      <if test="info.hasImage != null" >
+        has_image = #{info.hasImage,jdbcType=VARCHAR},
+      </if>
+      <if test="info.hasVideo != null" >
+        has_video = #{info.hasVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="info.hasFlash != null" >
+        has_flash = #{info.hasFlash,jdbcType=VARCHAR},
+      </if>
+      <if test="info.searchWord != null" >
+        search_word = #{info.searchWord,jdbcType=VARCHAR},
+      </if>
+      <if test="info.searchTag != null" >
+        search_tag = #{info.searchTag,jdbcType=VARCHAR},
+      </if>
+      <if test="info.origin != null" >
+        origin = #{info.origin,jdbcType=VARCHAR},
+      </if>
+      <if test="info.originUrl != null" >
+        origin_url = #{info.originUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="info.originName != null" >
+        origin_name = #{info.originName,jdbcType=VARCHAR},
+      </if>
+      <if test="info.stage != null" >
+        stage = #{info.stage,jdbcType=VARCHAR},
+      </if>
+      <if test="info.status != null" >
+        status = #{info.status,jdbcType=VARCHAR},
+      </if>
+      <if test="info.isValid != null" >
+        is_valid = #{info.isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="info.createTime != null" >
+        create_time = #{info.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="info.updateTime != null" >
+        update_time = #{info.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="info.publishTime != null" >
+        publish_time = #{info.publishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="info.rollbackTime != null" >
+        rollback_time = #{info.rollbackTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="info.resv1 != null" >
+        resv1 = #{info.resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="info.resv2 != null" >
+        resv2 = #{info.resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="info.resv3 != null" >
+        resv3 = #{info.resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="info.resv4 != null" >
+        resv4 = #{info.resv4,jdbcType=VARCHAR},
+      </if>
+  	</set>
+  	<where>
+  		<if test="cond.infoId != null">
+  			and info_id = #{cond.infoId,jdbcType=INTEGER}
+  		</if>
+  		<if test="cond.authorId != null" >
+        and author_id = #{cond.authorId,jdbcType=INTEGER}
+      </if>
+      <if test="cond.authorType != null" >
+        and author_type = #{cond.authorType,jdbcType=VARCHAR}
+      </if>
+      <if test="cond.authorName != null" >
+        and author_name = #{cond.authorName,jdbcType=VARCHAR}
+      </if>
+      <if test="cond.tagId != null" >
+        and tag_id = #{cond.tagId,jdbcType=INTEGER}
+      </if>
+      <if test="cond.hasBanner != null" >
+        and has_banner = #{cond.hasBanner,jdbcType=VARCHAR}
+      </if>
+      <if test="cond.hasImage != null" >
+        and has_image = #{cond.hasImage,jdbcType=VARCHAR}
+      </if>
+      <if test="cond.hasVideo != null" >
+        and has_video = #{cond.hasVideo,jdbcType=VARCHAR}
+      </if>
+      <if test="cond.hasFlash != null" >
+        and has_flash = #{cond.hasFlash,jdbcType=VARCHAR}
+      </if>
+      <if test="cond.searchWord != null" >
+        and search_word = #{cond.searchWord,jdbcType=VARCHAR}
+      </if>
+      <if test="cond.searchTag != null" >
+        and search_tag = #{cond.searchTag,jdbcType=VARCHAR}
+      </if>
+      <if test="cond.origin != null" >
+        and origin = #{cond.origin,jdbcType=VARCHAR}
+      </if>
+      <if test="cond.originUrl != null" >
+        and origin_url = #{cond.originUrl,jdbcType=VARCHAR}
+      </if>
+      <if test="cond.originName != null" >
+        and origin_name = #{cond.originName,jdbcType=VARCHAR}
+      </if>
+      <if test="cond.stage != null" >
+        and stage = #{cond.stage,jdbcType=VARCHAR}
+      </if>
+      <if test="cond.status != null" >
+        and status = #{cond.status,jdbcType=VARCHAR}
+      </if>
+      <if test="cond.isValid != null" >
+        and is_valid = #{cond.isValid,jdbcType=VARCHAR}
+      </if>
+      <if test="cond.createTime != null" >
+        and create_time = #{cond.createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="cond.updateTime != null" >
+        and update_time = #{cond.updateTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="cond.publishTime != null" >
+        and publish_time = #{cond.publishTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="cond.rollbackTime != null" >
+        and rollback_time = #{cond.rollbackTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="cond.resv1 != null" >
+        and resv1 = #{cond.resv1,jdbcType=VARCHAR}
+      </if>
+      <if test="cond.resv2 != null" >
+        and resv2 = #{cond.resv2,jdbcType=VARCHAR}
+      </if>
+      <if test="cond.resv3 != null" >
+        and resv3 = #{cond.resv3,jdbcType=VARCHAR}
+      </if>
+      <if test="cond.resv4 != null" >
+        and resv4 = #{cond.resv4,jdbcType=VARCHAR}
+      </if>
+  	</where>
+  </update>
+</mapper>

@@ -1,0 +1,2 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<div class="text_center"><img src="<%=path %>/front/images/d_trade.jpg" alt="东翌资讯" title="东翌资讯" /></div>

@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.IBackFeedDao" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.BackFeed" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="feed_type_id" property="feed_type_id" jdbcType="INTEGER" />
+    <result column="cust_id" property="cust_id" jdbcType="INTEGER" />
+    <result column="create_date" property="create_date" jdbcType="TIMESTAMP" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="contact" property="contact" jdbcType="VARCHAR" />
+    <result column="system" property="system" jdbcType="VARCHAR" />
+    <result column="model" property="model" jdbcType="VARCHAR" />
+    <result column="version" property="version" jdbcType="VARCHAR" />
+    <result column="demand_point" property="demand_point" jdbcType="VARCHAR" />
+    <result column="is_valid" property="is_valid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, feed_type_id, cust_id, create_date, content, contact, system, model, version, demand_point, is_valid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+      f.id, f.feed_type_id, t.feed_type_name as feed_type_name, f.cust_id, c.user_name as user_name, f.create_date, f.content, f.contact, 
+      f.system, f.model, f.version, f.demand_point, f.is_valid
+    from t_back_feed f
+    left join t_back_feed_type t on f.feed_type_id = t.id
+    left join t_cust c on f.cust_id = c.id
+    where f.id = #{id,jdbcType=INTEGER}
+  </select>
+  <!-- 根据对象设值查询完整对象信息 -->
+  <select id="selectBySelective" parameterType="cn.com.shukaiken.model.BackFeed" resultMap="BaseResultMap">
+    select 
+    	<include refid="Base_Column_List" />
+    from t_back_feed
+    where 1 = 1
+      <if test="feed_type_id != null" >
+        and feed_type_id = #{feed_type_id,jdbcType=INTEGER}
+      </if>
+      <if test="cust_id != null" >
+        and cust_id = #{cust_id,jdbcType=INTEGER}
+      </if>
+      <if test="create_date != null" >
+        and create_date = #{create_date,jdbcType=TIMESTAMP}
+      </if>
+      <if test="content != null" >
+        and content = #{content,jdbcType=VARCHAR}
+      </if>
+      <if test="contact != null" >
+        and contact = #{contact,jdbcType=VARCHAR}
+      </if>
+      <if test="system != null" >
+        and system = #{system,jdbcType=VARCHAR}
+      </if>
+      <if test="model != null" >
+        and model = #{model,jdbcType=VARCHAR}
+      </if>
+      <if test="version != null" >
+        and version = #{version,jdbcType=VARCHAR}
+      </if>
+      <if test="demand_point != null" >
+        and demand_point = #{demand_point,jdbcType=VARCHAR}
+      </if>
+      <if test="is_valid != null" >
+        and is_valid = #{is_valid,jdbcType=INTEGER}
+      </if>
+  </select>
+  <select id="getBackFeedLs" parameterType="cn.com.shukaiken.model.BackFeed" resultMap="BaseResultMap">
+  	 select 
+	    f.id, f.feed_type_id, t.feed_type_name as feed_type_name, f.cust_id, c.user_name as user_name, f.create_date, f.content, f.contact,
+	    f.system, f.model, f.version, f.demand_point, f.is_valid   
+    from t_back_feed f
+    left join t_back_feed_type t on f.feed_type_id = t.id
+    left join t_cust c on f.cust_id = c.id
+    where 1=1
+      <if test="feed_type_id != null" >
+        and f.feed_type_id = #{feed_type_id,jdbcType=INTEGER}
+      </if>
+      <if test="cust_id != null" >
+        and f.cust_id = #{cust_id,jdbcType=INTEGER}
+      </if>
+      <if test="create_date != null" >
+        and f.create_date = #{create_date,jdbcType=TIMESTAMP}
+      </if>
+      <if test="content != null" >
+        and f.content like CONCAT('%',#{content},'%' ) 
+      </if>
+      <if test="contact != null" >
+        and f.contact = #{contact,jdbcType=VARCHAR}
+      </if>
+      <if test="system != null" >
+        and f.system = #{system,jdbcType=VARCHAR}
+      </if>
+      <if test="model != null" >
+        and f.model = #{model,jdbcType=VARCHAR}
+      </if>
+      <if test="version != null" >
+        and f.version = #{version,jdbcType=VARCHAR}
+      </if>
+      <if test="demand_point != null" >
+        and f.demand_point  like CONCAT('%',#{demand_point},'%' ) 
+      </if>
+      <if test="is_valid != null" >
+        and f.is_valid = #{is_valid,jdbcType=INTEGER}
+      </if>
+     order by f.create_date desc 
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_back_feed
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.com.shukaiken.model.BackFeed" >
+    insert into t_back_feed (id, feed_type_id,
+      cust_id, create_date, content, 
+      contact, system, model, version, demand_point, is_valid)
+    values (#{id,jdbcType=INTEGER}, #{feed_type_id,jdbcType=INTEGER},  
+      #{cust_id,jdbcType=INTEGER}, #{create_date,jdbcType=TIMESTAMP}, #{content,jdbcType=VARCHAR}, 
+      #{contact,jdbcType=VARCHAR}, #{system,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR}, #{contact,jdbcType=VARCHAR},
+      #{demand_point,jdbcType=VARCHAR}, #{is_valid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.shukaiken.model.BackFeed" >
+    insert into t_back_feed
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="feed_type_id != null" >
+        feed_type_id,
+      </if>
+      <if test="cust_id != null" >
+        cust_id,
+      </if>
+      <if test="create_date != null" >
+        create_date,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="contact != null" >
+        contact,
+      </if>
+      <if test="contact != null" >
+        system,  
+      </if>
+      <if test="contact != null" >
+        model,
+      </if>
+      <if test="contact != null" >
+        version,
+      </if>
+      <if test="demand_point != null" >
+        demand_point,
+      </if>
+      <if test="is_valid != null" >
+        is_valid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="feed_type_id != null" >
+        #{feed_type_id,jdbcType=INTEGER},
+      </if>
+      <if test="cust_id != null" >
+        #{cust_id,jdbcType=INTEGER},
+      </if>
+      <if test="create_date != null" >
+        #{create_date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null" >
+        #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="system != null" >
+        #{system,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null" >
+       #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null" >
+       #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="demand_point != null" >
+        #{demand_point,jdbcType=VARCHAR},
+      </if>
+      <if test="is_valid != null" >
+        #{is_valid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.BackFeed" >
+    update t_back_feed
+    <set >
+      <if test="feed_type_id != null" >
+        feed_type_id = #{feed_type_id,jdbcType=INTEGER},
+      </if>
+      <if test="cust_id != null" >
+        cust_id = #{cust_id,jdbcType=INTEGER},
+      </if>
+      <if test="create_date != null" >
+        create_date = #{create_date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null" >
+        contact = #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="system != null" >
+        system = #{system,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null" >
+        model = #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null" >
+       version = #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="demand_point != null" >
+       demand_point =  #{demand_point,jdbcType=VARCHAR},
+      </if>
+      <if test="is_valid != null" >
+       is_valid = #{is_valid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.BackFeed" >
+    update t_back_feed
+    set feed_type_id = #{feed_type_id,jdbcType=INTEGER},
+      cust_id = #{cust_id,jdbcType=INTEGER},
+      create_date = #{create_date,jdbcType=TIMESTAMP},
+      content = #{content,jdbcType=VARCHAR},
+      contact = #{contact,jdbcType=VARCHAR},
+      system = #{system,jdbcType=VARCHAR},
+      model = #{model,jdbcType=VARCHAR},
+      version = #{version,jdbcType=VARCHAR},
+      demand_point = #{demand_point,jdbcType=VARCHAR},
+      is_valid = #{is_valid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="batchBackFeed" parameterType="cn.com.shukaiken.model.BackFeed" >
+    UPDATE  t_back_feed 
+	SET
+	is_valid = 3
+	WHERE 1=1
+	AND is_valid = 2
+  </update>
+</mapper>

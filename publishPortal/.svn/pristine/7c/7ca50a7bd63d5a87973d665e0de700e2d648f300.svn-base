@@ -1,0 +1,134 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ include file="/WEB-INF/views/general_path.jsp"%>
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<title>开户流程</title>
+		<meta name="keywords" content="东翌"/>
+		<meta name="description" content="东翌（上海）投资发展有限公司是..."/>
+		<link rel="stylesheet" type="text/css" href="<%=path %>/front/css/default.css">
+		<link rel="stylesheet" type="text/css" href="<%=path %>/front/css/main.css">
+		<link rel="shortcut icon" type="image/x-icon" href="<%=request.getContextPath()%>/front/images/favicon.ico" />
+	</head>
+	<body>
+		<%@ include file="/WEB-INF/views/front/header.jsp" %>
+		<div class="d_wrapper">
+			<div class="d_detail_cont clearfix">
+				<div class="text_center"><img src="<%=path %>/front/images/d_trade.jpg" alt="交易指南" title="交易指南" /></div>
+				<!-- left start -->
+				<%@ include file="/WEB-INF/views/front/account/account_left.jsp" %>
+				<!-- left end -->
+				<div class="d_detail_fr fr">
+					<div class="d_content_fl_tit"><h2>开户流程</h2></div>
+					<div class="d_main_cont">
+						<div class="d_tab_tit fr">
+							<span class="curr">开户流程</span>
+							<span>准入条件</span>
+							<span>禁入规则</span>
+							<span>销户流程</span>
+						</div>
+						<div class="d_tab_con fl">
+							<div class="subtab">
+								<h2 class="text_center">开户流程</h2>
+								<div class="d_open_cont">
+									<h3>步骤一：提供身份证复印件</h3>
+									<p>您提供您的身份证正、反面，用手机拍照或扫描，通过网络或传真发送给我们，要求尺寸完整，清晰。</p>
+									<h3>骤二：分配实盘账户</h3>
+									<p>我们根据您的姓名和身份证号，分配11位长度的唯一实盘账户给您。</p>
+									<h3>步骤三：签署协议</h3>
+									<p>收到我们快递的开户协议后。签署相关协议，通过拍照或扫描传真形式，发送给我们以审核，并将全套合同快递至我司。<br />
+									1.[范例]《客户协议书》<br />
+									2.[范例]《交易数据托管投资者权责告知函》</p>
+									<h3>步骤四：银行资金托管</h3>
+									<p>第三步完成后，您就可以通过网上银行办理三方资金存管业务。目前受理的银行包括，交通银行、农业银行、光大银行、工商银行、建设银行、华夏银行、招商银行。根据您的便捷程度自行选择。</p>
+									<h3>步骤五：入金</h3>
+									<p>第四步完成后，您可以通过交易系统或网银、柜台进行入金操作。激活账号后次日可自由出入金。</p>
+								</div>
+							</div>
+							<div class="subtab" style="display:none">
+								<h2 class="text_center">准入条件</h2>
+								<div class="d_open_cont">
+									<p>按照东翌贵金属交易中心相关规定，执行贵金属交易投资者适当性制度，准入条件为：</p>
+									<h3>自然人投资者</h3>
+									<p>具有独立民事行为能力的自然人<br />
+									开立实盘账户后，不少于10笔的模拟交易记录（以交易中心系统成交数据为准）<br />
+									账户激活前存入交易保证金不低于交易中心的最低标准</p>
+									<h3>机构投资者</h3>
+									<p>依法成立的企业法人及其它经济组织<br />
+									不少于20笔的模拟交易记录（以交易中心交易系统成交数据为准）<br />
+									账户激活前存入交易保证金不低于交易中心的最低标准</p>
+								</div>
+							</div>
+							<div class="subtab" style="display:none">
+								<h2 class="text_center">禁入规定</h2>
+								<div class="d_open_cont">
+									<p>按照东翌贵金属交易中心相关规定，下列单位及个人不得开户、交易：
+									国家机关和事业单位<br />
+									交易中心股东<br />
+									交易中心、会员单位工作人员及其配偶<br />
+									未能提供开户证明材料的单位和个人<br />
+									交易中心及政府有关监管部门明令禁止入市的单位和个人</p>
+								</div>
+							</div>
+							<div class="subtab" style="display:none">
+								<h2 class="text_center">销户流程</h2>
+								<div class="d_open_cont">
+									<h3>投资者销户需要具备的条件：</h3>
+									<p>投资者交易资金账户余额为零<br />
+									投资者销户当天没有任何交易记录(无持仓、无成交、无委托）<br />
+									投资者已与会员单位结清所有费用和欠款<br />
+									投资者已经在签约银行办理解约</p>
+									<h3>投资者销户的流程：</h3>
+									<p>投资者到签约银行办理解约手续<br />
+									投资者填写销户申请表<br />
+									交易中心审核通过后，由东翌工作人员为具备销户条件的投资者办理销户<br />
+									东翌贵金属将已销户的投资者相关资料进行备案<br />
+									不能办理销户的投资者，需要首先将满足销户条件的手续办理完毕，然后于当日结算后的任一交易日重新办理销户</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	    <%@ include file="/WEB-INF/views/front/footer.jsp" %>
+	    <script type="text/javascript">
+		   $(function(){
+		         siblingSelect({
+		            storSel:"curr",
+		            storItem: $(".d_tab_tit span"),//items
+		            storTab: $(".d_tab_con .subtab"),//tabs
+		            event:"click"//event
+		         });
+		     });
+		   function siblingSelect(options){
+		        var setting = {
+		            storSel:"curr",//status
+		            storItem: null,//items
+		            storTab: null,//tabs
+		            event:"click"//event
+		        };
+		        $.extend(setting, options);
+		        
+		        
+		        $(setting.storItem).on(setting.event, function(){
+		            $.each(setting.storItem, function(i, e){
+		                $(e).removeClass(setting.storSel);
+		                $($(setting.storTab).get(i)).hide();
+		            });
+
+		            if(!($(this).hasClass(setting.storSel))){
+		                $(this).addClass(setting.storSel);
+		            }
+		            
+		            var index = $(setting.storItem).index($(this));
+		            $($(setting.storTab).get(index)).show();
+		        });
+		    }
+		</script>
+	</body>
+</html>

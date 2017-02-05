@@ -1,0 +1,8 @@
+#linux新闻图片上传路径
+linux.info.images.upload.path=/opt/files/upload/images/infos/publish/
+
+#windows新闻图片上传路径
+windows.info.images.upload.path=D:\\files\\upload\\images\\infos\\publish\\
+
+#新闻图片存放路径在系统中的映射路径
+info.images.access.path=/upload/

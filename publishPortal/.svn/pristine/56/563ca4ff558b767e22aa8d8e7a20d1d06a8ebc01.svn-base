@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.InfoBannerDao" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.InfoBanner" >
+    <id column="ban_id" property="banId" jdbcType="INTEGER" />
+    <result column="info_id" property="infoId" jdbcType="INTEGER" />
+    <result column="content_id" property="contentId" jdbcType="INTEGER" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="ban_name" property="banName" jdbcType="VARCHAR" />
+    <result column="ban_type" property="banType" jdbcType="VARCHAR" />
+    <result column="ban_size" property="banSize" jdbcType="DECIMAL" />
+    <result column="is_header" property="isHeader" jdbcType="VARCHAR" />
+    <result column="order" property="order" jdbcType="INTEGER" />
+    <result column="is_show" property="isShow" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="is_valid" property="isValid" jdbcType="VARCHAR" />
+    <result column="resv1" property="resv1" jdbcType="VARCHAR" />
+    <result column="resv2" property="resv2" jdbcType="VARCHAR" />
+    <result column="resv3" property="resv3" jdbcType="VARCHAR" />
+    <result column="resv4" property="resv4" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ban_id, info_id, content_id, url, ban_name, ban_type, ban_size, is_header, `order`, 
+    is_show, create_time, is_valid, resv1, resv2, resv3, resv4
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_info_banner
+    where ban_id = #{banId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByInfoId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+  	select  <include refid="Base_Column_List" />
+    from t_info_banner
+    where info_id = #{infoId,jdbcType=INTEGER} and is_valid= '0' and is_header is null and is_show is null 
+    <!-- is_header is null and is_show is null 表示是传的banner不是在首页和每个模块展示的，is_header为0 表示是首页的banner图，is_show对应的是每个展示模块下面的banner图 ,因为可能这个图片是在首页展示的，又在模块下展示，所以分两个-->
+  </select>
+  <!-- 根据InfoId获取首页展示和模块展示的banner -->
+  <select id="selectIndexBannerByInfoId" resultMap="BaseResultMap" parameterType="cn.com.shukaiken.model.InfoBanner">
+  	select <include refid="Base_Column_List" />
+    from t_info_banner
+    <where>
+     1=1 
+     <if test="infoId!=null">
+     	and info_id = #{infoId,jdbcType=INTEGER}
+     </if>
+     <if test="isValid!=null">
+     	and is_valid= #{isValid,jdbcType=VARCHAR}
+     </if>      
+    <if test="isHeader != null">
+    	and is_header = #{isHeader,jdbcType=VARCHAR}
+    </if>
+    <if test="isShow != null">
+    	and is_show = #{isShow,jdbcType=VARCHAR}
+    </if>
+    </where>
+  </select>
+  <!-- 查询indexbanner供后台用 -->
+  <select id="selectIndexBannerForBackByInfoId" resultMap="BaseResultMap" parameterType="cn.com.shukaiken.model.InfoBanner">
+  	select <include refid="Base_Column_List" />
+    from t_info_banner
+     <where>
+     1=1 and (is_header is not null or is_show is not null)
+     <if test="infoId!=null">
+     	and info_id = #{infoId,jdbcType=INTEGER}
+     </if>
+     <if test="isValid!=null">
+     	and is_valid= #{isValid,jdbcType=VARCHAR}
+     </if>      
+    </where>
+  </select>
+  <delete id="deleteByPrimaryKey"  parameterType="java.lang.Integer" >
+    delete from t_info_banner
+    where ban_id = #{banId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="banId"  parameterType="cn.com.shukaiken.model.InfoBanner" >
+    insert into t_info_banner (ban_id, info_id, content_id, url, ban_name, ban_type, 
+      ban_size, is_header, `order`, 
+      is_show, create_time, is_valid, 
+      resv1, resv2, resv3, resv4)
+    values (#{banId,jdbcType=INTEGER}, #{infoId,jdbcType=INTEGER}, #{contentId,jdbcType=INTEGER}, 
+      #{url,jdbcType=VARCHAR}, #{banName,jdbcType=VARCHAR}, #{banType,jdbcType=VARCHAR}, 
+      #{banSize,jdbcType=DECIMAL}, #{isHeader,jdbcType=VARCHAR}, #{order,jdbcType=INTEGER}, 
+      #{isShow,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{isValid,jdbcType=VARCHAR}, 
+      #{resv1,jdbcType=VARCHAR}, #{resv2,jdbcType=VARCHAR}, #{resv3,jdbcType=VARCHAR}, 
+      #{resv4,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="banId" parameterType="cn.com.shukaiken.model.InfoBanner" >
+    insert into t_info_banner
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="banId != null" >
+        ban_id,
+      </if>
+      <if test="infoId != null" >
+        info_id,
+      </if>
+      <if test="contentId != null" >
+        content_id,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+      <if test="banName != null" >
+        ban_name,
+      </if>
+      <if test="banType != null" >
+        ban_type,
+      </if>
+      <if test="banSize != null" >
+        ban_size,
+      </if>
+      <if test="isHeader != null" >
+        is_header,
+      </if>
+      <if test="order != null" >
+        `order`,
+      </if>
+      <if test="isShow != null" >
+        is_show,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="isValid != null" >
+        is_valid,
+      </if>
+      <if test="resv1 != null" >
+        resv1,
+      </if>
+      <if test="resv2 != null" >
+        resv2,
+      </if>
+      <if test="resv3 != null" >
+        resv3,
+      </if>
+      <if test="resv4 != null" >
+        resv4,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="banId != null" >
+        #{banId,jdbcType=INTEGER},
+      </if>
+      <if test="infoId != null" >
+        #{infoId,jdbcType=INTEGER},
+      </if>
+      <if test="contentId != null" >
+        #{contentId,jdbcType=INTEGER},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="banName != null" >
+        #{banName,jdbcType=VARCHAR},
+      </if>
+      <if test="banType != null" >
+        #{banType,jdbcType=VARCHAR},
+      </if>
+      <if test="banSize != null" >
+        #{banSize,jdbcType=DECIMAL},
+      </if>
+      <if test="isHeader != null" >
+        #{isHeader,jdbcType=VARCHAR},
+      </if>
+      <if test="order != null" >
+        #{order,jdbcType=INTEGER},
+      </if>
+      <if test="isShow != null" >
+        #{isShow,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null" >
+        #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="resv1 != null" >
+        #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        #{resv4,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.InfoBanner" >
+    update t_info_banner
+    <set >
+      <if test="infoId != null" >
+        info_id = #{infoId,jdbcType=INTEGER},
+      </if>
+      <if test="contentId != null" >
+        content_id = #{contentId,jdbcType=INTEGER},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="banName != null" >
+        ban_name = #{banName,jdbcType=VARCHAR},
+      </if>
+      <if test="banType != null" >
+        ban_type = #{banType,jdbcType=VARCHAR},
+      </if>
+      <if test="banSize != null" >
+        ban_size = #{banSize,jdbcType=DECIMAL},
+      </if>
+      <if test="isHeader != null" >
+        is_header = #{isHeader,jdbcType=VARCHAR},
+      </if>
+      <if test="order != null" >
+        `order` = #{order,jdbcType=INTEGER},
+      </if>
+      <if test="isShow != null" >
+        is_show = #{isShow,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null" >
+        is_valid = #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="resv1 != null" >
+        resv1 = #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        resv2 = #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        resv3 = #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        resv4 = #{resv4,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ban_id = #{banId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.InfoBanner" >
+    update t_info_banner
+    set info_id = #{infoId,jdbcType=INTEGER},
+      content_id = #{contentId,jdbcType=INTEGER},
+      url = #{url,jdbcType=VARCHAR},
+      ban_name = #{banName,jdbcType=VARCHAR},
+      ban_type = #{banType,jdbcType=VARCHAR},
+      ban_size = #{banSize,jdbcType=DECIMAL},
+      is_header = #{isHeader,jdbcType=VARCHAR},
+      `order` = #{order,jdbcType=INTEGER},
+      is_show = #{isShow,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=VARCHAR},
+      resv1 = #{resv1,jdbcType=VARCHAR},
+      resv2 = #{resv2,jdbcType=VARCHAR},
+      resv3 = #{resv3,jdbcType=VARCHAR},
+      resv4 = #{resv4,jdbcType=VARCHAR}
+    where ban_id = #{banId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByInfoId" parameterType="cn.com.shukaiken.model.InfoBanner" >
+  	update t_info_banner
+  	
+    <set >
+      <if test="contentId != null" >
+        content_id = #{contentId,jdbcType=INTEGER},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="banName != null" >
+        ban_name = #{banName,jdbcType=VARCHAR},
+      </if>
+      <if test="banType != null" >
+        ban_type = #{banType,jdbcType=VARCHAR},
+      </if>
+      <if test="banSize != null" >
+        ban_size = #{banSize,jdbcType=DECIMAL},
+      </if>
+      <if test="isHeader != null" >
+        is_header = #{isHeader,jdbcType=VARCHAR},
+      </if>
+      <if test="order != null" >
+        `order` = #{order,jdbcType=INTEGER},
+      </if>
+      <if test="isShow != null" >
+        is_show = #{isShow,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null" >
+        is_valid = #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="resv1 != null" >
+        resv1 = #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        resv2 = #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        resv3 = #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        resv4 = #{resv4,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where info_id = #{infoId,jdbcType=INTEGER}
+  </update>
+  <update id="updateBannerByIds" parameterType="java.util.Map">
+  	update t_info_banner 
+  	<set>
+  		<if test="infoId!=null">
+  			info_id = #{infoId,jdbcType=INTEGER},
+  		</if>
+  		<if test="contentId!=null">
+  			content_id = #{contentId,jdbcType=INTEGER},
+  		</if>
+  	</set>
+  	where ban_id in
+  		<foreach collection="ids" index="index" item="item" open="(" close=")" separator=",">
+  			#{item,jdbcType=INTEGER}
+  		</foreach>
+  </update>
+  <update id="updateBannerByIdsAndInfoId" parameterType="java.util.Map">
+  <if test="ids!=null or infoId !=null">
+  update t_info_banner 
+  	<set>
+  		<if test="isValid!=null">
+  			is_valid = #{isValid,jdbcType=VARCHAR},
+  		</if>
+  	</set>
+  	<where>
+  	
+  	<if test="ids!=null">
+  		ban_id not in
+  		<foreach collection="ids" index="index" item="item" open="(" close=")" separator=",">
+  			#{item,jdbcType=INTEGER}
+  		</foreach>
+  	</if>
+  	<if test="infoId!=null">
+  		and info_id = #{infoId,jdbcType=INTEGER}
+  	</if>
+  	and is_header is null and is_show is null
+  	</where>
+  </if>
+  	
+  </update>
+</mapper>

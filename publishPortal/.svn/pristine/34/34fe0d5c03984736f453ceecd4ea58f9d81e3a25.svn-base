@@ -1,0 +1,124 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ include file="/WEB-INF/views/general_path.jsp"%>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-widht,minimun-scale=1.0,maximun-scale=1.0,user-scalable=no,initial-scale=1.0" >
+		<title>提取反馈信息需求点</title>
+		<%@include file="/WEB-INF/views/admin/include_css.jsp" %>
+	</head>
+	<body>
+		<div id="slider_content" class="content">
+			<div class="content_div">
+				<h1>
+					<span class="action-span"><a href="javascript:void(0);" onclick="history.go(-1);">返回</a></span>
+					<span class="action-span1">出版头条管理中心</span>
+					<span class="action-span1 action-span2">-反馈信息分组</span>
+				</h1>
+				<form action="<%=path %>/admin/feed/updateBackFeedWithType" method="post" onsubmit="return checkForm();">
+				   <%--  <input type="hidden" name="springMVC.token" value="${TOKEN}"> --%>
+                    <input type="hidden" name="id" value="${backFeed.id }"/>
+                    <input type="hidden" name="type" value="${type }"/>
+					<div class="main-div">
+						<table>
+						 <tr>
+								<td class="label">分组名称：</td>
+								<td>
+									${backFeed.feed_type_name}
+					   			</td>
+						   </tr>
+						   <tr>
+								<td class="label">反馈人：</td>
+								<td>${backFeed.user_name}</td>
+						   </tr>
+						   <tr>
+								<td class="label">联系方式：</td>
+								<td>${backFeed.contact}</td>
+						   </tr>
+						   <tr>
+								<td class="label">系统：</td>
+								<td>${backFeed.system}</td>
+						   </tr>
+						   <tr>
+								<td class="label">机型：</td>
+								<td>${backFeed.model}</td>
+						   </tr>
+						   <tr>
+								<td class="label">版本：</td>
+								<td>${backFeed.version}</td>
+						   </tr>
+						   <tr>
+								<td class="label">反馈时间：</td>
+								<td><fmt:formatDate value="${backFeed.create_date }" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+						   </tr>
+						   <tr>
+								<td class="label">状态：</td>
+								<td>
+								    <c:if test="${backFeed.is_valid==0 }">
+										未分组
+				   					</c:if>
+				   					<c:if test="${backFeed.is_valid==1 }">
+				   						已分组
+				   					</c:if>
+				   					<c:if test="${backFeed.is_valid==2 }">
+										已提取
+				   					</c:if>
+				   					<c:if test="${backFeed.is_valid==3 }">
+										已处理
+				   					</c:if>
+					   			</td>
+						   </tr>
+						  <tr>
+								<td class="label">内容：</td>
+								<td>
+								   <div class="input-textarea">${backFeed.content}</div>
+								</td>
+						   </tr> 
+						   <tr>
+								<td class="label">需求点：</td>
+								<td>
+								   <textarea id="demand_point" name="demand_point" class="input-textarea">${backFeed.demand_point }</textarea>
+								   <span class="require-field">*</span>
+								</td>
+						   </tr>
+						   <tr>
+							    <td class="label">
+							   	 &nbsp;
+							    </td>
+								<td>
+									<button class="btn" type="submit">确定</button>
+									<button class="btn" type="button" onclick="history.go(-1);">取消</button>
+								</td>
+						   </tr>
+						</table>
+					</div>
+				</form>
+			</div>
+		</div>
+		<%@include file="/WEB-INF/views/admin/include_js.jsp" %>
+		<script type="text/javascript">
+			//检查form
+			function checkForm(){
+				
+				var demand_point = $("#demand_point").val();
+				if(isEmpty(demand_point)){
+					layer.tips('数据来源名称不能为空！', '#demand_point', {
+					    tips: 2,
+					    time:4000
+					});
+					return false;
+				}
+				return true;
+			}
+		</script>
+		<c:if test="${not empty msg }">
+		   <script>
+			   layer.alert('${msg}', function(index){
+				    //do something
+				    window.location.href="<%=path %>/admin/feed/getBackFeedLs";
+				    layer.close(index);
+				});             
+		   </script>
+	    </c:if> 
+	</body>
+</html>

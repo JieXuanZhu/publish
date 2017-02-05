@@ -1,0 +1,174 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ include file="/WEB-INF/views/general_path.jsp"%>
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<title>现货交割</title>
+		<meta name="keywords" content="东翌"/>
+		<meta name="description" content="东翌（上海）投资发展有限公司是..."/>
+		<link rel="stylesheet" type="text/css" href="<%=path %>/front/css/default.css">
+		<link rel="stylesheet" type="text/css" href="<%=path %>/front/css/main.css">
+		<link rel="shortcut icon" type="image/x-icon" href="<%=request.getContextPath()%>/front/images/favicon.ico" />
+	</head>
+	<body>
+		<%@ include file="/WEB-INF/views/front/header.jsp" %>
+		<div class="d_wrapper">
+			<div class="d_detail_cont clearfix">
+				<div class="text_center"><img src="<%=path %>/front/images/d_trade.jpg" alt="交易指南" title="交易指南" /></div>
+				<!-- left start -->
+				<%@ include file="/WEB-INF/views/front/trading/trading_left.jsp" %>
+				<!-- left end -->
+				<div class="d_detail_fr fr">
+					<div class="d_content_fl_tit"><h2>现货交割</h2></div>
+					<div class="d_main_cont">
+						<div class="d_tab_tit fr">
+							<span class="curr">交收基本要素</span>
+							<span>交割与销售</span>
+							<span>实物回购</span>
+							<span>质量纠纷</span>
+						</div>
+						<div class="d_tab_con fl">
+							<div class="subtab">
+								<h2 class="text_center">交收基本要素</h2>
+								<div class="d_open_cont">
+									<p>交易标的<br />
+									投资银锭重量100千克/条，成色不低于99.99％，符合中华人民共和国国家标准 GB/T 4135—2002的相关标准。<br />
+									每根银锭上标有交易中心认定的唯一编号、条锭重量、纯度标识、生产厂商标识和东翌贵金属的品牌名称。</p>
+									<p>生产厂<br />
+									交易中心严格选择生产厂家并向合格厂家进行生产资质授权，相关信息在网站公布。<br />
+									唯有经交易中心授权的合格生产厂才有权作为交易中心指定生产厂生产交易标的金条、银锭。</p>
+									<p>交割回购单位<br />
+									实物白银的交割、回购量须为100千克的整数倍，最少交割、回购量为100千克。</p>
+									<p>业务地点及营业时间<br />
+									交割、销售和回购地点为东翌贵金属营业地址。<br />
+									交割、销售和回购的时间为每个交易日上午10点至下午4点</p>
+								</div>
+							</div>
+							<div class="subtab" style="display:none">
+								<h2 class="text_center">交割与销售</h2>
+								<div class="d_open_cont">
+									<p>客户交割提货是指客户补齐资金，将多头仓位兑现为交易标的。<br />
+									客户以多头仓位申请交割提货，需在东翌贵金属网点当场平仓并凭当场打印出的该笔平仓单据办理；<br />
+									东翌贵金属对非基于即时平仓而提出的交割申请可不予受理；<br />
+									交割价格 = 平仓价格 + 单位提货费；<br />
+									提货费包括加工费、储运费等，单位提货费收取标准为：白银不高于现价的20%。<br />
+									客户需按照交割价格和提货数量，支付足额资金。<br />
+									销售是指客户可在仓储交割地现场购买交易中心交易标的。<br />
+									购买价格 = 即时报价 + 单位提货费；<br />
+									当东翌贵金属存货不足时，最长延期交货日期按照下表执行。</p>
+									<table>
+									  <tbody>
+									    <tr>
+									      <td>种类</td>
+									      <td> 回购数量（G）</td>
+									      <td> 最大支付期限</td>
+									    </tr>
+									    <tr>
+									      <td rowspan="3"> 白银</td>
+									      <td> 100千克≤G＜150千克</td>
+									      <td> 10个工作日</td>
+									    </tr>
+									    <tr>
+									      <td> 150千克≤G＜1500千克</td>
+									      <td> 20个工作日</td>
+									    </tr>
+									    <tr>
+									      <td> 1500千克≤G</td>
+									      <td> 双方商定</td>
+									    </tr>
+									  </tbody>
+									</table>
+								</div>
+							</div>
+							<div class="subtab" style="display:none">
+								<h2 class="text_center">实物回购</h2>
+								<div class="d_open_cont">
+									<p>回购指客户向东翌贵金属交付质量合格的交易中心交易标的的方式对己方持有的空头仓位进行平仓，或直接将质量合格的交易中心交易标的回售給东翌贵金属。<br />
+									东翌贵金属客户持有空头仓位申请回购，需在公司营业网点当场平仓并凭当场打印出的该笔平仓单据办理；<br />
+									东翌贵金属对非基于即时平仓而提出的平仓回购申请可不予受理；<br />
+									平仓回购价格 = 平仓价格 – 单位手续费；<br />
+									手续费包括检验费、储运费等，单位手续费为：黄金不高于现价的2％，白银不高于现价的5%。<br />
+									客户可持交易中心交易标的和原始出库单，直接到交易中心任意会员网点申请回购；<br />
+									回购价格 = 即时价格 – 手续费。<br />
+									东翌贵金属回购，原则上需即时向客户全额支付款项；款项不足时，延期支付日按照下表执行；</p>
+									<table>
+									  <tbody>
+									    <tr>
+									      <td>种类</td>
+									      <td> 回购数量（G）</td>
+									      <td> 最大支付期限</td>
+									    </tr>
+									    <tr>
+									      <td rowspan="3"> 白银</td>
+									      <td> 100千克≤G＜150千克</td>
+									      <td> 5个工作日</td>
+									    </tr>
+									    <tr>
+									      <td> 150千克≤G＜1500千克</td>
+									      <td> 10个工作日</td>
+									    </tr>
+									    <tr>
+									      <td> 1500千克≤G</td>
+									      <td> 双方商定</td>
+									    </tr>
+									  </tbody>
+									</table>
+								</div>
+							</div>
+							<div class="subtab" style="display:none">
+								<h2 class="text_center">质量纠纷</h2>
+								<div class="d_open_cont">
+									<p>质量纠纷<br />
+									客户提取交易标的后，如果对质量持有异议，必须在提货日后5个工作日内向原仓储交割网点书面提出，并提供质量鉴定结论或有效证明，超过此期限视为无异议。<br />
+									交易标的产品发生质量异议，由东翌贵金属、客户在交易所指定的具有国家级检验资质的中立质检机构范围内选择具体检测机构进行检验。<br />
+									经具有国家级检验资质的中立质检机构检验后，质量纠纷中的过错方应承担以下责任：<br />
+									（一）支付质检及相关费用；<br />
+									（二）承担由此发生的直接经济损失。</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		 <%@ include file="/WEB-INF/views/front/footer.jsp" %>
+		<script type="text/javascript">
+		   $(function(){
+		         siblingSelect({
+		            storSel:"curr",
+		            storItem: $(".d_tab_tit span"),//items
+		            storTab: $(".d_tab_con .subtab"),//tabs
+		            event:"click"//event
+		         });
+		     });
+		   function siblingSelect(options){
+		        var setting = {
+		            storSel:"curr",//status
+		            storItem: null,//items
+		            storTab: null,//tabs
+		            event:"click"//event
+		        };
+		        $.extend(setting, options);
+		        
+		        
+		        $(setting.storItem).on(setting.event, function(){
+		            $.each(setting.storItem, function(i, e){
+		                $(e).removeClass(setting.storSel);
+		                $($(setting.storTab).get(i)).hide();
+		            });
+
+		            if(!($(this).hasClass(setting.storSel))){
+		                $(this).addClass(setting.storSel);
+		            }
+		            
+		            var index = $(setting.storItem).index($(this));
+		            $($(setting.storTab).get(index)).show();
+		        });
+		    }
+		</script>
+	</body>
+</html>

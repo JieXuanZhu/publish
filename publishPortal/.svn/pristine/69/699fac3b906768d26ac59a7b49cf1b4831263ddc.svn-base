@@ -1,0 +1,163 @@
+﻿<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ include file="/WEB-INF/views/general_path.jsp"%>
+<!doctype>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-widht,minimun-scale=1.0,maximun-scale=1.0,user-scalable=no,initial-scale=1.0" >
+		<title>资讯预览</title>
+		<%@include file="/WEB-INF/views/admin/include_css.jsp" %>
+	</head>
+	<body>
+			<div id="slider_content" class="content">
+			<form action="" id="id_form_view_news" method="post">
+				<div style="display:none">
+					<input type="hidden" name="id" id="id_news_id" value="${info.infoId }">
+				</div>
+				<div class="content_div">
+					<h1>
+						
+						<%-- <span class="action-span"><a href="javascript:void(0);" onclick="gotoModify(${info.infoId});">修改</a></span> --%>
+						<span class="action-span"><a href="javascript:void(0);" onclick="history.go(-1);">返回</a></span>
+						<span class="action-span1">管理中心</span>
+						<span class="action-span1 action-span2">-资讯管理</span>
+					</h1>
+				</div>
+					<div class="case">
+						<div class="model">
+							<h1>资讯预览<span>-Info Preview-</span></h1>
+							<div class="clearfix">
+								
+								<div class="news_txt">
+									<h3>${info.infoContent.title }</h3>
+									<p>${info.infoContent.brief }</p>
+									<span><fmt:formatDate value="${info.createTime }" pattern="yyyy-MM-dd"/></span>
+								</div>
+								<div class="news_img">
+								<c:if test="${not empty info.infoBanners }">
+									<c:forEach items="${info.infoBanners }" var="banner" varStatus="bannerSta">
+										<img src='<c:if test="${not empty banner.url}">${banner.url }</c:if>' />
+									</c:forEach>
+								</c:if>
+								</div>
+							</div>
+							<br>
+							<br>
+							<div class="new_page">
+								<h3>${info.infoContent.title } <span class="right"><fmt:formatDate value="${info.infoContent.createTime }" pattern="yyyy-MM-dd"/></span></h3>
+								<p>${info.infoContent.content }</p>
+							</div>
+						</div>
+					</div>
+					<c:if test="${not empty info.infoChecks }">
+						<div>
+							<h1>审核意见</h1>
+						</div>
+						<div class="list_table">
+							<table cellspacing="1" cellpadding="3" class="table-layout-view">
+							<thead>
+							<tr>
+								<th width="5%">序号</th>
+								<th width="20%">审核状态</th>
+								<th width="40%">审核意见</th>
+								<th width="30%">审核时间</th>
+								<th width="5%">审核人</th>
+							</tr>
+							</thead>
+							<tbody>
+							<c:forEach var="check" items="${info.infoChecks }" varStatus="checkStatus">
+								<tr>
+									<td>${checkStatus.index+1 }</td>
+									<td>${check.stageStr }</td>
+									<%-- <td class="text-elps">${info.brief }</td> --%>
+									<%-- <td>${news.newsType.name}</td> --%>
+									<td class="text-elps">
+										${check.opinion }
+									</td>
+									<td><fmt:formatDate value="${check.checkTime }" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+									<td>
+										${check.userName }
+									</td>
+								</tr>	
+							</c:forEach>
+							</tbody>
+						</table>
+						</div>
+					</c:if>
+					<div >
+						<div class="clearfix">
+							<c:if test="${info.status=='1102-1' }">
+								<textarea name="opinion" id="id_opinion" class="form-control"rows="10" cols="100" style="position:relative;left:50%;margin-left:-270px;margin-top:20px;margin-bottom:20px;" ></textarea>
+								<a href="javascript:void(0);" class="btn" onclick="confirm('1102-3');">确认提交复核</a>
+								<a href="javascript:void(0);" class="btn" onclick="confirm('1102-2');">审核不同意,返回修改</a>
+							</c:if>
+							<c:if test="${info.status=='1102-3' }">
+							<textarea name="opinion" id="id_opinion" class="form-control"rows="10" cols="100" style="position:relative;left:50%;margin-left:-270px;margin-top:20px;margin-bottom:20px;" ></textarea>
+								<a href="javascript:void(0);" class="btn" onclick="confirm('1102-5');">确认提交发布</a>
+								<a href="javascript:void(0);" class="btn" onclick="confirm('1102-4');">复核不同意,返回修改</a>
+							</c:if>
+							<c:if test="${info.status=='1102-8' }">
+							<textarea name="opinion" id="id_opinion" class="form-control"rows="10" cols="100" style="position:relative;left:50%;margin-left:-270px;margin-top:20px;margin-bottom:20px;" ></textarea>
+								<a href="javascript:void(0);" class="btn" onclick="confirm('1102-6');">确认提交发布</a>
+							</c:if>
+						</div>
+					</div>
+				
+				</form>
+		</div>
+		<%@include file="/WEB-INF/views/admin/include_js.jsp" %>
+		<script src="<%=path %>/back/js/jquery.md5.js" type="text/javascript"></script>
+		<script type="text/javascript">
+		
+			function confirm(status){
+				var infoId=$("#id_news_id").val();
+				var opinion = $("#id_opinion").val();
+				if((status=='1102-2'||status=='1102-4') && opinion==''){
+					layer.alert("请输入修改意见,方便编辑修改资讯");
+					return ;
+				}
+				$.ajax({
+					type:'POST',
+					url:'<%=path%>/admin/info/changeStatus',
+					data:{
+						"infoId":infoId,
+						"status":status,
+						"opinion":opinion
+					},
+					dataType:'json',
+					success:function(data){
+						if(data.success=='true'){
+							layer.alert(data.message,{icon: 6, closeBtn:2,title:'资讯管理',offset:'100px'},function(index){
+								//window.location.reload();
+								if(status=='1102-3'||status=='1102-2'){
+									window.location.href="<%=path %>/admin/info/getFirstCheckInfos";
+								}else if(status=='1102-5'||status=='1102-4'){
+									window.location.href="<%=path %>/admin/info/getSecondCheckInfos";
+								}else if(status=='1102-6'){
+									window.location.href="<%=path %>/admin/info/layout";
+								}
+								layer.close(index);
+							});
+						}else if(data.success=='false'){
+							layer.alert(data.message,{icon: 5, closeBtn:2,title:'资讯管理'});
+						}
+					},
+					error: function(data) {
+						var message = "";
+						if( typeof(data) == "undefined" || data == null || data.message==null||data.message==''){
+							message = "资讯确认失败";
+						}else {
+							message = data.message;
+						}
+						layer.alert(message,{icon: 5, closeBtn:2,title:'资讯管理',offset:'100px'});
+	                }
+				});
+			}
+		
+			function cancel(){
+				window.location.href="<%=path %>/admin/info/getInfos";
+			}
+			
+		</script>
+	</body>
+</html>

@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.ICustDao" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.Cust" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_name" property="user_name" jdbcType="VARCHAR" />
+    <result column="nick_name" property="nick_name" jdbcType="VARCHAR" />
+    <result column="salt" property="salt" jdbcType="CHAR" />
+    <result column="password" property="password" jdbcType="CHAR" />
+    <result column="level_id" property="level_id" jdbcType="INTEGER" />
+    <result column="create_date" property="create_date" jdbcType="TIMESTAMP" />
+    <result column="last_login_date" property="last_login_date" jdbcType="TIMESTAMP" />
+    <result column="is_valid" property="is_valid" jdbcType="INTEGER" />
+    <result column="head_img_url" property="head_img_url" jdbcType="VARCHAR" />
+    <result column="wei_xin" property="wei_xin" jdbcType="VARCHAR" />
+    <result column="qq" property="qq" jdbcType="VARCHAR" />
+    <result column="sina_wei_bo" property="sina_wei_bo" jdbcType="VARCHAR" />
+    <result column="is_wei_xin" property="is_wei_xin" jdbcType="INTEGER" />
+    <result column="is_qq" property="is_qq" jdbcType="INTEGER" />
+    <result column="is_sina_wei_bo" property="is_sina_wei_bo" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, user_name, nick_name, salt, password, level_id, create_date, last_login_date, 
+    is_valid, head_img_url, wei_xin, qq, sina_wei_bo, is_wei_xin, is_qq, is_sina_wei_bo
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+     c.id, c.user_name, c.nick_name, c.salt, c.password, e.level_name as level_name, 
+	     e.level as level, c.level_id, c.create_date, c.last_login_date, c.is_valid, c.head_img_url
+	     ,c. wei_xin, c.qq, c.sina_wei_bo, c.is_wei_xin, c.is_qq, c.is_sina_wei_bo
+    from t_cust c
+    left join t_cust_level e
+    on c.level_id = e.id   
+    where c.id = #{id,jdbcType=INTEGER}
+  </select>
+   <!-- 根据对象设值查询完整对象信息 -->
+  <select id="selectBySelective" parameterType="cn.com.shukaiken.model.Cust" resultMap="BaseResultMap">
+    select 
+    	<include refid="Base_Column_List" />
+    from t_cust
+    where 1 = 1
+    and is_valid != 2
+      <if test="user_name != null" >
+        and user_name = #{user_name,jdbcType=VARCHAR}
+      </if>
+      <if test="password != null" >
+        and password = #{password,jdbcType=VARCHAR}
+      </if>
+      <if test="nick_name != null" >
+        and nick_name = #{nick_name,jdbcType=VARCHAR}
+      </if>
+      <if test="level_id != null" >
+        and level_id = #{level_id,jdbcType=INTEGER}
+      </if>
+      <if test="last_login_date != null" >
+        and last_login_date = #{last_login_date,jdbcType=TIMESTAMP}
+      </if>
+      <if test="create_date != null" >
+        and create_date = #{create_date,jdbcType=TIMESTAMP}
+      </if>
+      <if test="head_img_url != null" >
+        and head_img_url = #{head_img_url,jdbcType=VARCHAR}
+      </if>
+      <if test="wei_xin != null" >
+        and wei_xin = #{wei_xin,jdbcType=VARCHAR}
+      </if>
+      <if test="qq != null" >
+        and qq = #{qq,jdbcType=VARCHAR}
+      </if>
+      <if test="sina_wei_bo != null" >
+        and sina_wei_bo = #{sina_wei_bo,jdbcType=VARCHAR}
+      </if>
+      <if test="is_wei_xin != null" >
+        and is_wei_xin = #{is_wei_xin,jdbcType=INTEGER}
+      </if>
+      <if test="is_qq != null" >
+        and is_qq = #{is_qq,jdbcType=INTEGER}
+      </if>
+      <if test="is_sina_wei_bo != null" >
+        and is_sina_wei_bo = #{is_sina_wei_bo,jdbcType=INTEGER}
+      </if>
+  </select>
+  <select id="getCustLs" parameterType="cn.com.shukaiken.model.Cust" resultMap="BaseResultMap">
+  	 select 
+	     c.id, c.user_name, c.nick_name, c.salt, c.password, e.level_name as level_name, 
+	     e.level as level, c.level_id, c.create_date, c.last_login_date, c.is_valid, c.head_img_url
+	     ,c. wei_xin, c.qq, c.sina_wei_bo, c.is_wei_xin, c.is_qq, c.is_sina_wei_bo
+    from t_cust c
+    left join t_cust_level e
+    on c.level_id = e.id   
+    where 1=1
+     <if test="user_name != null">
+    	and c.user_name = #{user_name,jdbcType=VARCHAR}
+     </if>
+     <if test="password != null" >
+        and c.password = #{password,jdbcType=VARCHAR}
+     </if>
+     <if test="nick_name != null">
+    	and c.nick_name like CONCAT('%',#{nick_name},'%' ) 
+     </if>
+     <if test="level_id != null" >
+        and c.level_id = #{level_id,jdbcType=INTEGER}
+     </if>
+     <if test="last_login_date != null" >
+        and c.last_login_date = #{last_login_date,jdbcType=TIMESTAMP}
+     </if>
+     <if test="create_date != null" >
+        and c.create_date = #{create_date,jdbcType=TIMESTAMP}
+     </if>
+     <if test="is_valid != null" >
+        and c.is_valid = #{is_valid,jdbcType=INTEGER}
+     </if>
+     <if test="head_img_url != null" >
+        and c.head_img_url = #{head_img_url,jdbcType=VARCHAR}
+     </if>
+     <if test="wei_xin != null" >
+        and c.wei_xin = #{wei_xin,jdbcType=VARCHAR}
+     </if>
+     <if test="qq != null" >
+        and c.qq = #{qq,jdbcType=VARCHAR}
+     </if>
+     <if test="sina_wei_bo != null" >
+        and c.sina_wei_bo = #{sina_wei_bo,jdbcType=VARCHAR}
+     </if>
+     <if test="is_wei_xin != null" >
+        and c.is_wei_xin = #{is_wei_xin,jdbcType=INTEGER}
+     </if>
+     <if test="is_qq != null" >
+        and c.is_qq = #{is_qq,jdbcType=INTEGER}
+     </if>
+     <if test="is_sina_wei_bo != null" >
+        and c.is_sina_wei_bo = #{is_sina_wei_bo,jdbcType=INTEGER}
+     </if>
+     order by id 
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_cust
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.com.shukaiken.model.Cust" >
+    insert into t_cust (id, user_name, nick_name, 
+      salt, password, level_id, 
+      create_date, last_login_date, is_valid, head_img_url, wei_xin, qq, sina_wei_bo
+      , is_wei_xin, is_qq, is_sina_wei_bo
+      )
+    values (#{id,jdbcType=INTEGER}, #{user_name,jdbcType=VARCHAR}, #{nick_name,jdbcType=VARCHAR}, 
+      #{salt,jdbcType=CHAR}, #{password,jdbcType=CHAR}, #{level_id,jdbcType=INTEGER}, 
+      #{create_date,jdbcType=TIMESTAMP}, #{last_login_date,jdbcType=TIMESTAMP}, #{is_valid,jdbcType=INTEGER}, 
+      #{head_img_url,jdbcType=VARCHAR}, #{wei_xin,jdbcType=VARCHAR}, #{qq,jdbcType=VARCHAR}, #{sina_wei_bo,jdbcType=VARCHAR}
+      ,#{is_wei_xin,jdbcType=INTEGER}, #{is_qq,jdbcType=INTEGER}, #{is_sina_wei_bo,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.shukaiken.model.Cust" >
+    insert into t_cust
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="user_name != null" >
+        user_name,
+      </if>
+      <if test="nick_name != null" >
+        nick_name,
+      </if>
+      <if test="salt != null" >
+        salt,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="level_id != null" >
+        level_id,
+      </if>
+      <if test="create_date != null" >
+        create_date,
+      </if>
+      <if test="last_login_date != null" >
+        last_login_date,
+      </if>
+      <if test="is_valid != null" >
+        is_valid,
+      </if>
+      <if test="head_img_url != null" >
+        head_img_url,
+      </if>
+      <if test="wei_xin != null" >
+     	 wei_xin,
+      </if>
+      <if test="qq != null" >
+     	 qq,
+      </if>
+      <if test="sina_wei_bo != null" >
+       	sina_wei_bo,
+      </if>
+      <if test="wei_xin != null" >
+     	 is_wei_xin,
+      </if>
+      <if test="qq != null" >
+     	 is_qq,
+      </if>
+      <if test="sina_wei_bo != null" >
+       	is_sina_wei_bo,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="user_name != null" >
+        #{user_name,jdbcType=VARCHAR},
+      </if>
+      <if test="nick_name != null" >
+        #{nick_name,jdbcType=VARCHAR},
+      </if>
+      <if test="salt != null" >
+        #{salt,jdbcType=CHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=CHAR},
+      </if>
+      <if test="level_id != null" >
+        #{level_id,jdbcType=INTEGER},
+      </if>
+      <if test="create_date != null" >
+        #{create_date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="last_login_date != null" >
+        #{last_login_date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="is_valid != null" >
+        #{is_valid,jdbcType=INTEGER},
+      </if>
+      <if test="head_img_url != null" >
+        #{head_img_url,jdbcType=VARCHAR},
+      </if>
+      <if test="wei_xin != null" >
+        #{wei_xin,jdbcType=VARCHAR},
+      </if>
+       <if test="qq != null" >
+        #{qq,jdbcType=VARCHAR},
+      </if>
+       <if test="sina_wei_bo != null" >
+        #{sina_wei_bo,jdbcType=VARCHAR},
+      </if>
+       <if test="is_wei_xin != null" >
+        #{is_wei_xin,jdbcType=INTEGER},
+      </if>
+       <if test="is_qq != null" >
+        #{is_qq,jdbcType=INTEGER},
+      </if>
+       <if test="is_sina_wei_bo != null" >
+        #{is_sina_wei_bo,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.Cust" >
+    update t_cust
+    <set >
+      <if test="user_name != null" >
+        user_name = #{user_name,jdbcType=VARCHAR},
+      </if>
+      <if test="nick_name != null" >
+        nick_name = #{nick_name,jdbcType=VARCHAR},
+      </if>
+      <if test="salt != null" >
+        salt = #{salt,jdbcType=CHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=CHAR},
+      </if>
+      <if test="level_id != null" >
+        level_id = #{level_id,jdbcType=INTEGER},
+      </if>
+      <if test="create_date != null" >
+        create_date = #{create_date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="last_login_date != null" >
+        last_login_date = #{last_login_date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="is_valid != null" >
+        is_valid = #{is_valid,jdbcType=INTEGER},
+      </if>
+      <if test="head_img_url != null" >
+        head_img_url = #{head_img_url,jdbcType=VARCHAR},
+      </if>
+      <if test="wei_xin != null" >
+        wei_xin = #{wei_xin,jdbcType=VARCHAR},
+      </if>
+       <if test="qq != null" >
+        qq = #{qq,jdbcType=VARCHAR},
+      </if>
+       <if test="sina_wei_bo != null" >
+        sina_wei_bo = #{sina_wei_bo,jdbcType=VARCHAR},
+      </if>
+      <if test="is_wei_xin != null" >
+        and is_wei_xin = #{is_wei_xin,jdbcType=INTEGER}
+      </if>
+      <if test="is_qq != null" >
+        and is_qq = #{is_qq,jdbcType=INTEGER}
+      </if>
+      <if test="is_sina_wei_bo != null" >
+        and is_sina_wei_bo = #{is_sina_wei_bo,jdbcType=INTEGER}
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.Cust" >
+    update t_cust
+    set user_name = #{user_name,jdbcType=VARCHAR},
+      nick_name = #{nick_name,jdbcType=VARCHAR},
+      salt = #{salt,jdbcType=CHAR},
+      password = #{password,jdbcType=CHAR},
+      level_id = #{level_id,jdbcType=INTEGER},
+      create_date = #{create_date,jdbcType=TIMESTAMP},
+      last_login_date = #{last_login_date,jdbcType=TIMESTAMP},
+      is_valid = #{is_valid,jdbcType=INTEGER},
+      head_img_url = #{head_img_url,jdbcType=VARCHAR},
+      wei_xin = #{wei_xin,jdbcType=VARCHAR},
+      qq = #{qq,jdbcType=VARCHAR},
+      sina_wei_bo = #{sina_wei_bo,jdbcType=VARCHAR},
+      is_wei_xin = #{is_wei_xin,jdbcType=INTEGER},
+      is_qq = #{is_qq,jdbcType=INTEGER},
+      is_sina_wei_bo = #{is_sina_wei_bo,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

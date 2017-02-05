@@ -1,0 +1,22 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<div class="d_detail_fl fl">
+	<div class="d_slider">
+		<div class="d_content_fl_tit"><h2>开户中心</h2></div>
+		<ul class="d_slider_ul">
+			<li><a href="<%=path%>/accol">在线开户</a></li>
+			<li><a href="<%=path%>/front/user/goCreateAccount">预约开户</a></li>
+			<li><a href="<%=path %>/analog/analogApply">申请模拟账号</a></li>
+			<li><a href="<%=path %>/consult/consult">开户咨询</a></li>
+			<li><a href="<%=path %>/consult/process">开户流程</a></li>
+		</ul>
+		<div class="text_center d_time">
+			<img src="<%=path %>/front/images/d_time.png" alt="24小时咨询" title="24小时咨询" />
+		</div>
+		<div class="d_slider_contact">
+			<p class="d_tel">400-113-9118</p>
+			<p class="d_name">东翌（上海）投资发展有限公司</p>
+			<a href="<%=path%>/analog/analogApply">申请模拟账户</a>
+			<a href="<%=path%>/front/user/goCreateAccount">网上预约开户</a>
+		</div>
+	</div>
+</div>

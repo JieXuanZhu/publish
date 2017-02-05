@@ -1,0 +1,13 @@
+package cn.com.shukaiken.webService;
+
+public interface IAppEditorWebService {
+	
+	/**
+	 * 
+	 * @param jsonStr为 用户名id和 标题和内容、图片data:经过base64加密的Lsit<byte[]>(byte[]由上传的图片File得来）的json字符串
+	 *        主键分别为 custId、title、 content和  data
+	 * @return
+	 */
+	public String addEditor(String jsonStr);
+
+}

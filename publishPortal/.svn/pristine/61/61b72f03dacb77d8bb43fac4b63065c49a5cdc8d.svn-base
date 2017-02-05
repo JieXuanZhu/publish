@@ -1,0 +1,106 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ include file="/WEB-INF/views/general_path.jsp"%>
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<title>资金存取</title>
+		<meta name="keywords" content="东翌"/>
+		<meta name="description" content="东翌（上海）投资发展有限公司是..."/>
+	    <link rel="stylesheet" type="text/css" href="<%=path %>/front/css/default.css">
+		<link rel="stylesheet" type="text/css" href="<%=path %>/front/css/main.css">
+		<link rel="shortcut icon" type="image/x-icon" href="<%=request.getContextPath()%>/front/images/favicon.ico" />
+	</head>
+	<body>
+		<%@ include file="/WEB-INF/views/front/header.jsp" %>
+		<div class="d_wrapper">
+			<div class="d_detail_cont clearfix">
+				<div class="text_center"><img src="<%=path %>/front/images/d_trade.jpg" alt="交易指南" title="交易指南" /></div>
+				<!-- left start -->
+				<%@ include file="/WEB-INF/views/front/trading/trading_left.jsp" %>
+				<!-- left end -->
+				<div class="d_detail_fr fr">
+					<div class="d_content_fl_tit"><h2>资金存取</h2></div>
+					<div class="d_main_cont">
+						<div class="d_tab_tit fr">
+							<span class="curr">资金三方存管</span>
+							<span>出入金注意事项</span>
+							<span>签约注意事项</span>
+						</div>
+						<div class="d_tab_con fl">
+							<div class="subtab">
+								<h2 class="text_center">资金三方存管注意事项</h2>
+								<div class="d_open_cont">
+									<p>投资者在进行结算银行签约之前，必须已在东翌贵金属开户，并已设置在交易中心的交易资金账户和密码；<br />
+									投资者在进行结算银行签约之前，必须在东翌贵金属领取相关银行签约表格和协议；<br />
+									投资者选择建行银行办理签约，可选择临柜办理或网银方式办理；<br />
+									投资者在结算银行办理签约时，东翌贵金属客户经理将为投资者办理结算银行签约提供完善的支持服务；<br />
+									</p>
+								</div>
+							</div>
+							<div class="subtab" style="display:none">
+								<h2 class="text_center">出入金注意事项</h2>
+								<div class="d_open_cont">
+									<p>东翌贵金属投资者必须在完成结算银行签约后，方可进行交易资金划转。</p>
+									<p>首次入金操作，只能通过网银的入金方式由银行三方存管的渠道进行，以确保投资者在交易中心的交易账户不为空账户。</p>
+									<p>投资者交易账户正式开通后，可选择交易中心电子交易系统或结算银行网银界面的专门业务进行交易资金的划转。如结算银行提供了可实现交易资金划转处理的网银、电话或其他服务业务，可通过结算银行的网银、电话或其他服务业务进行交易资金划转。</p>
+									<p>请投资者务必注意：通过常规方式的银行汇款、转账业务从投资者账户划入交易中心账户的资金不能作为交易中心的交易资金，交易中心的交易资金也不能通过常规方式的银行汇款、转账业务划出到投资者账户。</p>
+									<p>投资者的交易资金划转操作的有效时间为：10:00am-17:00pm ；出金时间：开盘时间内随时入金。</p>
+								</div>
+							</div>
+							<div class="subtab" style="display:none">
+								<h2 class="text_center">三方存管签约注意事项</h2>
+								<div class="d_open_cont">
+									<p>按照东翌贵金属交易中心相关规定，下列单位及个人不得开户、交易：
+									国家机关和事业单位<br />
+									交易中心股东<br />
+									交易中心、会员单位工作人员及其配偶<br />
+									未能提供开户证明材料的单位和个人<br />
+									交易中心及政府有关监管部门明令禁止入市的单位和个人</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+         <%@ include file="/WEB-INF/views/front/footer.jsp" %>
+		<script type="text/javascript">
+		   $(function(){
+		         siblingSelect({
+		            storSel:"curr",
+		            storItem: $(".d_tab_tit span"),//items
+		            storTab: $(".d_tab_con .subtab"),//tabs
+		            event:"click"//event
+		         });
+		     });
+		   function siblingSelect(options){
+		        var setting = {
+		            storSel:"curr",//status
+		            storItem: null,//items
+		            storTab: null,//tabs
+		            event:"click"//event
+		        };
+		        $.extend(setting, options);
+		        
+		        
+		        $(setting.storItem).on(setting.event, function(){
+		            $.each(setting.storItem, function(i, e){
+		                $(e).removeClass(setting.storSel);
+		                $($(setting.storTab).get(i)).hide();
+		            });
+
+		            if(!($(this).hasClass(setting.storSel))){
+		                $(this).addClass(setting.storSel);
+		            }
+		            
+		            var index = $(setting.storItem).index($(this));
+		            $($(setting.storTab).get(index)).show();
+		        });
+		    }
+		</script>
+	</body>
+</html>

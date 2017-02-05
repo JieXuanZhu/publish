@@ -1,0 +1,350 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ include file="/WEB-INF/views/general_path.jsp"%>
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<title>申请模拟账号</title>
+		<meta name="keywords" content="东翌"/>
+		<meta name="description" content="东翌（上海）投资发展有限公司是..."/>
+		<link rel="stylesheet" type="text/css" href="<%=path %>/front/css/default.css">
+		<link rel="stylesheet" type="text/css" href="<%=path %>/front/css/main.css">
+		<link rel="shortcut icon" type="image/x-icon" href="<%=request.getContextPath()%>/front/images/favicon.ico" />
+	</head>
+	<body>
+		<%@ include file="/WEB-INF/views/front/header.jsp" %>
+		<div class="d_wrapper">
+			<div class="d_detail_cont clearfix">
+				<div class="text_center"><img src="<%=path %>/front/images/d_trade.jpg" alt="开户中心" title="开户中心" /></div>
+				<!-- left start -->
+				<%@ include file="/WEB-INF/views/front/account/account_left.jsp" %>
+				<!-- left end -->
+				<div class="d_detail_fr fr">
+					<div class="d_content_fl_tit"><h2>申请模拟账号</h2></div>
+					<div class="d_main_cont">
+						<div class="d_tab_con fl">
+							<div class="d_apply_cont">
+								<div class="d_open_cont">
+									<p>当下的贵金属投资火热异常，所谓贵金属投资就是俗称的炒黄金炒白银，许多投资者喜欢购买实物黄金，白银，但是这样资金利用率低。东翌商品模拟交易账户为东翌商品交易所仿真交易平台，提供虚拟资金，让您熟悉贵金属电子交易平台。在东翌商品您只要投入实物黄金白银价值的2％资金即可拥有100%的权益。收到您的申请后，客服代表将用短信通知您登入交易平台的模拟账号和密码。</p> 
+									<p>
+									根据交易中心规定开立真实账户需要不少于20笔的模拟交易记录，因此模拟账户身份信息必须与实盘账户身份信息一致，实施一户一码制。请您如实填写真实姓名以及身份证号，这样您的模拟交易记录就会被认可，大大节省您开户需要的手续和等待的时间。联系电话请填写手机号码，方便我们系统给您发送短信。</p>
+								</div>
+								<div class="d_remark">特别提示：东翌商品交易模拟账号注册请填写二代18位身份证号。</div>
+								<form id="apply_form" method="post">
+									<div class="d_form_cont">
+										<div class="d_form_list clearfix">
+											<label class="fl">姓名：</label>
+											<div class="fl"><input id="name" name="name" type="text" class="d_input" onblur="checkName();" /></div>
+											<em>*必填</em>
+										</div>
+										<div class="d_form_list clearfix">
+											<label class="fl">身份证号：</label>
+											<div class="fl"><input id="id_number" name="id_number" type="text" class="d_input" onblur="checkCardNumber();"/></div>
+											<em>*必填</em>
+										</div>
+										<div class="d_form_list clearfix">
+											<label class="fl">手机号码：</label>
+											<div class="fl"><input id="mobile" name="mobile" type="text" class="d_input" onblur="checkMobile();" /></div>
+											<em>*必填</em>
+										</div>
+										<div class="d_form_list clearfix">
+											<label class="fl">省份：</label>
+											<div class="fl"><input id="province" name="province" type="text" class="d_input" onblur="checkProvince();"/></div>
+											<em>*必填</em>
+										</div>
+										<div class="d_form_list clearfix">
+											<label class="fl">城市：</label>
+											<div class="fl"><input id="city" name="city" type="text" class="d_input" onblur="checkCity();"/></div>
+											<em>*必填</em>
+										</div>
+										<div class="d_form_list clearfix">
+											<label class="fl">区/县：</label>
+											<div class="fl"><input id="country" name="country" type="text" class="d_input" onblur="checkCountry();"/></div>
+											<em>*必填</em>
+										</div>
+										<div class="d_form_list clearfix">
+											<label class="fl">QQ号码：</label>
+											<div class="fl"><input id="qq_number" name="qq" type="text" class="d_input" onblur="checkQQ();"/></div>
+										</div>
+										<div class="d_form_list clearfix">
+											<label class="fl">&nbsp;</label>
+											<div class="fl"><a href="javascript:void(0);" onclick="analog_apply()" class="d_btn">提交申请</a></div>
+										</div>
+									</div>
+								</form>
+								<div class="d_apply_rule">
+									<a href="javascript:void(0);">点击观看交易系统视频教程</a>
+									<a href="<%=path %>/fileOperate/soft_download" class="d_apply_a2">点击下载交易系统电脑版/手机版</a>
+									<div class="d_open_cont">
+										<p>服务及隐私条款：
+										当您在本网站进行用户注册登记、参加网上或公共论坛等各种活动时，在您的同意及确认下，本网站将通过注册表格等形式要求您提供一些个人资料。这些个人资料包括： 如姓名、性别、年龄、出生日期、身份证号码（或护照号码）、电话、通信地址、住址、电子邮件地址、等情况。</p>
+										<p>请了解，在未经您同意及确认之前，本网站不会将您为参加本网站之特定活动所提供的资料利用于其它目的。但是当政府机关依照法定程序要求本网站披露个人资料时，本网站将根据执法单位之要求或
+										为公共安全之目的提供个人资料。在此情况下之任何披露，本网站均不承担任何责任
+										我们真诚的希望我们能通过此次合作建立长期的合作关系。
+										如果您同意我们的服务及隐私条款，请点击提交按钮。<p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<%@ include file="/WEB-INF/views/front/footer.jsp" %>
+		<script type="text/javascript">
+		
+		 function checkName(){
+			   var name = $("#name").val();
+			   var reg = /^[\u4E00-\u9FA5]{2,5}(?:·[\u4E00-\u9FA5]{2,5})*$/;
+			   if(name == ''){
+				   layer.tips('姓名不为空', '#name', {
+					    tips: 2,
+					});
+			 	   return false ;
+			    }else if(!reg.test(name)){
+			    	 layer.tips('姓名不符合规范', '#name', {
+						    tips: 2,
+						});
+			 	   return false;
+			    } else{
+			    
+			    	return true;
+			    } 
+			    
+			 }
+		 
+			
+			 function checkCardNumber(){
+				    var flag = false;
+				    var id_number = $("#id_number").val();
+				    if(id_number == ''){
+				    	 layer.tips('请填写身份证号码', '#id_number', {
+							    tips: 2,
+						});
+				 	   return false;
+				    }else{
+				    	$.ajax({
+				    		async : false,
+				    		url:"<%=path %>/analog/checkCardNumber",
+				    		data:{
+				    			"id_number":id_number
+				    		},
+				    		type:"POST",
+				    		dataType:"json",
+				    		success:function(data){
+				    			if(data.result==1){
+				    				flag = true;
+				    			}else{
+				    				layer.tips(data.msg, '#id_number', {
+									    tips: 2,
+									});
+			    				 
+			    				 	flag = false;
+				    			}
+				    		},
+				    		error:function(data){
+				    		},
+				    	});
+				    	return flag;
+				    }
+			 }
+			 
+			 function checkMobile(){
+				   var flag = false;
+				   var mobile = $("#mobile").val();
+				   var reg = /^1[3|4|5|7|8][0-9]{9}$/;
+				   if(mobile == ''){
+					   layer.tips('手机号不能为空', '#mobile', {
+						    tips: 2,
+						});
+				 	   return false ;
+				    }else if(!reg.test(mobile)){
+				    	 layer.tips('手机号不符合规范', '#mobile', {
+							    tips: 2,
+							});
+				 	   return false;
+				    }else{
+				    	
+				    	$.ajax({
+				    		async : false,
+				    		url:"<%=path %>/analog/checkMobile",
+				    		data:{
+				    			"mobile":mobile
+				    		},
+				    		type:"POST",
+				    		dataType:"json",
+				    		success:function(data){
+				    			if(data.result==1){
+				    				/*  layer.tips('符合规范', '#mobile', {
+										    tips: 2,
+										}); */
+				    				flag = true;
+				    			}else{
+				    				
+				    				layer.tips('该手机号已被使用', '#mobile', {
+									    tips: 2,
+									});
+			    				 
+			    				 	flag = false;
+				    			}
+				    		},
+				    		error:function(data){
+				    		},
+				    	});
+				    	return flag;
+				    }
+				   
+				 }
+			 
+			 
+			 function checkProvince(){
+			   var province = $("#province").val();
+			   var reg = /^[\u4E00-\u9FA5]{2,10}$/;
+			   if(province == ''){
+				   layer.tips('所在省份不能为空', '#province', {
+					    tips: 2,
+					});
+			 	   return false ;
+			    }else if(!reg.test(province)){
+			    	 layer.tips('所在省份不符合规范', '#province', {
+						    tips: 2,
+						});
+			 	   return false;
+			    } else{
+			    
+			    	return true;
+			    } 
+			    
+			 }
+			 
+			 function checkCity(){
+			   var city = $("#city").val();
+			   var reg = /^[\u4E00-\u9FA5]{2,10}$/;
+			   if(city == ''){
+				   layer.tips('所在城市不能为空', '#city', {
+					    tips: 2,
+					});
+			 	   return false ;
+			    }else if(!reg.test(city)){
+			    	 layer.tips('所在城市不符合规范', '#city', {
+						    tips: 2,
+						});
+			 	   return false;
+			    } else{
+			    
+			    	return true;
+			    } 
+			    
+			 }
+		 
+			 function checkCountry(){
+			   var country = $("#country").val();
+			   var reg = /^[\u4E00-\u9FA5]{2,10}$/;
+			   if(country == ''){
+				   layer.tips('所在区县不为空', '#country', {
+					    tips: 2,
+					});
+			 	   return false ;
+			    }else if(!reg.test(country)){
+			    	 layer.tips('所在区县不符合规范', '#country', {
+						    tips: 2,
+						});
+			 	   return false;
+			    } else{
+			    
+			    	return true;
+			    } 
+			    
+			 }
+			 
+			 function checkQQ(){
+			   var qq_number = $("#qq_number").val();
+			   var reg = /^[0-9]{1,}$/;
+			   if(qq_number == ''){
+				  
+			 	   return true ;
+			    }else if(!reg.test(qq_number)){
+			    	 layer.tips('qq号码应为6位以上纯数字', '#qq_number', {
+						    tips: 2,
+						});
+			 	   return false;
+			    } else{
+			    
+			    	return true;
+			    } 
+			    
+			 }
+			 
+			var flag = false;
+		    function checkEnter(){
+		    	 if(!checkName()){
+					   return ;
+				  } 
+		    	 
+		    	 if(!checkCardNumber()){
+			    		return ; 
+			     }
+		    	 
+		    	 if(!checkMobile()){
+					   return ;
+				 }
+		    	 
+		    	 if(!checkProvince()){
+					   return ;
+				  }
+		    	 
+		    	 if(!checkCity()){
+					   return ;
+				  }
+		    	 
+		    	 if(!checkCountry()){
+					   return ;
+				  }
+		    	 
+		    	 if(!checkQQ()){
+					   return ;
+				  }
+		    	 
+		    	 flag = true;
+		    }	
+			 
+		
+			function analog_apply(){
+				 checkEnter();
+				 if(flag){
+					$.ajax({
+				         cache: true,
+				         type: "POST",
+				         url:"<%=path %>/analog/apply",
+				         data:$('#apply_form').serialize(),// 你的formid
+				         async: false,
+				         dataType:"json",
+				         error: function(data) {
+				         },
+				         success: function(data) {
+				        	 if(data.result==0){
+					        	 layer.open({
+					        		    title: '模拟账号申请',
+					        		    content: '模拟账号信息提交成功'
+					        	 });
+					        	
+				        	 }else{
+				        		 layer.open({
+					        		    title: '模拟账号申请',
+					        		    content: '程序异常'
+					        	 });
+				        	 }
+				        	 //清空form表单信息
+				        	 document.getElementById("apply_form").reset();
+				         }
+				     });
+				}
+				    
+			}
+		
+		</script>
+	</body>
+</html>

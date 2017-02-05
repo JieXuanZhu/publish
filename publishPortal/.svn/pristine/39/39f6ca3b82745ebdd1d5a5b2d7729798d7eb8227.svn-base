@@ -1,0 +1,57 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<div class="d_detail_fl fl">
+	<div class="d_slider">
+		<div class="d_content_fl_tit">
+			<h2>东翌资讯</h2>
+		</div>
+		<ul id="id_news_types" class="d_slider_ul">
+			<!-- <li><a href="">投资保障</a></li>
+			<li><a href="">开户流程</a></li>
+			<li><a href="">交易产品及规则</a></li>
+			<li><a href="">资金存取</a></li>
+			<li><a href="">现货交割</a></li> -->
+		</ul>
+		<div class="text_center d_time">
+			<img src="<%=path %>/front/images/d_time.png" alt="24小时咨询" title="24小时咨询" />
+		</div>
+		<div class="d_slider_contact">
+			<p class="d_tel">400-113-9118</p>
+			<p class="d_name">东翌（上海）投资发展有限公司</p>
+			<a href="<%=path%>/analog/analogApply">申请模拟账户</a>
+			<a href="<%=path%>/front/user/goCreateAccount">网上预约开户</a>
+		</div>
+	</div>
+</div>
+<!-- end slider -->
+<script type="text/javascript">
+$(function(){
+	initLeftNewsType();
+});
+
+function initLeftNewsType(){
+	
+	var temp = "";
+	var typeJson;
+	var newsType= '<%=session.getAttribute("senewsType")%>';
+	if(newsType==null|| typeof newsType=='undefined'||newsType==''||newsType=='null'){//如果session过期，那么从后台去取
+		$.ajax({
+			async:false,
+			url:"<%=path%>/index/news_type",
+			type:"post",
+			dataType:'json',
+			success:function(data){
+				typeJson=data.newsType;
+			}
+		});
+	}else {
+		typeJson = jQuery.parseJSON(newsType);
+	}
+	
+	$.each(typeJson, function(i, item) {
+		 temp+="<li><a href='<%=path %>/news?c="+item.code+"'>"+item.name+"</a></li>";
+     });
+	 $("#id_news_types").append(temp);
+	// $("#id_stock_sub2").append(temp);
+	
+}
+</script>

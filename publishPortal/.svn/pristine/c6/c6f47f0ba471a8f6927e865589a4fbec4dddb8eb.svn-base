@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.IEditorDao" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.Editor" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="cust_id" property="cust_id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="create_date" property="create_date" jdbcType="TIMESTAMP" />
+    <result column="is_valid" property="is_valid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, cust_id, title, content, create_date, is_valid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select e.*,c.user_name as user_name
+    from t_editor e
+    left join t_cust c on e.cust_id = c.id
+    where e.id = #{id,jdbcType=INTEGER}
+  </select>
+  <!-- 根据对象设值查询完整对象信息 -->
+  <select id="selectBySelective" parameterType="cn.com.shukaiken.model.Editor" resultMap="BaseResultMap">
+    select 
+    	<include refid="Base_Column_List" />
+    from t_editor
+    where 1 = 1
+      <if test="cust_id != null" >
+        and cust_id = #{cust_id,jdbcType=INTEGER}
+      </if>
+      <if test="title != null" >
+        and title like CONCAT('%',#{title},'%' )
+      </if>
+      <if test="content != null" >
+        and content like CONCAT('%',#{content},'%' ) 
+      </if>
+      <if test="create_date != null" >
+        and create_date = #{create_date,jdbcType=TIMESTAMP}
+      </if>
+      <if test="is_valid != null" >
+        and is_valid = #{is_valid,jdbcType=INTEGER}
+      </if>
+  </select>
+  <select id="getEditorLs" parameterType="cn.com.shukaiken.model.Editor" resultMap="BaseResultMap">
+  	 select 
+  	   e.*, c.user_name as user_name
+    from t_editor e
+    left join t_cust c on e.cust_id = c.id
+    where 1=1
+      <if test="cust_id != null" >
+        and cust_id = #{cust_id,jdbcType=INTEGER}
+      </if>
+      <if test="title != null" >
+        and title like CONCAT('%',#{title},'%' )
+      </if>
+      <if test="content != null" >
+        and content like CONCAT('%',#{content},'%' ) 
+      </if>
+      <if test="create_date != null" >
+        and create_date = #{create_date,jdbcType=TIMESTAMP}
+      </if>
+      <if test="is_valid != null" >
+        and is_valid = #{is_valid,jdbcType=INTEGER}
+      </if>
+     order by create_date desc 
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_editor
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyProperty="id"  useGeneratedKeys="true"  parameterType="cn.com.shukaiken.model.Editor" >
+    insert into t_editor (id, cust_id, title, 
+      content, create_date, is_valid
+      )
+    values (#{id,jdbcType=INTEGER}, #{cust_id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, 
+      #{content,jdbcType=VARCHAR}, #{create_date,jdbcType=TIMESTAMP}, #{is_valid,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.shukaiken.model.Editor" >
+    insert into t_editor
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="cust_id != null" >
+        cust_id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="create_date != null" >
+        create_date,
+      </if>
+      <if test="is_valid != null" >
+        is_valid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="cust_id != null" >
+        #{cust_id,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="create_date != null" >
+        #{create_date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="is_valid != null" >
+        #{is_valid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.Editor" >
+    update t_editor
+    <set >
+      <if test="cust_id != null" >
+        cust_id = #{cust_id,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="create_date != null" >
+        create_date = #{create_date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="is_valid != null" >
+        is_valid = #{is_valid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.Editor" >
+    update t_editor
+    set cust_id = #{cust_id,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      create_date = #{create_date,jdbcType=TIMESTAMP},
+      is_valid = #{is_valid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

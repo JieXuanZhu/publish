@@ -1,0 +1,41 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ include file="/WEB-INF/views/general_path.jsp"%>
+<!DOCTYPE>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,initial-scale=1.0">
+		<title>亿阳指-登录注册协议</title>
+		<link rel="stylesheet" type="text/css" href="<%=path %>/front/css/reset.css">
+		<link rel="stylesheet" type="text/css" href="<%=path %>/front/css/main.css">
+	    <link rel="shortcut icon" type="image/x-icon" href="<%=request.getContextPath()%>/front/images/favicon.ico" />
+	</head>
+	<body>
+		<div class="wrapper clearfix">
+			<div class="content content_page"> 
+				<div class="case">
+					<div class="model" style="margin-top:40px;">
+						<h1>用户登录注册协议</h1>
+						<div class="product_content page clearfix">
+							<div class="">
+								<div>
+									<h2>尊敬的客户：</h2>
+									<p>当您投资金融市场的时候，请您务必了解以下事项：</p>
+									<p>一、充分知晓金融市场法规知识  当您自愿申请开立客户账户时，应充分知晓并遵守国家有关法律法规、监管政策、业务规则及证券操作的业务制度和业务流程。如您委托他人代理开立客户账户的，代理人也应了解并遵守国家有关法律法规、监管政策、业务规则及证券操作的业务制度和业务流程。</p>
+									<p>二、严格遵守账户实名制规定  当您开立客户账户时，应当出示本人有效身份证明文件，使用实名，保证开户资料信息真实、准确、完整、有效，保证资金来源合法。如您的个人身份信息发生变更，您应当及时与其开户机构联系进行变更。</p>
+									<p>三、严禁参与洗钱及恐怖融资活动  如您的交易涉嫌洗钱、恐怖融资,我司将依法履行大额交易、可疑交易报告义务；如您先前提交的身份证明文件已过有效期,未在合理期限内更新且没有提出合理理由的,我司可中止为您办理业务。 </p>
+									<p>四、妥善保管身份信息、账户信息、数字证书、账户密码  为确保您账户的安全性，我们特此提醒您，在申请开立客户账户时，您应自行设置相关密码，避免使用简单的字符组合或本人姓名、生日、电话号码等相关信息作为密码，并定期修改密码。您应妥善保管身份信息、账户信息、数字证书及账户密码等，不得将相关信息提供或告知他人使用（我司合规部除外）。由于身份信息、账户信息、数字证书或账户密码的泄露、管理不当或使用不当造成的后果和损失，将由您自行承担。 </p>
+									<p>五、选择适当的金融产品  金融市场中可供投资的产品有很多，其特点和交易规则也有很大不同，请您了解自己的风险承受能力，尽量选择相对熟悉的、与自己风险承受能力匹配的金融产品进行投资。在投资之前，请您务必详细了解该产品的特点、潜在的风险和交易规则，由于您投资决策失误而引起的损失将由您自行承担。</p>
+									<p>六、选择熟悉的委托方式  我司为您提供的委托方式有网上委托，具体委托方式以实际开通为准。请您详细了解委托方式的具体操作步骤，由于您操作不当而引起的损失将由您自行承担。对于通过互联网进行操作的方式，您应特别防范网络中断、黑客攻击、病毒感染等风险，避免造成损失。  </p>
+									<p>七、我司客户服务电话  当您需要我司提供服务时请拨打客服电话，电话号码：400-0158731 </p>
+									<p>本人已详细阅读并理解了《客户须知》的各项内容。</p>
+									<p class="right" style="text-indent:0"> 客户：   <br /> 日期：    年     月     日 </p>
+								</div>  
+							</div>
+						</div>
+					</div>
+				</div> 
+			</div><!--end content-->
+		</div><!--end wrapper-->
+	<body>
+</html>

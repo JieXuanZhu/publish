@@ -1,0 +1,8 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%
+String basePath = request.getContextPath();
+if(request.getAttribute("T_flag")==null) 
+{ 
+    response.sendRedirect(basePath+"/index/main"); 
+ } 
+%>

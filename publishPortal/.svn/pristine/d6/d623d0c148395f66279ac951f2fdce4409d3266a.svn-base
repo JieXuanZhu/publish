@@ -1,0 +1,133 @@
+/**
+ * @Title: InfoContentServiceImpl.java 
+* @Package cn.com.shukaiken.service.impl 
+* @Description: <p>TODO</p> 
+* @author zhaox   
+* @date 2015年11月13日 上午11:31:42 
+* @version V1.0 
+ */
+package cn.com.shukaiken.service.impl;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import cn.com.shukaiken.dao.InfoContentDao;
+import cn.com.shukaiken.model.InfoContent;
+import cn.com.shukaiken.service.IInfoContentService;
+import cn.com.shukaiken.util.Constant;
+
+/**
+ * @ClassName: InfoContentServiceImpl 
+ * @Description: <p>TODO</p>
+ * @date 2015年11月13日 上午11:31:42 
+ * @author Zhao Xiang
+ *
+ */
+@Service
+@Transactional
+public class InfoContentServiceImpl implements IInfoContentService {
+	Logger logger = LoggerFactory.getLogger(InfoContentServiceImpl.class);
+
+	@Resource
+	private InfoContentDao contentDao;
+	/* (non-Javadoc)
+	 * <p>Title: addNewContent</p> 
+	 * <p>Description: </p> 
+	 * @param infoContent
+	 * @throws Exception 
+	 * @see cn.com.shukaiken.service.IInfoContentService#addNewContent(cn.com.shukaiken.model.InfoContent) 
+	 */
+	@Override
+	public int addNewContent(InfoContent infoContent) throws Exception {
+		int result = 0;
+		if(infoContent!=null){
+			try {
+				logger.info("新增资讯的内容:infoId="+infoContent.getInfoId());
+				contentDao.insertSelective(infoContent);
+				result = infoContent.getContentId();
+			} catch (Exception e) {
+				result = 0;
+				logger.error("InfoContentServiceImpl.addNewContent.ERROR:"+e, e);
+				e.printStackTrace();
+				throw new RuntimeException("addNewContent出错");
+			}
+		}
+		return result;
+		
+	}
+	@Override
+	public InfoContent viewNewsDetail(int infoId) {
+		
+		return contentDao.selectInfoDetail(infoId);
+	}
+	/* (non-Javadoc)
+	 * <p>Title: updateInfoContentById</p> 
+	 * <p>Description: </p> 
+	 * @param infoContent
+	 * @return 
+	 * @see cn.com.shukaiken.service.IInfoContentService#updateInfoContentById(cn.com.shukaiken.model.InfoContent) 
+	 */
+	@Override
+	public int updateInfoContentById(InfoContent infoContent) {
+		int result = 0;
+		if(infoContent!=null){
+			try {
+				logger.info("修改资讯的内容:contentId="+infoContent.getContentId());
+				result = contentDao.updateByPrimaryKeySelective(infoContent);
+			} catch (Exception e) {
+				result = 0;
+				logger.error("InfoContentServiceImpl.updateInfoContentById.ERROR:"+e, e);
+				e.printStackTrace();
+				throw new RuntimeException("updateInfoContent出错");
+			}
+		}
+		return result;
+	}
+	/* (non-Javadoc)
+	 * <p>Title: removeContentByInfoId</p> 
+	 * <p>Description: </p> 
+	 * @param infoId
+	 * @return 
+	 * @see cn.com.shukaiken.service.IInfoContentService#removeContentByInfoId(java.lang.Integer) 
+	 */
+	@Override
+	public int removeContentByInfoId(Integer infoId) {
+		int result = 0;
+		// TODO Auto-generated method stub
+		logger.info("根据资讯的Id:"+infoId+",移除所有的content");
+		if(infoId!=null){
+			InfoContent content = new InfoContent();
+			content.setIsValid(Constant.INVALID);
+			content.setInfoId(infoId);
+			result = contentDao.updateByInfoId(content);
+		}
+		return result;
+	}
+	
+	@Override
+	public List<InfoContent> getCategoryInfoLs(InfoContent record) {
+		return contentDao.getCategoryInfoLs(record);
+	}
+	
+	@Override
+	public InfoContent getNewestInfo() {
+		return contentDao.getNewestInfo();
+	}
+	
+	@Override
+	public InfoContent getHotInfo() {
+		return contentDao.getHotInfo();
+	}
+	
+	@Override
+	public List<InfoContent> getSearchInfoLs(InfoContent record) {
+		
+		return contentDao.getSearchInfoLs(record);
+	}
+}

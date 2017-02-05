@@ -1,0 +1,54 @@
+package cn.com.shukaiken.webService.impl;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import cn.com.shukaiken.model.BackFeed;
+import cn.com.shukaiken.service.IBackFeedService;
+import cn.com.shukaiken.util.JSONHelper;
+import cn.com.shukaiken.util.JacksonHelper;
+import cn.com.shukaiken.webService.IAppBackFeedWebService;
+@Service
+public class AppBackFeedWebServiceImpl implements IAppBackFeedWebService {
+	
+	@Resource
+	private IBackFeedService backFeedService;
+	
+	@Override
+	public String addBackFeed(String jsonStr) {
+		Map<String, Object> map = new HashMap<String,Object>();
+		map = JSONHelper.getMapByJson(jsonStr);
+		BackFeed backFeed = new BackFeed();
+		String content = map.get("content").toString();
+		String custId = map.get("custId").toString();
+		String email = map.get("email").toString();
+		if(content!=null && !content.equals("")){
+			backFeed.setContent(content);
+		}
+		if(email!=null && !email.equals("")){
+			backFeed.setEmail(email);
+		}
+		if(custId!=null && !custId.equals("")){
+			if(Integer.parseInt(custId)>0){
+				backFeed.setCust_id(Integer.parseInt(custId));
+			}
+		}
+		backFeed.setCreate_date(new Date());
+		backFeed.setIs_valid(0);
+		int status = backFeedService.addBackFeed(backFeed);
+		if(status>0){
+			map.put("result", "1");
+			map.put("message", "意见反馈添加成功");
+		}else{
+			map.put("result", "0");
+			map.put("message", "意见反馈添加失败");
+		}
+		return JacksonHelper.toJSON(map);
+	}
+
+}

@@ -1,0 +1,39 @@
+package test;
+
+import java.net.MalformedURLException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.codehaus.xfire.client.XFireProxyFactory;
+import org.codehaus.xfire.service.Service;
+import org.codehaus.xfire.service.binding.ObjectServiceFactory;
+
+import cn.com.shukaiken.util.JSONHelper;
+import cn.com.shukaiken.util.Md5;
+import cn.com.shukaiken.webService.IAppCustWebService;
+import cn.com.shukaiken.webService.IAppNewsWebService;
+
+public class TestCustWebServiceImpl {
+	
+	public static void main(String[] args) {
+		
+		addCust();
+	}
+	
+	public static void addCust(){
+		Service serviceModel = new ObjectServiceFactory().create(IAppCustWebService.class);  
+		IAppCustWebService service;
+		try {
+			//service = (IAppCustWebService) new XFireProxyFactory().create(serviceModel,"http://42.96.165.121:8086/service/IAppCustWebService");
+			service = (IAppCustWebService) new XFireProxyFactory().create(serviceModel,"http://192.168.1.186:8080/publish/service/IAppCustWebService");
+			//方法一 测试  
+			String user_name ="18302185727";
+			String password ="123456";
+			String jsonStr = service.login(user_name);
+			System.out.println("jsonStr="+jsonStr);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}  
+	}
+
+}

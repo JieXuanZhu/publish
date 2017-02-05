@@ -1,0 +1,370 @@
+package cn.com.shukaiken.webService.impl;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import cn.com.shukaiken.model.Cust;
+import cn.com.shukaiken.service.ICustService;
+import cn.com.shukaiken.util.JSONHelper;
+import cn.com.shukaiken.util.Md5;
+import cn.com.shukaiken.webService.IAppCustWebService;
+
+import com.alibaba.fastjson.JSONArray;
+@Service
+public class AppCustWebServiceImpl implements IAppCustWebService {
+	
+	@Resource
+	private ICustService custService;
+	
+	/**
+	 * 获取手机验证码
+	 */
+	@Override
+	public String getValidCode(String user_name) {
+		Cust cust = new Cust();
+		cust.setUser_name(user_name);
+		cust = custService.selectByCust(cust);
+		Map<String, Object> map = new HashMap<String,Object>();
+		if(cust==null){
+			map.put("result", "1");
+			map.put("message", "可以注册");
+			String validCode = "123456";
+			//validCode = Md5.getMD5(validCode);
+			map.put("data", validCode);
+		}else{
+			map.put("result", "0");
+			map.put("message", "该用户已经存在");
+		}
+		String jsonStr = JSONHelper.getJsonByMap(map);
+		return jsonStr;
+	}
+
+	/**
+	 * 用户注册
+	 */
+	@Override
+	public String addCust(String user_name) {
+		Map<Object,Object> map = new HashMap<Object,Object>();
+		Cust cust = new Cust();
+		cust.setUser_name(user_name);
+	    Cust temp = custService.selectByCust(cust);
+		if(temp==null){
+			//cust.setPassword(Md5.getMD5("123456"));
+			cust.setPassword("123456");
+			cust.setCreate_date(new Date());
+			cust.setLast_login_date(new Date());
+			cust.setLevel(1);
+			cust.setLevel_id(1);
+			cust.setIs_valid(0);
+			int status = 0;
+		    status = custService.addCust(cust);
+		    cust = custService.selectByCust(cust);
+			if(status>0){
+				map.put("result", "1");
+				map.put("message", "注册成功");
+				map.put("data", cust);
+			}else{
+				map.put("result", "0");
+				map.put("message", "注册失败");
+			}
+		}else{
+			map.put("result", "0");
+			map.put("message", "该用户已经存在");
+		}
+		
+		String jsonStr = JSONHelper.getJsonByMap(map);
+		return jsonStr;
+	}
+	
+	/**
+	 * 登录校验
+	 */
+	@Override
+	public String getLoginStatus(String user_name, String password) {
+		Map<String, Object> map = new HashMap<String,Object>();
+		Cust cust = new Cust();
+		cust.setUser_name(user_name);
+		cust.setPassword(password);
+		cust = custService.selectByCust(cust);
+		if(cust!=null){
+			map.put("result", "1");
+			map.put("message", "登录成功");
+			cust.setLast_login_date(new Date());
+			custService.updateByCustId(cust);
+			map.put("data", cust);
+		}else{
+			map.put("result", "0");
+			map.put("message", "用户名或者密码错误");
+		}
+		
+		String jsonStr = JSONHelper.getJsonByMap(map);
+		return jsonStr;
+	}
+	
+	/**
+	 * 设置用户昵称
+	 */
+	@Override
+	public String setCustNickName(String custId, String nick_name) {
+		Map<String, Object> map = new HashMap<String,Object>();
+		Cust cust = new Cust();
+		cust.setId(Integer.parseInt(custId));
+		cust.setNick_name(nick_name);
+		int status = 0;
+	    status = custService.updateByCustId(cust);
+	    if(status>0){
+	    	map.put("result", "1");
+			map.put("message", "昵称设置成功");
+	    }else{
+	    	map.put("result", "1");
+			map.put("message", "昵称设置失败");
+	    }
+		String jsonStr = JSONHelper.getJsonByMap(map);
+		return jsonStr;
+	}
+
+
+	/**
+	 * 设置用户头像
+	 */
+	@Override
+	public String setCustHeadImg(String custId, String head_img_url) {
+		Map<String, Object> map = new HashMap<String,Object>();
+		Cust cust = new Cust();
+		cust.setId(Integer.parseInt(custId));
+		cust.setHead_img_url(head_img_url);
+		int status = 0;
+	    status = custService.updateByCustId(cust);
+	    if(status>0){
+	    	map.put("result", "1");
+			map.put("message", "用户头像设置成功");
+	    }else{
+	    	map.put("result", "0");
+			map.put("message", "用户头像设置失败");
+	    }
+		
+		String jsonStr = JSONHelper.getJsonByMap(map);
+		return jsonStr;
+	}
+
+	/**
+	 * 绑定微信号
+	 * @param custId 用户id
+	 * @param wei_xin 微信号
+	 * @return
+	 */
+	@Override
+	public String boundWei_xin(String custId, String wei_xin) {
+		Map<String, Object> map = new HashMap<String,Object>();
+		Cust cust = new Cust();
+		cust.setId(Integer.parseInt(custId));
+		cust.setWei_xin(wei_xin);
+		int status = 0;
+	    status = custService.updateByCustId(cust);
+	    if(status>0){
+	    	map.put("result", "1");
+			map.put("message", "微信绑定成功");
+	    }else{
+	    	map.put("result", "0");
+			map.put("message", "微信绑定失败");
+	    }
+		
+		String jsonStr = JSONHelper.getJsonByMap(map);
+		return jsonStr;
+	}
+
+	
+	/**
+	 * 绑定qq号
+	 * @param custId 用户id
+	 * @param qq QQ号
+	 * @return
+	 */
+	@Override
+	public String boundQQ(String custId, String qq) {
+		Map<String, Object> map = new HashMap<String,Object>();
+		Cust cust = new Cust();
+		cust.setId(Integer.parseInt(custId));
+		cust.setQq(qq);
+		int status = 0;
+	    status = custService.updateByCustId(cust);
+	    if(status>0){
+	    	map.put("result", "1");
+			map.put("message", "QQ绑定成功");
+	    }else{
+	    	map.put("result", "0");
+			map.put("message", "QQ绑定失败");
+	    }
+		
+	    String jsonStr = JSONHelper.getJsonByMap(map);
+		return jsonStr;
+	}
+	
+	/**
+	 * 绑定微博号
+	 * @param custId 用户id
+	 * @param sina_wei_bo 新浪微博号
+	 * @return
+	 */
+	@Override
+	public String boundSina_wei_bo(String custId, String sina_wei_bo) {
+		Map<String, Object> map = new HashMap<String,Object>();
+		Cust cust = new Cust();
+		cust.setId(Integer.parseInt(custId));
+		cust.setSina_wei_bo(sina_wei_bo);
+		int status = 0;
+	    status = custService.updateByCustId(cust);
+	    if(status>0){
+	    	map.put("result", "1");
+			map.put("message", "微博绑定成功");
+	    }else{
+	    	map.put("result", "0");
+			map.put("message", "微博绑定失败");
+	    }
+		
+	    String jsonStr = JSONHelper.getJsonByMap(map);
+		return jsonStr;
+	}
+
+	
+	/**
+	 * 修改密码
+	 * @param custId 用户id
+	 * @param password 密码   （传过来的已经过加密）
+	 * @return
+	 */
+	@Override
+	public String updatePassword(String custId, String password) {
+		Map<String, Object> map = new HashMap<String,Object>();
+		Cust cust = new Cust();
+		cust.setId(Integer.parseInt(custId));
+		cust.setPassword(password);
+		int status = 0;
+	    status = custService.updateByCustId(cust);
+	    if(status>0){
+	    	map.put("result", "1");
+			map.put("message", "密码修改成功");
+	    }else{
+	    	map.put("result", "0");
+			map.put("message", "密码修改失败");
+	    }
+		
+	    String jsonStr = JSONHelper.getJsonByMap(map);
+		return jsonStr;
+	}
+
+	@Override
+	public String fileUpload(byte[] fileByteBuf, String strRoot, String fileName) {
+		  //  验证文件字节数组是否为空
+		  if (fileByteBuf == null || fileByteBuf.length == 0){
+			  return "err：上传文件的字节数组为空!";
+		  }
+		   
+		  //验证上传目的地路径是否存在
+		  if (strRoot == null || strRoot == ""){
+			  return "err：上传目的地路径为空!";
+		  }
+		  
+		  //验证指定的文件名是否为空
+		  if (fileName == null || fileName== ""){
+			  return "err：指定的文件名为空!";
+		  }
+		   
+		  if (fileName.lastIndexOf(".") == -1){
+			  return "err：指定的文件名无后缀名!";
+		  }
+		  
+		  
+		  /**
+		   * 声明四种I/O流
+		   */
+		  ByteArrayInputStream fInStream = null;// 文件输入流
+		  BufferedInputStream bInStream = null;// 输入缓冲流
+		  OutputStream fOutStream = null;// 输出流
+		  BufferedOutputStream bOutStream = null;// 输出缓冲流
+		  
+		  try {
+		   /**
+		    * 赋值
+		    */
+		   //得到字节数组输入流
+		   fInStream = new ByteArrayInputStream(fileByteBuf);
+		   //得到输入缓冲流
+		   bInStream = new BufferedInputStream(fInStream);
+
+		   //判断上传的目的地路径是否是目录，不是则新建目录
+		   File folderSave = new File(strRoot);
+		   if (!folderSave.isDirectory()){
+			   folderSave.mkdirs();
+		   }
+		   
+		   //验证目标文件
+		   File fileSave = new File(strRoot + "/" + fileName);
+		   if (fileSave.exists()){//当此抽象路径名表示的文件存在时
+			    if (!fileSave.canWrite()){
+			    	return "err：文件不可写入!";
+			    }
+		   }else if (!fileSave.createNewFile()){
+			   return "err：文件不能新建!";
+		   }
+		   
+		   //得到输出流
+		   fOutStream = new FileOutputStream(fileSave);
+		   //得到输出缓冲流
+		   bOutStream = new BufferedOutputStream(fOutStream);
+		   
+		   /**
+		    * 循环
+		    */
+		   int intByte = 512 * 1024;//缓冲区大小
+		   byte[] fileData = new byte[intByte];//定义一个缓冲区
+		   int intIndex = 0;
+		   while ((intIndex = bInStream.read(fileData, 0, intByte)) != -1) {
+		    bOutStream.write(fileData, 0, intIndex);
+		    bOutStream.flush();
+		   }
+		   
+		   folderSave = null;
+		   fileSave = null;
+		  } catch (IOException e) {
+		   return ("err：" + e.getMessage());
+		  } finally{
+		   /**
+		    * 用完后，关闭I/O流
+		    */
+		   try {
+		    if (fInStream != null) {
+		     fInStream.close();//关闭方法无效？！！！
+		     fInStream = null;
+		    }
+		    if (bInStream != null) {
+		     bInStream.close();
+		     bInStream = null;
+		    }
+		    if (fOutStream != null) {
+		     fOutStream.close();
+		     fOutStream = null;
+		    }
+		    if (bOutStream != null) {
+		     bOutStream.close();
+		     bOutStream = null;
+		    }
+		   } catch (IOException e) {
+		    return ("err：" + e.getMessage());
+		   }
+		  }
+		  return "ok";
+		 }
+	}

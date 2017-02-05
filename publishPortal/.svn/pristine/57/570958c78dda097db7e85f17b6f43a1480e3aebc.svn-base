@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.CrawlNewsInfoDao" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.CrawlNewsInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="subtitle" property="subtitle" jdbcType="VARCHAR" />
+    <result column="releaseTime" property="releasetime" jdbcType="VARCHAR" />
+    <result column="author" property="author" jdbcType="VARCHAR" />
+    <result column="newsType" property="newstype" jdbcType="VARCHAR" />
+    <result column="attachments" property="attachments" jdbcType="VARCHAR" />
+    <result column="viewCount" property="viewcount" jdbcType="VARCHAR" />
+    <result column="newsOriginal" property="newsoriginal" jdbcType="VARCHAR" />
+    <result column="crawlerOriginal" property="crawleroriginal" jdbcType="VARCHAR" />
+    <result column="crawlerTime" property="crawlertime" jdbcType="VARCHAR" />
+    <result column="indexNum" property="indexnum" jdbcType="VARCHAR" />
+    <result column="themeType" property="themetype" jdbcType="VARCHAR" />
+    <result column="publishOrgan" property="publishorgan" jdbcType="VARCHAR" />
+    <result column="publishDate" property="publishdate" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="themeWord" property="themeword" jdbcType="VARCHAR" />
+    <result column="docNum" property="docnum" jdbcType="VARCHAR" />
+    <result column="fromUnit" property="fromunit" jdbcType="VARCHAR" />
+    <result column="approvalFileName" property="approvalfilename" jdbcType="VARCHAR" />
+    <result column="approvalDocNum" property="approvaldocnum" jdbcType="VARCHAR" />
+    <result column="approvalTime" property="approvaltime" jdbcType="VARCHAR" />
+    <result column="crawlerUrl" property="crawlerurl" jdbcType="VARCHAR" />
+    <result column="is_valid" property="isValid" jdbcType="VARCHAR" />
+    <result column="label_id" property="labelId" jdbcType="INTEGER" />
+    <result column="resv1" property="resv1" jdbcType="VARCHAR" />
+    <result column="resv2" property="resv2" jdbcType="VARCHAR" />
+    <result column="resv3" property="resv3" jdbcType="VARCHAR" />
+    <result column="resv4" property="resv4" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="cn.com.shukaiken.model.CrawlNewsInfo" extends="BaseResultMap" >
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, title, subtitle, releaseTime, author, newsType, attachments, viewCount, newsOriginal, 
+    crawlerOriginal, crawlerTime, indexNum, themeType, publishOrgan, publishDate, name, 
+    themeWord, docNum, fromUnit, approvalFileName, approvalDocNum, approvalTime, crawlerUrl, 
+    is_valid,label_id, resv1, resv2, resv3, resv4
+  </sql>
+  <sql id="Blob_Column_List" >
+    content
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_news_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_news_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="cn.com.shukaiken.model.CrawlNewsInfo" >
+    insert into t_news_info (id, title, subtitle, 
+      releaseTime, author, newsType, 
+      attachments, viewCount, newsOriginal, 
+      crawlerOriginal, crawlerTime, indexNum, 
+      themeType, publishOrgan, publishDate, 
+      name, themeWord, docNum, 
+      fromUnit, approvalFileName, approvalDocNum, 
+      approvalTime, crawlerUrl, is_valid, label_id
+      resv1, resv2, resv3, 
+      resv4, content)
+    values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{subtitle,jdbcType=VARCHAR}, 
+      #{releasetime,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR}, #{newstype,jdbcType=VARCHAR}, 
+      #{attachments,jdbcType=VARCHAR}, #{viewcount,jdbcType=VARCHAR}, #{newsoriginal,jdbcType=VARCHAR}, 
+      #{crawleroriginal,jdbcType=VARCHAR}, #{crawlertime,jdbcType=VARCHAR}, #{indexnum,jdbcType=VARCHAR}, 
+      #{themetype,jdbcType=VARCHAR}, #{publishorgan,jdbcType=VARCHAR}, #{publishdate,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{themeword,jdbcType=VARCHAR}, #{docnum,jdbcType=VARCHAR}, 
+      #{fromunit,jdbcType=VARCHAR}, #{approvalfilename,jdbcType=VARCHAR}, #{approvaldocnum,jdbcType=VARCHAR}, 
+      #{approvaltime,jdbcType=VARCHAR}, #{crawlerurl,jdbcType=VARCHAR}, #{isValid,jdbcType=VARCHAR}, #{labelId,jdbcType=INTEGER}, 
+      #{resv1,jdbcType=VARCHAR}, #{resv2,jdbcType=VARCHAR}, #{resv3,jdbcType=VARCHAR}, 
+      #{resv4,jdbcType=VARCHAR}, #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="cn.com.shukaiken.model.CrawlNewsInfo" >
+    insert into t_news_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="subtitle != null" >
+        subtitle,
+      </if>
+      <if test="releasetime != null" >
+        releaseTime,
+      </if>
+      <if test="author != null" >
+        author,
+      </if>
+      <if test="newstype != null" >
+        newsType,
+      </if>
+      <if test="attachments != null" >
+        attachments,
+      </if>
+      <if test="viewcount != null" >
+        viewCount,
+      </if>
+      <if test="newsoriginal != null" >
+        newsOriginal,
+      </if>
+      <if test="crawleroriginal != null" >
+        crawlerOriginal,
+      </if>
+      <if test="crawlertime != null" >
+        crawlerTime,
+      </if>
+      <if test="indexnum != null" >
+        indexNum,
+      </if>
+      <if test="themetype != null" >
+        themeType,
+      </if>
+      <if test="publishorgan != null" >
+        publishOrgan,
+      </if>
+      <if test="publishdate != null" >
+        publishDate,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="themeword != null" >
+        themeWord,
+      </if>
+      <if test="docnum != null" >
+        docNum,
+      </if>
+      <if test="fromunit != null" >
+        fromUnit,
+      </if>
+      <if test="approvalfilename != null" >
+        approvalFileName,
+      </if>
+      <if test="approvaldocnum != null" >
+        approvalDocNum,
+      </if>
+      <if test="approvaltime != null" >
+        approvalTime,
+      </if>
+      <if test="crawlerurl != null" >
+        crawlerUrl,
+      </if>
+      <if test="isValid != null" >
+        is_valid,
+      </if>
+      <if test="labelId != null" >
+        label_id,
+      </if>
+      <if test="resv1 != null" >
+        resv1,
+      </if>
+      <if test="resv2 != null" >
+        resv2,
+      </if>
+      <if test="resv3 != null" >
+        resv3,
+      </if>
+      <if test="resv4 != null" >
+        resv4,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="subtitle != null" >
+        #{subtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="releasetime != null" >
+        #{releasetime,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="newstype != null" >
+        #{newstype,jdbcType=VARCHAR},
+      </if>
+      <if test="attachments != null" >
+        #{attachments,jdbcType=VARCHAR},
+      </if>
+      <if test="viewcount != null" >
+        #{viewcount,jdbcType=VARCHAR},
+      </if>
+      <if test="newsoriginal != null" >
+        #{newsoriginal,jdbcType=VARCHAR},
+      </if>
+      <if test="crawleroriginal != null" >
+        #{crawleroriginal,jdbcType=VARCHAR},
+      </if>
+      <if test="crawlertime != null" >
+        #{crawlertime,jdbcType=VARCHAR},
+      </if>
+      <if test="indexnum != null" >
+        #{indexnum,jdbcType=VARCHAR},
+      </if>
+      <if test="themetype != null" >
+        #{themetype,jdbcType=VARCHAR},
+      </if>
+      <if test="publishorgan != null" >
+        #{publishorgan,jdbcType=VARCHAR},
+      </if>
+      <if test="publishdate != null" >
+        #{publishdate,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="themeword != null" >
+        #{themeword,jdbcType=VARCHAR},
+      </if>
+      <if test="docnum != null" >
+        #{docnum,jdbcType=VARCHAR},
+      </if>
+      <if test="fromunit != null" >
+        #{fromunit,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalfilename != null" >
+        #{approvalfilename,jdbcType=VARCHAR},
+      </if>
+      <if test="approvaldocnum != null" >
+        #{approvaldocnum,jdbcType=VARCHAR},
+      </if>
+      <if test="approvaltime != null" >
+        #{approvaltime,jdbcType=VARCHAR},
+      </if>
+      <if test="crawlerurl != null" >
+        #{crawlerurl,jdbcType=VARCHAR},
+      </if>
+      <if test="isValid != null" >
+        #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="labelId != null" >
+        #{labelId,jdbcType=INTEGER},
+      </if>
+      <if test="resv1 != null" >
+        #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        #{resv4,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.CrawlNewsInfo" >
+    update t_news_info
+    <set >
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="subtitle != null" >
+        subtitle = #{subtitle,jdbcType=VARCHAR},
+      </if>
+      <if test="releasetime != null" >
+        releaseTime = #{releasetime,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        author = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="newstype != null" >
+        newsType = #{newstype,jdbcType=VARCHAR},
+      </if>
+      <if test="attachments != null" >
+        attachments = #{attachments,jdbcType=VARCHAR},
+      </if>
+      <if test="viewcount != null" >
+        viewCount = #{viewcount,jdbcType=VARCHAR},
+      </if>
+      <if test="newsoriginal != null" >
+        newsOriginal = #{newsoriginal,jdbcType=VARCHAR},
+      </if>
+      <if test="crawleroriginal != null" >
+        crawlerOriginal = #{crawleroriginal,jdbcType=VARCHAR},
+      </if>
+      <if test="crawlertime != null" >
+        crawlerTime = #{crawlertime,jdbcType=VARCHAR},
+      </if>
+      <if test="indexnum != null" >
+        indexNum = #{indexnum,jdbcType=VARCHAR},
+      </if>
+      <if test="themetype != null" >
+        themeType = #{themetype,jdbcType=VARCHAR},
+      </if>
+      <if test="publishorgan != null" >
+        publishOrgan = #{publishorgan,jdbcType=VARCHAR},
+      </if>
+      <if test="publishdate != null" >
+        publishDate = #{publishdate,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="themeword != null" >
+        themeWord = #{themeword,jdbcType=VARCHAR},
+      </if>
+      <if test="docnum != null" >
+        docNum = #{docnum,jdbcType=VARCHAR},
+      </if>
+      <if test="fromunit != null" >
+        fromUnit = #{fromunit,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalfilename != null" >
+        approvalFileName = #{approvalfilename,jdbcType=VARCHAR},
+      </if>
+      <if test="approvaldocnum != null" >
+        approvalDocNum = #{approvaldocnum,jdbcType=VARCHAR},
+      </if>
+      <if test="approvaltime != null" >
+        approvalTime = #{approvaltime,jdbcType=VARCHAR},
+      </if>
+      <if test="crawlerurl != null" >
+        crawlerUrl = #{crawlerurl,jdbcType=VARCHAR},
+      </if>
+      <if test="isValid != null" >
+        is_valid = #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="labelId != null" >
+        label_id = #{labelId,jdbcType=INTEGER},
+      </if>
+      <if test="resv1 != null" >
+        resv1 = #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        resv2 = #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        resv3 = #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        resv4 = #{resv4,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.com.shukaiken.model.CrawlNewsInfo" >
+    update t_news_info
+    set title = #{title,jdbcType=VARCHAR},
+      subtitle = #{subtitle,jdbcType=VARCHAR},
+      releaseTime = #{releasetime,jdbcType=VARCHAR},
+      author = #{author,jdbcType=VARCHAR},
+      newsType = #{newstype,jdbcType=VARCHAR},
+      attachments = #{attachments,jdbcType=VARCHAR},
+      viewCount = #{viewcount,jdbcType=VARCHAR},
+      newsOriginal = #{newsoriginal,jdbcType=VARCHAR},
+      crawlerOriginal = #{crawleroriginal,jdbcType=VARCHAR},
+      crawlerTime = #{crawlertime,jdbcType=VARCHAR},
+      indexNum = #{indexnum,jdbcType=VARCHAR},
+      themeType = #{themetype,jdbcType=VARCHAR},
+      publishOrgan = #{publishorgan,jdbcType=VARCHAR},
+      publishDate = #{publishdate,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      themeWord = #{themeword,jdbcType=VARCHAR},
+      docNum = #{docnum,jdbcType=VARCHAR},
+      fromUnit = #{fromunit,jdbcType=VARCHAR},
+      approvalFileName = #{approvalfilename,jdbcType=VARCHAR},
+      approvalDocNum = #{approvaldocnum,jdbcType=VARCHAR},
+      approvalTime = #{approvaltime,jdbcType=VARCHAR},
+      crawlerUrl = #{crawlerurl,jdbcType=VARCHAR},
+      is_valid = #{isValid,jdbcType=VARCHAR},
+      label_id = #{labelId,jdbcType=INTEGER},
+      resv1 = #{resv1,jdbcType=VARCHAR},
+      resv2 = #{resv2,jdbcType=VARCHAR},
+      resv3 = #{resv3,jdbcType=VARCHAR},
+      resv4 = #{resv4,jdbcType=VARCHAR},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.CrawlNewsInfo" >
+    update t_news_info
+    set title = #{title,jdbcType=VARCHAR},
+      subtitle = #{subtitle,jdbcType=VARCHAR},
+      releaseTime = #{releasetime,jdbcType=VARCHAR},
+      author = #{author,jdbcType=VARCHAR},
+      newsType = #{newstype,jdbcType=VARCHAR},
+      attachments = #{attachments,jdbcType=VARCHAR},
+      viewCount = #{viewcount,jdbcType=VARCHAR},
+      newsOriginal = #{newsoriginal,jdbcType=VARCHAR},
+      crawlerOriginal = #{crawleroriginal,jdbcType=VARCHAR},
+      crawlerTime = #{crawlertime,jdbcType=VARCHAR},
+      indexNum = #{indexnum,jdbcType=VARCHAR},
+      themeType = #{themetype,jdbcType=VARCHAR},
+      publishOrgan = #{publishorgan,jdbcType=VARCHAR},
+      publishDate = #{publishdate,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      themeWord = #{themeword,jdbcType=VARCHAR},
+      docNum = #{docnum,jdbcType=VARCHAR},
+      fromUnit = #{fromunit,jdbcType=VARCHAR},
+      approvalFileName = #{approvalfilename,jdbcType=VARCHAR},
+      approvalDocNum = #{approvaldocnum,jdbcType=VARCHAR},
+      approvalTime = #{approvaltime,jdbcType=VARCHAR},
+      crawlerUrl = #{crawlerurl,jdbcType=VARCHAR},
+      is_valid = #{isValid,jdbcType=VARCHAR},
+      label_id = #{labelId,jdbcType=INTEGER},
+      resv1 = #{resv1,jdbcType=VARCHAR},
+      resv2 = #{resv2,jdbcType=VARCHAR},
+      resv3 = #{resv3,jdbcType=VARCHAR},
+      resv4 = #{resv4,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

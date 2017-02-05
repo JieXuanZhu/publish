@@ -1,0 +1,50 @@
+/**
+ * @Title: NewsInfoCrawlerJob.java 
+* @Package cn.com.shukaiken.crawler 
+* @Description: <p>TODO</p> 
+* @author zhaox   
+* @date 2015年12月1日 下午1:26:25 
+* @version V1.0 
+ */
+package cn.com.shukaiken.crawler;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import cn.com.shukaiken.model.CrawlNewsInfoSource;
+import cn.com.shukaiken.service.ICrawlNewsInfoService;
+import cn.com.shukaiken.util.Constant;
+
+/**
+ * @ClassName: NewsInfoCrawlerJob 
+ * @Description: <p>TODO</p>
+ * @date 2015年12月1日 下午1:26:25 
+ * @author Zhao Xiang
+ *
+ */
+@Service
+public class NewsInfoCrawlerJob {
+	@Autowired
+	private ICrawlNewsInfoService crawlNewsInfoService;
+	
+	public void startCrawl() throws Exception{
+		System.err.println("开始执行抓取");
+		CrawlNewsInfoSource source = new CrawlNewsInfoSource();
+		source.setIsValid(Constant.VALID);
+		List<CrawlNewsInfoSource> sourcesList = crawlNewsInfoService.getSourceList(source);
+		if(sourcesList!=null && sourcesList.size()>0){
+			System.err.println("开始");
+			for(int i = 0;i<sourcesList.size();i++){
+				String searchUrl = sourcesList.get(i).getSiteUrl();
+				//regexRule.addRule(searchUrl);
+				NewsInfoCrawler crawler = new NewsInfoCrawler("E:\\tests", searchUrl,sourcesList.get(i).getInfoConfigs(),crawlNewsInfoService,sourcesList.get(i));
+				crawler.setThreads(50);
+		        crawler.addSeed(sourcesList.get(i).getStartUrl());
+		        crawler.setResumable(false);
+		        crawler.start(3);
+			}
+		}
+	}
+}

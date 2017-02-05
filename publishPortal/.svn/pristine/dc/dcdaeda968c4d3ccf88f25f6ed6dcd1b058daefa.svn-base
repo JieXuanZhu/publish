@@ -1,0 +1,405 @@
+﻿<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ include file="/WEB-INF/views/general_path.jsp"%>
+<!doctype>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-widht,minimun-scale=1.0,maximun-scale=1.0,user-scalable=no,initial-scale=1.0" >
+		<title>首页设置</title>
+		<%@include file="/WEB-INF/views/admin/include_css.jsp" %>
+	</head>
+	<body>
+			<div id="slider_content" class="content">
+			<form action="" id="id_form_index_news" method="post">
+				<div style="display:none">
+					<input type="hidden" name="id" id="id_news_id" value="${info.infoId }">
+					<input type="hidden" name="ischangeImage" value="0" id="id_isChangeImage_id">
+					<input type="hidden" name="bannerIds" value="" id="id_bannerIds_id">
+					<input type="hidden" name="imageSize" value="0" id="id_files_length"/>
+				</div>
+				<div class="content_div">
+					<h1>
+						<span class="action-span"><a href="javascript:void(0);" onclick="cancel();">返回</a></span>
+						<span class="action-span1">管理中心</span>
+						<span class="action-span1 action-span2">-资讯管理</span>
+					</h1>
+				</div>
+					<div class="case">
+						<div class="model">
+							<h1>首页设置</h1>
+							<div class="clearfix">
+								
+								<div class="news_txt">
+									<h3>${info.infoContent.title }</h3>
+									<p>${info.infoContent.brief }</p>
+									<span><fmt:formatDate value="${info.createTime }" pattern="yyyy-MM-dd"/></span>
+								</div>
+								<c:if test="${not empty info.infoBanners }">
+									<c:forEach items="${info.infoBanners }" var="banner" varStatus="bannerSta">
+										<div class="news_img"><img src='<c:if test="${not empty banner.url}">${banner.url }</c:if>' /></div>
+									</c:forEach>
+								</c:if>
+								
+							</div>
+							<br>
+							<div>
+								<h1>展示模块</h1>
+								<div>
+									<input type="checkbox" name="isHeader" id="id_labelIndexType_id" value="0" <c:if test="${isHeader=='0' }">checked="checked"</c:if>>首页&nbsp;&nbsp;
+									<c:forEach items="${labelList }" var="label" varStatus="labelSta">
+										<input type="checkbox" name="isShow" id="id_labelModuleType_id" value="${label.id }" <c:if test="${isShow==label.id }">checked="checked"</c:if>>${label.label_name }&nbsp;&nbsp;
+									</c:forEach>
+								</div>
+							</div>
+							<br>
+							<div>
+								<h1>Banner</h1>
+								<div id="browse_div_id">
+										<p id="browse" style="border: 1px solid #ccc; height: 150px; line-height: 150px; text-align: center; color: #aaa; width: 600px;">
+											选择文件...支持HTML5的浏览器可以拖拽上传，将文件拖到此区域</p>
+										<!-- <input type="button" value="选择文件..."  /> -->
+
+									</div>
+									<ul id="file-list">
+
+									</ul>
+							</div>
+							<div>
+								<button type="submit" class="btn">确&nbsp;&nbsp;认</button>&nbsp;&nbsp;&nbsp;&nbsp;
+								<button type="button" class="btn" onclick="cancel();">取&nbsp;&nbsp;消</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			
+		</div>
+		<%@include file="/WEB-INF/views/admin/include_js.jsp" %>
+		<script src="<%=path %>/back/js/jquery.md5.js" type="text/javascript"></script>
+		<script type="text/javascript" src="<%=path %>/back/js/jquery.form.js"></script>
+		<script type="text/javascript" src="<%=path %>/back/js/uploadPreview.js"></script>
+		<script type="text/javascript" src="<%=path %>/back/js/plupload.full.min.js"></script>
+		<script type="text/javascript">
+			var selector_form = "#id_form_index_news";
+			var editor;
+			var uploader;
+			var fileUploadSucFlag = false;
+			var uploadedFileName;
+			var options = {};
+			var isChangeImage = false;
+			var isHeader = "";
+			var isShow = "";
+		
+			jQuery(function($){
+				
+				
+				
+				var uploader = new plupload.Uploader({ //实例化一个plupload上传对象
+					browse_button : 'browse',
+					url : '<%=path%>/uploadBanner',
+					file_data_name:'bannerFile',
+					drop_element : 'browse',
+					resize: {
+						  width: 100,
+						  height: 100,
+						  crop: false,
+						  quality: 90,
+						  preserve_headers: true
+						},
+					multipart:true,
+					multipart_params:{
+						infoId: $("#id_news_id").val(),
+						bannerIds:$("#id_bannerIds_id").val(),
+						isHeader:isHeader,
+						isShow:isShow,
+						isIndex:"1"
+					},
+					filters: {
+					  mime_types : [ //只允许上传图片文件
+					    { title : "图片文件", extensions : "jpg,jpeg,png" }
+					  ]
+					}
+				});
+				uploader.init();
+				
+				//绑定文件添加进队列事件
+				uploader.bind('FilesAdded',function(uploader,files){
+					for(var i = 0, len = files.length; i<len; i++){
+						var file_name = files[i].name; //文件名
+						//构造html来更新UI
+						var html = '<li id="file-' + files[i].id +'"><p class="file-name">' + file_name + '</p><input type="hidden" value="'+files[i].id+'" id="file_id"><input type="button" value="删除" id="remove-btn"/><p class="progress"></p></li>';
+						$(html).appendTo('#file-list');
+						 if(files.length==1){
+							uploader.disableBrowse(true);
+							document.getElementById("browse_div_id").style.display="none";
+						} 
+						!function(i){
+							previewImage(files[i],function(imgsrc){
+								$('#file-'+files[i].id).append('<img src="'+ imgsrc +'" />');
+							});
+					    }(i);
+					}
+				});
+				
+				uploader.bind("FileUploaded",function(uploader,file,responseObject){
+					
+					var bannerIds = $("#id_bannerIds_id").val();
+					resJson = jQuery.parseJSON(responseObject.response);
+					console.info("FileUploaded:"+resJson);
+					if(resJson.success=='true'){
+						if(bannerIds==''){
+							bannerIds=resJson.bannerId;
+							$("#id_bannerIds_id").val(bannerIds);
+						}else {
+							bannerIds+=(","+resJson.bannerId);
+							$("#id_bannerIds_id").val(bannerIds);
+						}
+					}
+					
+				});
+				uploader.bind("UploadComplete",function(uploader,files){
+					//var status = $("#id_info_status_id").val();
+					fileUploadSucFlag = true;
+					//$(selector_form).submit();
+					//所有文件上传完成，提交表单
+					submitForm();
+				});
+				
+				uploader.bind("QueueChanged",function(uploader){
+					isChangeImage = true;
+					$("#id_isChangeImage_id").val("2");
+					var len = $("#id_files_length").val();
+					$("#id_files_length").val(parseInt(len)+parseInt(uploader.files.length));
+				});
+				uploader.bind("Error",function(uploader,errObject){
+					fileUploadSucFlag = false;
+					layer.msg("图片上传失败,稍后重试或联系管理员");
+				});
+				
+				
+				//绑定文件上传进度事件
+				uploader.bind('UploadProgress',function(uploader,file){
+					$('#file-'+file.id+' .progress').css('width',file.percent + '%');//控制进度条
+				});
+				
+				initBannerImage(uploader);
+				
+				$(document).on("click","#remove-btn",function(){
+					var fileId = $(this).parent().find("#file_id").val();
+					if(fileId!='value_index'){//如果不是在修改页面上传的图片，那么不用从uploader中移除
+						uploader.removeFile(uploader.getFile(fileId));
+						
+					}else {
+						var banId = $(this).parent().find("#hidden_ban_id").val();
+						console.info("banId="+banId);
+						var banIds = $("#id_bannerIds_id").val();
+						console.info("banIds="+banIds);
+						if(banIds!=null&&banIds!=''){
+							var banIdArr = banIds.split(",");
+							console.info(banIdArr.length);
+							for(var i =0;i<banIdArr.length;i++){
+								if(banId==banIdArr[i]){
+									var o = banIdArr.splice(i,1);//从数组中删除元素
+									console.info(o);
+								}
+							}
+							/* console.info(banIdArr.length);
+							console.info(banIdArr.join(",")); */
+							$("#id_bannerIds_id").val(banIdArr.join(","));
+							console.info($("#id_bannerIds_id").val(banIdArr.join(",")));
+							$("#id_files_length").val(parseInt(banIdArr.length)+parseInt(uploader.files.length));
+						}else {
+							$("#id_files_length").val(parseInt(uploader.files.length));
+						}
+					}
+					$("#id_isChangeImage_id").val("2");
+					$(this).parent().remove();
+					uploader.disableBrowse(false);
+					document.getElementById("browse_div_id").style.display="block";
+				}); 
+				
+				$(selector_form).submit(function(){//提交表单
+					var newsId = $("#id_news_id").val();
+		            options = {
+		                //target:'#Tip', //后台将把传递过来的值赋给该元素
+		                //url:'<%=path%>/admin/news/modifyNews', 
+		                type:'POST',
+		                dataType:'json',
+		                success: function(msg){
+							
+		                } //显示操作提示
+		            };
+					if(checkForm()){
+						console.info("----");
+						var isChangeImage = $("#id_isChangeImage_id").val();
+						if(isChangeImage == '2' && uploader.files.length>0){
+							console.info("---1");
+							uploader.start();
+						}else {
+							console.info("---2");
+							submitForm();
+						}
+						
+					}
+		            return false; //为了不刷新页面,返回false，反正都已经在后台执行完了，没事！
+
+			    });
+				
+				//将checkbox包装成单选，因为展示模块只能是一块，但是radio如果选中了，就不能取消选中，所以使用这种方式实现
+				$("input[name=isShow]").bind("click",function(){
+					if($(this).is(':checked')){
+						$(this).attr('checked',true).siblings("input[name=isShow]").attr('checked',false);
+					}else{
+						$(this).attr('checked',false).siblings("input[name=isShow]").attr('checked',false);
+					}
+				});
+				
+			});
+			
+			//plupload中为我们提供了mOxie对象
+			//有关mOxie的介绍和说明请看：https://github.com/moxiecode/moxie/wiki/API
+			//如果你不想了解那么多的话，那就照抄本示例的代码来得到预览的图片吧
+			function previewImage(file,callback){//file为plupload事件监听函数参数中的file对象,callback为预览图片准备完成的回调函数
+				if(!file || !/image\//.test(file.type)) return; //确保文件是图片
+				if(file.type=='image/gif'){//gif使用FileReader进行预览,因为mOxie.Image只支持jpg和png
+					var fr = new mOxie.FileReader();
+					fr.onload = function(){
+						callback(fr.result);
+						fr.destroy();
+						fr = null;
+					}
+					fr.readAsDataURL(file.getSource());
+				}else{
+					var preloader = new mOxie.Image();
+					preloader.onload = function() {
+						preloader.downsize( 300, 300 );//先压缩一下要预览的图片,宽300，高300
+						var imgsrc = preloader.type=='image/jpeg' ? preloader.getAsDataURL('image/jpeg',80) : preloader.getAsDataURL(); //得到图片src,实质为一个base64编码的数据
+						callback && callback(imgsrc); //callback传入的参数为预览图片的url
+						preloader.destroy();
+						preloader = null;
+					};
+					preloader.load( file.getSource() );
+				}	
+			}
+			
+			//页面初始化的时候，展示页面Banner图				
+			 function initBannerImage(uploader){
+				
+				var bannerIds = "";
+				var banlist = '${indexBannerJson}';
+				console.info(banlist);
+				if(banlist!=null && banlist!='' && banlist!='[]'){
+					var banJson = jQuery.parseJSON(banlist);
+					console.info(banJson);
+					$("#id_files_length").val(banJson.length);
+					$.each(banJson,function(index,item){
+						if(bannerIds==''){
+							bannerIds=item.banId;
+						}else {
+							bannerIds+=(","+item.banId);
+						}
+						console.info(item.url);
+						var html = '<li id="file-index-'+index+'"><p class="file-name">' + item.url + '</p><input type="hidden" value="value_index" id="file_id"><input type="hidden" value="'+item.banId+'" id="hidden_ban_id"><input type="button" value="删除" id="remove-btn"/><p class="progress"></p></li>';
+						$(html).appendTo('#file-list');
+						$('#file-index-'+index).append('<img width="300px" height="300px" src="'+ item.url +'" />');
+					});
+					$("#id_bannerIds_id").val(bannerIds);
+					uploader.disableBrowse(true);
+					document.getElementById("browse_div_id").style.display="none";
+				}
+				
+			}
+			
+			 function submitForm(){
+					console.info("submitForm()");
+					$.ajax({
+						type:'POST',
+						url:'<%=path%>/admin/info/saveIndexBanner',
+						data:$(selector_form).serializeArray(),
+						dataType:'json',
+						success:function(msg){
+							var infoId = $("#id_news_id").val();
+							// var status = $("#id_info_status_id").val();
+							if(msg.success=='true'){
+									layer.alert(msg.message,{icon: 6, closeBtn:2,title:'资讯管理',offset:'100px'},function(index){
+										//window.location.href="<%=path%>/admin/info/viewInfo?infoId="+infoId+"&from=1";
+										$("#id_isChangeImage_id").val("0");
+										window.location.reload();
+										layer.close(index);
+									});
+								
+							}else if(msg.fail=='true'){
+								layer.alert(msg.message,{icon: 5, closeBtn:2,title:'资讯管理',offset:'100px'});
+							} 
+						},
+						error: function(data) {
+							layer.msg(data.message,4,{type:1,offset:'100px'});
+		                }
+					});
+				}
+			 
+			 function checkForm(){
+				 var len = $("#id_files_length").val();
+				 if(len<=0){
+					 layer.alert("请上传一张图片作为展示图片");
+					 return false;
+				 }
+				 
+					/* $("#id_labelIndexType_id").each(function(i){ 
+						if($(this).is(":checked")==true){ 
+							isHeader = $(this).val();
+				        }
+			           
+			        }); */ 
+					
+					/* $("#id_labelModuleType_id").each(function(i){ 
+						if($(this).is(":checked")==true){ 
+							isShow += $(this).val()+",";
+				        }
+			           
+			        });  */
+			        
+			        $("input[name=isHeader]").each(function(i){ 
+						if($(this).is(":checked")==true){ 
+							isHeader = $(this).val();
+				        }
+			           
+			        }); 
+			        $("input[name=isShow]").each(function(i){ 
+						if($(this).is(":checked")==true){ 
+							isShow += $(this).val()+",";
+				        }
+			           
+			        }); 
+					isShow =  isShow.substring(0,isShow.length-1);
+				 
+					
+					if(isHeader=="" && isShow==""){
+						layer.alert("请选择该图片展示的模块");
+						return false;
+					}
+					
+					return true;
+			 }
+			
+			function changeCheckStatus(val){
+				$("input[name=isShow]").each(function(i){ 
+					if($(this).is(":checked")==true){ 
+						$(this).attr('checked',true).siblings("input[name=isShow]").attr('checked',false);
+			        }else{
+			        	$(this).attr('checked',false).siblings("input[name=isShow]").attr('checked',false);
+			        }
+		           
+		        }); 
+			}
+			 
+			function cancel(){
+				window.location.href="<%=path %>/admin/info/layout";
+			}
+			
+			function gotoModify(infoId){
+				window.location.href="<%=path %>/admin/info/initModifyInfo?infoId="+infoId;
+			}
+			
+		</script>
+	</body>
+</html>

@@ -1,0 +1,19 @@
+package cn.com.shukaiken.dao;
+
+import cn.com.shukaiken.model.Platts;
+
+public interface PlattsMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(Platts record);
+
+    int insertSelective(Platts record);
+
+    Platts selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(Platts record);
+
+    int updateByPrimaryKeyWithBLOBs(Platts record);
+
+    int updateByPrimaryKey(Platts record);
+}

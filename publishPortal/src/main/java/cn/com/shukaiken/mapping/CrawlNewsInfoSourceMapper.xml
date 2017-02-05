@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.CrawlNewsInfoSourceDao" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.CrawlNewsInfoSource" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="site_url" property="siteUrl" jdbcType="VARCHAR" />
+    <result column="startUrl" property="startUrl" jdbcType="VARCHAR" />
+    <result column="site_name" property="siteName" jdbcType="VARCHAR" />
+    <result column="site_type" property="siteType" jdbcType="VARCHAR" />
+    <result column="is_xml" property="isXml" jdbcType="VARCHAR" />
+    <result column="xml_url" property="xmlUrl" jdbcType="VARCHAR" />
+    <result column="label_id" property="labelId" jdbcType="INTEGER" />
+    <result column="is_valid" property="isValid" jdbcType="VARCHAR" />
+    <result column="is_wrap_b" property="isWrapB" jdbcType="VARCHAR" />
+    <result column="last_crawl_time" property="lastCrawlTime" jdbcType="TIMESTAMP"/>
+    <result column="crawl_begin_date" property="crawlBeginTime" jdbcType="TIMESTAMP"/>
+    <result column="crawl_end_date" property="crawlEndTime" jdbcType="TIMESTAMP"/>
+    <result column="resv1" property="resv1" jdbcType="VARCHAR" />
+    <result column="resv2" property="resv2" jdbcType="VARCHAR" />
+    <result column="resv3" property="resv3" jdbcType="VARCHAR" />
+    <result column="resv4" property="resv4" jdbcType="VARCHAR" />
+    <collection property="infoConfigs" column="id" ofType="cn.com.shukaiken.model.CrawlNewsInfoConfig" select="cn.com.shukaiken.dao.CrawlNewsInfoConfigDao.selectConfigsBySourceId"></collection>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, site_url, site_name, startUrl,site_type, is_xml, xml_url, label_id, is_valid, is_wrap_b,last_crawl_time,crawl_begin_date,crawl_end_date, resv1, 
+    resv2, resv3, resv4
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_news_info_source
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectTableInfo"  resultType="cn.com.shukaiken.model.TableInfo" parameterType="java.lang.String">
+  	SELECT column_name as name,ordinal_position as position,column_comment as comment FROM information_schema.COLUMNS WHERE table_name=#{tableName}
+  </select>
+  <select id="selectByCondition" resultMap="BaseResultMap"  parameterType="cn.com.shukaiken.model.CrawlNewsInfoSource" >
+  	select <include refid="Base_Column_List" />
+    from t_news_info_source
+    <where>
+    1=1
+    	<if test="id != null" >
+       and id = #{id,jdbcType=INTEGER}
+      </if>
+    	<if test="siteUrl != null" >
+        and site_url = like CONCAT('%',#{siteUrl,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="siteName != null" >
+        and site_name like CONCAT('%', #{siteName,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="startUrl != null" >
+        and startUrl like CONCAT('%', #{siteName,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="siteType != null" >
+        and site_type = #{siteType,jdbcType=VARCHAR}
+      </if>
+      <if test="isXml != null" >
+        and is_xml = #{isXml,jdbcType=VARCHAR}
+      </if>
+      <if test="xmlUrl != null" >
+        and xml_url = #{xmlUrl,jdbcType=VARCHAR}
+      </if>
+      <if test="labelId != null" >
+       and label_id = #{labelId,jdbcType=INTEGER}
+      </if>
+      <if test="isValid != null" >
+        and is_valid = #{isValid,jdbcType=VARCHAR}
+      </if>
+      <if test="isWrapB != null" >
+        and is_wrap_b = #{isWrapB,jdbcType=VARCHAR}
+      </if>
+      <if test="lastCrawlTime != null" >
+        and last_crawl_time = #{lastCrawlTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="crawlBeginTime != null" >
+       and  crawl_begin_date = #{crawlBeginTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="crawlEndTime != null" >
+       and  crawl_end_date = #{crawlEndTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="resv1 != null" >
+        and resv1 = #{resv1,jdbcType=VARCHAR}
+      </if>
+      <if test="resv2 != null" >
+        and resv2 = #{resv2,jdbcType=VARCHAR}
+      </if>
+      <if test="resv3 != null" >
+        and resv3 = #{resv3,jdbcType=VARCHAR}
+      </if>
+      <if test="resv4 != null" >
+        and resv4 = #{resv4,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_news_info_source
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="cn.com.shukaiken.model.CrawlNewsInfoSource" >
+    insert into t_news_info_source (id, site_url, site_name, startUrl,
+      site_type, is_xml, xml_url, label_id
+      is_valid, is_wrap_b,last_crawl_time,crawl_begin_date,crawl_end_date, resv1, 
+      resv2, resv3, resv4
+      )
+    values (#{id,jdbcType=INTEGER}, #{siteUrl,jdbcType=VARCHAR}, #{siteName,jdbcType=VARCHAR}, #{startUrl,jdbcType=VARCHAR}, 
+      #{siteType,jdbcType=VARCHAR}, #{isXml,jdbcType=VARCHAR}, #{xmlUrl,jdbcType=VARCHAR},  #{labelId,jdbcType=INTEGER},
+      #{isValid,jdbcType=VARCHAR}, #{isWrapB,jdbcType=VARCHAR}, #{lastCrawlTime,jdbcType=TIMESTAMP}, #{crawlBeginTime,jdbcType=TIMESTAMP}, #{crawlEndTime,jdbcType=TIMESTAMP}, #{resv1,jdbcType=VARCHAR}, 
+      #{resv2,jdbcType=VARCHAR}, #{resv3,jdbcType=VARCHAR}, #{resv4,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="cn.com.shukaiken.model.CrawlNewsInfoSource" >
+    insert into t_news_info_source
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="siteUrl != null" >
+        site_url,
+      </if>
+      <if test="siteName != null" >
+        site_name,
+      </if>
+      <if test="startUrl != null" >
+        startUrl,
+      </if>
+      <if test="siteType != null" >
+        site_type,
+      </if>
+      <if test="isXml != null" >
+        is_xml,
+      </if>
+      <if test="xmlUrl != null" >
+        xml_url,
+      </if>
+      <if test="labelId != null" >
+        label_id,
+      </if>
+      <if test="isValid != null" >
+        is_valid,
+      </if>
+      <if test="isWrapB != null" >
+        is_wrap_b,
+      </if>
+      <if test="lastCrawlTime != null" >
+        last_crawl_time,
+      </if>
+      <if test="crawlBeginTime != null" >
+        crawl_begin_date,
+      </if>
+      <if test="crawlEndTime != null" >
+        crawl_end_date,
+      </if>
+      <if test="resv1 != null" >
+        resv1,
+      </if>
+      <if test="resv2 != null" >
+        resv2,
+      </if>
+      <if test="resv3 != null" >
+        resv3,
+      </if>
+      <if test="resv4 != null" >
+        resv4,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="siteUrl != null" >
+        #{siteUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="siteName != null" >
+        #{siteName,jdbcType=VARCHAR},
+      </if>
+      <if test="startUrl != null" >
+        #{startUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="siteType != null" >
+        #{siteType,jdbcType=VARCHAR},
+      </if>
+      <if test="isXml != null" >
+        #{isXml,jdbcType=VARCHAR},
+      </if>
+      <if test="xmlUrl != null" >
+        #{xmlUrl,jdbcType=VARCHAR},
+      </if>
+       <if test="labelId != null" >
+       #{labelId,jdbcType=INTEGER},
+      </if>
+      <if test="isValid != null" >
+        #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="isWrapB != null" >
+        #{isWrapB,jdbcType=VARCHAR},
+      </if>
+      <if test="lastCrawlTime != null" >
+        #{lastCrawlTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="crawlBeginTime != null" >
+        #{crawlBeginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="crawlEndTime != null" >
+        #{crawlEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resv1 != null" >
+        #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        #{resv4,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.CrawlNewsInfoSource" >
+    update t_news_info_source
+    <set >
+      <if test="siteUrl != null" >
+        site_url = #{siteUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="siteName != null" >
+        site_name = #{siteName,jdbcType=VARCHAR},
+      </if>
+      <if test="startUrl != null" >
+        startUrl = #{startUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="siteType != null" >
+        site_type = #{siteType,jdbcType=VARCHAR},
+      </if>
+      <if test="isXml != null" >
+        is_xml = #{isXml,jdbcType=VARCHAR},
+      </if>
+      <if test="xmlUrl != null" >
+        xml_url = #{xmlUrl,jdbcType=VARCHAR},
+      </if>
+       <if test="labelId != null" >
+       label_id = #{labelId,jdbcType=INTEGER},
+      </if>
+      <if test="isValid != null" >
+        is_valid = #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="isWrapB != null" >
+        is_wrap_b = #{isWrapB,jdbcType=VARCHAR},
+      </if>
+      <if test="lastCrawlTime != null" >
+        last_crawl_time = #{lastCrawlTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="crawlBeginTime != null" >
+        crawl_begin_date = #{crawlBeginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="crawlEndTime != null" >
+        crawl_end_date = #{crawlEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resv1 != null" >
+        resv1 = #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        resv2 = #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        resv3 = #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        resv4 = #{resv4,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.CrawlNewsInfoSource" >
+    update t_news_info_source
+    set site_url = #{siteUrl,jdbcType=VARCHAR},
+      site_name = #{siteName,jdbcType=VARCHAR},
+      startUrl = #{startUrl,jdbcType=VARCHAR},
+      site_type = #{siteType,jdbcType=VARCHAR},
+      is_xml = #{isXml,jdbcType=VARCHAR},
+      xml_url = #{xmlUrl,jdbcType=VARCHAR},
+      label_id = #{labelId,jdbcType=INTEGER},
+      is_valid = #{isValid,jdbcType=VARCHAR},
+      is_wrap_b = #{isWrapB,jdbcType=VARCHAR},
+      last_crawl_time = #{lastCrawlTime,jdbcType=TIMESTAMP},
+      crawl_begin_date = #{crawlBeginTime,jdbcType=TIMESTAMP},
+      crawl_end_date = #{crawlEndTime,jdbcType=TIMESTAMP},
+      resv1 = #{resv1,jdbcType=VARCHAR},
+      resv2 = #{resv2,jdbcType=VARCHAR},
+      resv3 = #{resv3,jdbcType=VARCHAR},
+      resv4 = #{resv4,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

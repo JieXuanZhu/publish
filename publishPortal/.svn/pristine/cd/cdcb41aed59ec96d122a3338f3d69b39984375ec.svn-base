@@ -1,0 +1,12 @@
+package cn.com.shukaiken.service;
+
+/**
+ * @ClassName: ILogService 
+ * @Description: <p>TODO  日志文档Service接口</p>
+ * @date 2015年11月3日 下午1:26:16 
+ * @author Zhao Xiang
+ *
+ */
+public interface ILogService {
+	
+}

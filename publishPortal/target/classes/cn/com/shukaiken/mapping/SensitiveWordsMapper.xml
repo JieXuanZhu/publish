@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.ISensitiveWordsDao" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.SensitiveWords" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="words" property="words" jdbcType="VARCHAR" />
+    <result column="special_character" property="special_character" jdbcType="VARCHAR" />
+    <result column="create_date" property="create_date" jdbcType="TIMESTAMP" />
+    <result column="is_valid" property="is_valid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, words, special_character, create_date, is_valid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sensitive_words
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <!-- 根据对象设值查询完整对象信息 -->
+  <select id="selectBySelective" parameterType="cn.com.shukaiken.model.SensitiveWords" resultMap="BaseResultMap">
+    select 
+    	<include refid="Base_Column_List" />
+    from t_sensitive_words
+    where 1 = 1
+      <if test="words != null" >
+        and words = #{words,jdbcType=VARCHAR}
+      </if>
+      <if test="special_character != null" >
+        and special_character = #{special_character,jdbcType=VARCHAR}
+      </if>
+      <if test="create_date != null" >
+        and create_date = #{create_date,jdbcType=TIMESTAMP}
+      </if>
+      <if test="is_valid != null" >
+        and is_valid = #{is_valid,jdbcType=INTEGER}
+      </if>
+  </select>
+  <select id="getSensitiveLs" parameterType="cn.com.shukaiken.model.SensitiveWords" resultMap="BaseResultMap">
+  	 select 
+	    <include refid="Base_Column_List" />	    
+    from t_sensitive_words
+    where 1=1
+    and is_valid=0 
+    <if test="words != null">
+    	and words like CONCAT('%',#{words},'%' ) 
+    </if>
+    <if test="special_character != null">
+    	and special_character like CONCAT('%',#{special_character},'%' ) 
+    </if>
+     order by id 
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_sensitive_words
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.com.shukaiken.model.SensitiveWords" >
+    insert into t_sensitive_words (id, words, special_character, create_date, 
+      is_valid)
+    values (#{id,jdbcType=INTEGER}, #{words,jdbcType=VARCHAR},  #{special_character,jdbcType=VARCHAR}, #{create_date,jdbcType=TIMESTAMP}, 
+      #{is_valid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.shukaiken.model.SensitiveWords" >
+    insert into t_sensitive_words
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="words != null" >
+        words,
+      </if>
+      <if test="special_character != null" >
+        special_character,
+      </if>
+      <if test="create_date != null" >
+        create_date,
+      </if>
+      <if test="is_valid != null" >
+        is_valid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="special_character != null" >
+        #{special_character,jdbcType=VARCHAR},
+      </if>
+      <if test="words != null" >
+        #{words,jdbcType=VARCHAR},
+      </if>
+      <if test="create_date != null" >
+        #{create_date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="is_valid != null" >
+        #{is_valid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.SensitiveWords" >
+    update t_sensitive_words
+    <set >
+      <if test="words != null" >
+        words = #{words,jdbcType=VARCHAR},
+      </if>
+      <if test="special_character != null" >
+        special_character = #{special_character,jdbcType=VARCHAR},
+      </if>
+      <if test="create_date != null" >
+        create_date = #{create_date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="is_valid != null" >
+        is_valid = #{is_valid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.SensitiveWords" >
+    update t_sensitive_words
+    set words = #{words,jdbcType=VARCHAR},
+        special_character = #{special_character,jdbcType=VARCHAR},
+      create_date = #{create_date,jdbcType=TIMESTAMP},
+      is_valid = #{is_valid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

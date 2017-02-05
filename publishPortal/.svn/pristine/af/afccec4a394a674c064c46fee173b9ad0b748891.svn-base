@@ -1,0 +1,223 @@
+/**
+ * @Title: NewsInfoCrawler.java 
+* @Package cn.com.shukaiken.crawler 
+* @Description: <p>TODO</p> 
+* @author zhaox   
+* @date 2015年11月30日 下午7:00:32 
+* @version V1.0 
+ */
+package cn.com.shukaiken.crawler;
+
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import cn.com.shukaiken.model.CrawlNewsInfo;
+import cn.com.shukaiken.model.CrawlNewsInfoConfig;
+import cn.com.shukaiken.model.CrawlNewsInfoSource;
+import cn.com.shukaiken.service.ICrawlNewsInfoService;
+import cn.com.shukaiken.util.ConfigurationUtils;
+import cn.com.shukaiken.util.DateTimeUtils;
+import cn.com.shukaiken.util.ReflectUtil;
+import cn.com.shukaiken.util.ValidateUtils;
+import cn.edu.hfut.dmic.webcollector.crawler.BasicCrawler;
+import cn.edu.hfut.dmic.webcollector.model.CrawlDatums;
+import cn.edu.hfut.dmic.webcollector.model.Links;
+import cn.edu.hfut.dmic.webcollector.model.Page;
+import cn.edu.hfut.dmic.webcollector.plugin.berkeley.BreadthCrawler;
+import cn.edu.hfut.dmic.webcollector.util.FileUtils;
+import cn.edu.hfut.dmic.webcollector.util.RegexRule;
+
+/**
+ * @ClassName: NewsInfoCrawler 
+ * @Description: <p>TODO</p>
+ * @date 2015年11月30日 下午7:00:32 
+ * @author Zhao Xiang
+ *
+ */
+public class NewsInfoCrawler extends BreadthCrawler{
+	Logger logger = LoggerFactory.getLogger(NewsInfoCrawler.class);
+	static RegexRule regexRule = new RegexRule();
+	String searchUrl = null;
+	CrawlNewsInfoSource source = null;
+	List<CrawlNewsInfoConfig> configs = null;
+	
+	
+	private ICrawlNewsInfoService crawlNewsInfoService;
+	/**
+	 * @param crawlPath
+	 * @param configList 
+	 * @param crawlNewsInfoService2 
+	 * @param crawlNewsInfoSource 
+	 */
+	public NewsInfoCrawler(String crawlPath,String searchUrl, List<CrawlNewsInfoConfig> configList, ICrawlNewsInfoService crawlNewsInfoService2, CrawlNewsInfoSource crawlNewsInfoSource) {
+		super(crawlPath,true);
+		configs = configList;
+		crawlNewsInfoService = crawlNewsInfoService2;
+		source = crawlNewsInfoSource;
+		regexRule.addRule(searchUrl);
+		regexRule.addRule(".*(jpg|png|jpeg|gif).*");//同时对网站上的图片进行抓取
+        //regexRule.addRule("-.*jpg.*");
+		// TODO Auto-generated constructor stub
+	}
+
+	
+
+	/* (non-Javadoc)
+	 * <p>Title: visitAndGetNextLinks</p> 
+	 * <p>Description: </p> 
+	 * @param arg0
+	 * @return 
+	 * @see cn.edu.hfut.dmic.webcollector.fetcher.Visitor#visitAndGetNextLinks(cn.edu.hfut.dmic.webcollector.model.Page) 
+	 */
+	@Override
+	public void visit(Page page,CrawlDatums next) {
+		
+		Document doc = page.getDoc();
+        String title = doc.title();
+        //System.out.println("URL:" + page.getUrl() + "  标题:" + title);
+        //System.out.println(doc);
+        if(!Pattern.matches(source.getStartUrl(), page.getUrl())){
+        	CrawlNewsInfo info = new CrawlNewsInfo();
+            //List<TableInfo> tableInfos = crawlNewsInfoService.selectTableInfo("t_news_info");
+            List<String> attrs = ReflectUtil.getAllAttributes(CrawlNewsInfo.class);
+            //System.out.println(attrs.size());
+            for(int i = 0;i<configs.size();i++){
+            	CrawlNewsInfoConfig config = configs.get(i);
+            	for(int j=0;j<attrs.size();j++){
+            		String attr = attrs.get(j);
+            		//System.out.println(attr);
+            		//System.out.println(config.getProp());
+            		if(ReflectUtil.formatAttr(attr).equals(ReflectUtil.formatAttr(config.getProp()))){//如果实体中的去掉下划线和数据库中的一致，那么设置
+            			String value = "";
+            			if("1".equals(config.getResv1())){//如果是附件,那么就下载
+            				Elements elements = doc.select(config.getSelector());
+            				for(int k = 0;k<elements.size();k++){
+            					Element e = elements.get(k);
+            					String url = e.attr("abs:src");
+            					System.err.println(url);
+            					try {
+            						
+            						String osname = System.getProperty("os.name");
+            						String savePath = "";
+            						if(osname.toLowerCase().indexOf("linux")>-1){
+            							savePath = ConfigurationUtils.readValue("linux.info.images.upload.path", "config.properties");
+            						}else if(osname.toLowerCase().indexOf("windows")>-1){
+            							savePath = ConfigurationUtils.readValue("windows.info.images.upload.path", "config.properties");
+            						}
+									FileUtils.writeFileWithParent(savePath+DateTimeUtils.customDateTime(new Date(),"yyyyMMdd" )
+									+ "/"+DateTimeUtils.customDateTime(new Date(), "yyyyMMddHHmmss")+"_banner_"+(new Random()).nextInt(1000000)+
+									(url.substring(url.lastIndexOf("."))), getFileFromURL(url));
+								} catch (Exception e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+            					//System.error.println(url);
+            				}
+            			}else{
+            				if("1".equals(config.getIsResvHtml()) && !ValidateUtils.isEmpty(config.getSelector())){
+                				
+                				value=doc.select(config.getSelector()).text();
+                			}else if("0".equals(config.getIsResvHtml()) && !ValidateUtils.isEmpty(config.getSelector())){
+                				value = doc.select(config.getSelector()).html();
+                			}
+                			
+                			if(!ValidateUtils.isEmpty(value) && !ValidateUtils.isEmpty(config.getOrSelector())){
+                				if("1".equals(config.getIsResvHtml())){
+                					value = doc.select(config.getOrSelector()).text();
+                    			}else if("0".equals(config.getIsResvHtml())){
+                    				value = doc.select(config.getOrSelector()).html();
+                    			}
+                			}
+                			
+                			if(!ValidateUtils.isEmpty(config.getSubReg())){
+                				Pattern p = Pattern.compile(config.getSubReg());
+                				Matcher m = p.matcher(value);
+                				if(m.find()){
+                					value=m.group(1);
+                				}
+                				//System.out.println(m.group(1));
+                			}
+                			//System.out.println(attr);
+                			ReflectUtil.setAttrValue(attr, value, CrawlNewsInfo.class, info);
+            			}
+            			
+            		}
+            	}
+            }
+            info.setCrawlertime(DateTimeUtils.currentDateTime());
+            info.setCrawlerurl(page.getUrl());
+            info.setCrawleroriginal(doc.title());
+            /*将数据插入mysql*/
+            int infoId = crawlNewsInfoService.addNewsInfo(info,source);
+            logger.info("新增info成功：id="+infoId);
+            
+        }else {
+        	/*下面是2.0版本新加入的内容*/
+            /*抽取page中的链接返回，这些链接会在下一轮爬取时被爬取。 不用担心URL去重，爬虫会自动过滤重复URL。*/
+            Links nextLinks = new Links();
+            System.out.println(regexRule);
+            /*我们只希望抽取满足正则约束的URL，
+             Links.addAllFromDocument为我们提供了相应的功能*/
+            nextLinks.addByRegex(doc, regexRule);
+            next.add(nextLinks);
+
+            /*Links类继承ArrayList<String>,可以使用add、addAll等方法自己添加URL
+             如果当前页面的链接中，没有需要爬取的，可以return null
+             例如如果你的爬取任务只是爬取seed列表中的所有链接，这种情况应该return null
+             */
+            //return nextLinks;
+        }
+        
+        //return null;
+       
+        
+	}
+	
+	public byte[] getFileFromURL(String urlStr) throws Exception{
+		//byte[] content = new byte[1024*512];
+		URL url = new URL(urlStr);
+		URLConnection uc = url.openConnection(); 
+		InputStream   is   =   uc.getInputStream();
+		//is.read(content);
+		
+		ByteArrayOutputStream swapStream = new ByteArrayOutputStream();  
+        byte[] buff = new byte[1024];  
+        int rc = 0;  
+        while ((rc = is.read(buff, 0, 1024)) > 0) {  
+            swapStream.write(buff, 0, rc);  
+        }  
+        byte[] content = swapStream.toByteArray();  
+		
+		return content;
+	}
+	
+	/*public static void startCrawler(){
+		CrawlNewsInfoSource source = new CrawlNewsInfoSource();
+		source.setIsValid(Constant.VALID);
+		List<CrawlNewsInfoSource> sourcesList = crawlNewsInfoService.getSourceList(source);
+		if(sourcesList!=null && sourcesList.size()>0){
+			for(int i = 0;i<sourcesList.size();i++){
+				String searchUrl = sourcesList.get(i).getSiteUrl();
+				//regexRule.addRule(searchUrl);
+				NewsInfoCrawler crawler = new NewsInfoCrawler("F:\\tests", searchUrl,sourcesList.get(i).getInfoConfigs());
+				crawler.setThreads(50);
+		        crawler.addSeed("http://www.gapp.gov.cn/news/1656.shtml");
+		        crawler.setResumable(false);
+			}
+		}
+	}*/
+
+}

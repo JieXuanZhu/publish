@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.InfoSerarchWordDao" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.InfoSearchWord" >
+    <id column="word_id" property="wordId" jdbcType="INTEGER" />
+    <result column="word" property="word" jdbcType="VARCHAR" />
+    <result column="hit_count" property="hitCount" jdbcType="INTEGER" />
+    <result column="name_initial" property="nameInitial" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="is_valid" property="isValid" jdbcType="VARCHAR" />
+    <result column="resv1" property="resv1" jdbcType="VARCHAR" />
+    <result column="resv2" property="resv2" jdbcType="VARCHAR" />
+    <result column="resv3" property="resv3" jdbcType="VARCHAR" />
+    <result column="resv4" property="resv4" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    word_id, word, hit_count, name_initial, create_date, is_valid, resv1, resv2, resv3, 
+    resv4
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_info_search_word
+    where word_id = #{wordId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByWord" resultMap="BaseResultMap" parameterType="cn.com.shukaiken.model.InfoSearchWord">
+  	select 
+    <include refid="Base_Column_List" />
+    from t_info_search_word
+    where word = #{word,jdbcType=VARCHAR} and is_valid='0'
+  </select>
+  <select id="selectByInfoId" resultMap="BaseResultMap" parameterType="cn.com.shukaiken.model.InfoSearchWord">
+  	select 
+    t.*
+    from t_info_search_word t inner join t_info_word_rel rel on t.word_id = rel.word_id and t.is_valid='0' and rel.is_valid='0'
+    where rel.info_id = #{infoId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_info_search_word
+    where word_id = #{wordId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="wordId" parameterType="cn.com.shukaiken.model.InfoSearchWord" >
+    insert into t_info_search_word (word_id, word, hit_count, 
+      name_initial, create_date, is_valid, 
+      resv1, resv2, resv3, 
+      resv4)
+    values (#{wordId,jdbcType=INTEGER}, #{word,jdbcType=VARCHAR}, #{hitCount,jdbcType=INTEGER}, 
+      #{nameInitial,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{isValid,jdbcType=VARCHAR}, 
+      #{resv1,jdbcType=VARCHAR}, #{resv2,jdbcType=VARCHAR}, #{resv3,jdbcType=VARCHAR}, 
+      #{resv4,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="wordId" parameterType="cn.com.shukaiken.model.InfoSearchWord" >
+    insert into t_info_search_word
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="wordId != null" >
+        word_id,
+      </if>
+      <if test="word != null" >
+        word,
+      </if>
+      <if test="hitCount != null" >
+        hit_count,
+      </if>
+      <if test="nameInitial != null" >
+        name_initial,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+      <if test="isValid != null" >
+        is_valid,
+      </if>
+      <if test="resv1 != null" >
+        resv1,
+      </if>
+      <if test="resv2 != null" >
+        resv2,
+      </if>
+      <if test="resv3 != null" >
+        resv3,
+      </if>
+      <if test="resv4 != null" >
+        resv4,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="wordId != null" >
+        #{wordId,jdbcType=INTEGER},
+      </if>
+      <if test="word != null" >
+        #{word,jdbcType=VARCHAR},
+      </if>
+      <if test="hitCount != null" >
+        #{hitCount,jdbcType=INTEGER},
+      </if>
+      <if test="nameInitial != null" >
+        #{nameInitial,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null" >
+        #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="resv1 != null" >
+        #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        #{resv4,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.InfoSearchWord" >
+    update t_info_search_word
+    <set >
+      <if test="word != null" >
+        word = #{word,jdbcType=VARCHAR},
+      </if>
+      <if test="hitCount != null" >
+        hit_count = #{hitCount,jdbcType=INTEGER},
+      </if>
+      <if test="nameInitial != null" >
+        name_initial = #{nameInitial,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null" >
+        is_valid = #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="resv1 != null" >
+        resv1 = #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        resv2 = #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        resv3 = #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        resv4 = #{resv4,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where word_id = #{wordId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.InfoSearchWord" >
+    update t_info_search_word
+    set word = #{word,jdbcType=VARCHAR},
+      hit_count = #{hitCount,jdbcType=INTEGER},
+      name_initial = #{nameInitial,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=VARCHAR},
+      resv1 = #{resv1,jdbcType=VARCHAR},
+      resv2 = #{resv2,jdbcType=VARCHAR},
+      resv3 = #{resv3,jdbcType=VARCHAR},
+      resv4 = #{resv4,jdbcType=VARCHAR}
+    where word_id = #{wordId,jdbcType=INTEGER}
+  </update>
+</mapper>

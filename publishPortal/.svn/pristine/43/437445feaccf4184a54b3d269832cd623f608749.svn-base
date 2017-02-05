@@ -1,0 +1,17 @@
+package cn.com.shukaiken.dao;
+
+import cn.com.shukaiken.model.CustLevel;
+
+public interface CustLevelMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(CustLevel record);
+
+    int insertSelective(CustLevel record);
+
+    CustLevel selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(CustLevel record);
+
+    int updateByPrimaryKey(CustLevel record);
+}

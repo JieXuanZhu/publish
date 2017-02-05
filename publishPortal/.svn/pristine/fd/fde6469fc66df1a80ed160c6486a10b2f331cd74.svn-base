@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.InfoEnshrineDao" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.InfoEnshrine" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="cust_id" property="cust_id" jdbcType="INTEGER" />
+    <result column="info_id" property="info_id" jdbcType="INTEGER" />
+    <result column="is_valid" property="is_valid" jdbcType="VARCHAR" />
+    <result column="create_time" property="create_time" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="update_time" jdbcType="TIMESTAMP" />
+    <result column="resv1" property="resv1" jdbcType="VARCHAR" />
+    <result column="resv2" property="resv2" jdbcType="VARCHAR" />
+    <result column="resv3" property="resv3" jdbcType="VARCHAR" />
+    <result column="resv4" property="resv4" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, cust_id, info_id, is_valid, create_time, update_time, resv1, resv2, resv3, resv4
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_cust_info_enshrine_rel
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <!-- 根据对象设值查询完整对象信息 -->
+  <select id="selectBySelective" parameterType="cn.com.shukaiken.model.InfoEnshrine" resultMap="BaseResultMap">
+    select 
+    	<include refid="Base_Column_List" />
+    from t_cust_info_enshrine_rel
+    where 1 = 1
+      <if test="cust_id != null">
+		and cust_id = #{cust_id,jdbcType=INTEGER}
+	  </if>
+	  <if test="info_id != null">
+		and  info_id = #{info_id,jdbcType=INTEGER}
+	  </if>
+      <if test="is_valid != null" >
+        and is_valid = #{is_valid,jdbcType=INTEGER}
+      </if>
+  </select>
+  <select id="selectInfoByInfoEnshrine" resultMap="BaseResultMap" parameterType="cn.com.shukaiken.model.InfoEnshrine" >
+    select 
+   			e.cust_id,e.info_id,c.content content,c.title  AS title,  
+ 		  DATE_FORMAT(c.create_time,'%Y/%m/%d') AS DATE,DATE_FORMAT(c.create_time,'%H时') AS TIME,t.origin AS origin
+    from t_cust_info_enshrine_rel  e
+    left join t_info t on  t.info_id = e.info_id
+    left join t_info_banner b on b.info_id = t.info_id
+    LEFT JOIN t_info_content c ON c.info_id = t.info_id
+    where 1=1
+	<if test="cust_id != null">
+		and  e.cust_id = #{cust_id,jdbcType=INTEGER}
+	</if>
+	<if test="info_id != null">
+		and  e.info_id = #{info_id,jdbcType=INTEGER}
+	</if>
+	GROUP BY e.info_id
+  </select>
+  <select id="getEnshrineInfoLs" resultMap="BaseResultMap" parameterType="cn.com.shukaiken.model.InfoEnshrine">
+    select  
+    	e.cust_id,e.info_id,b.url  AS bannerUrl,c.title  AS title,  
+    	date_format(c.create_time,'%Y年%m月%d日') as date,date_format(c.create_time,'%H:%i') as time
+    from t_cust_info_enshrine_rel  e
+    left join t_info t on  t.info_id = e.info_id
+    left join t_info_banner b on b.info_id = t.info_id
+    left join t_info_content c on c.info_id = t.info_id
+    where 1=1
+    and b.is_header = 'null'
+    and b.is_show = 'null'
+    AND b.is_valid='0'
+    and e.is_valid = 0
+	<if test="cust_id != null">
+		and  e.cust_id = #{cust_id,jdbcType=INTEGER}
+	</if>
+	GROUP BY e.info_id
+    order by e.id desc
+    <if test="startRow != null">
+		limit #{startRow}
+	</if>
+	<if test="pageSize != null">
+		,${pageSize}
+	</if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_cust_info_enshrine_rel
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.com.shukaiken.model.InfoEnshrine" >
+    insert into t_cust_info_enshrine_rel (id, cust_id, info_id, 
+      is_valid, create_time, update_time, 
+      resv1, resv2, resv3, 
+      resv4)
+    values (#{id,jdbcType=INTEGER}, #{cust_id,jdbcType=INTEGER}, #{info_id,jdbcType=INTEGER}, 
+      #{is_valid,jdbcType=VARCHAR}, #{create_time,jdbcType=TIMESTAMP}, #{update_time,jdbcType=TIMESTAMP}, 
+      #{resv1,jdbcType=VARCHAR}, #{resv2,jdbcType=VARCHAR}, #{resv3,jdbcType=VARCHAR}, 
+      #{resv4,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.shukaiken.model.InfoEnshrine" >
+    insert into t_cust_info_enshrine_rel
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="cust_id != null" >
+        cust_id,
+      </if>
+      <if test="info_id != null" >
+        info_id,
+      </if>
+      <if test="is_valid != null" >
+        is_valid,
+      </if>
+      <if test="create_time != null" >
+        create_time,
+      </if>
+      <if test="update_time != null" >
+        update_time,
+      </if>
+      <if test="resv1 != null" >
+        resv1,
+      </if>
+      <if test="resv2 != null" >
+        resv2,
+      </if>
+      <if test="resv3 != null" >
+        resv3,
+      </if>
+      <if test="resv4 != null" >
+        resv4,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="cust_id != null" >
+        #{cust_id,jdbcType=INTEGER},
+      </if>
+      <if test="info_id != null" >
+        #{info_id,jdbcType=INTEGER},
+      </if>
+      <if test="is_valid != null" >
+        #{is_valid,jdbcType=VARCHAR},
+      </if>
+      <if test="create_time != null" >
+        #{create_time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="update_time != null" >
+        #{update_time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resv1 != null" >
+        #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        #{resv4,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.InfoEnshrine" >
+    update t_cust_info_enshrine_rel
+    <set >
+      <if test="cust_id != null" >
+        cust_id = #{cust_id,jdbcType=INTEGER},
+      </if>
+      <if test="info_id != null" >
+        info_id = #{info_id,jdbcType=INTEGER},
+      </if>
+      <if test="is_valid != null" >
+        is_valid = #{is_valid,jdbcType=VARCHAR},
+      </if>
+      <if test="create_time != null" >
+        create_time = #{create_time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="update_time != null" >
+        update_time = #{update_time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resv1 != null" >
+        resv1 = #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        resv2 = #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        resv3 = #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        resv4 = #{resv4,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.InfoEnshrine" >
+    update t_cust_info_enshrine_rel
+    set cust_id = #{cust_id,jdbcType=INTEGER},
+      info_id = #{info_id,jdbcType=INTEGER},
+      is_valid = #{is_valid,jdbcType=VARCHAR},
+      create_time = #{create_time,jdbcType=TIMESTAMP},
+      update_time = #{update_time,jdbcType=TIMESTAMP},
+      resv1 = #{resv1,jdbcType=VARCHAR},
+      resv2 = #{resv2,jdbcType=VARCHAR},
+      resv3 = #{resv3,jdbcType=VARCHAR},
+      resv4 = #{resv4,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="batchUpdateByList" statementType="STATEMENT" parameterType="java.util.List">
+	  <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+		update t_cust_info_enshrine_rel 
+		<set>
+		  is_valid=2
+		</set>
+		where cust_id = ${item.cust_id} 
+		and info_id = ${item.info_id}
+	 </foreach>
+  </update>
+  <update id="batchUpdateByMap" statementType="STATEMENT" parameterType="java.util.Map">
+		update t_cust_info_enshrine_rel 
+		<set>
+		  is_valid=2
+		</set>
+		where cust_id = ${cust_id} 
+		  and info_id in 
+		 <foreach collection="infos" item="item" index="index" open="(" close=")" separator=",">
+		     ${item}
+	     </foreach>
+  </update>
+</mapper>

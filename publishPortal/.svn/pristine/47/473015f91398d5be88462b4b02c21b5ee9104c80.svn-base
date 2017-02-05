@@ -1,0 +1,84 @@
+package cn.com.shukaiken.webService.impl;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import cn.com.shukaiken.model.BackFeed;
+import cn.com.shukaiken.service.IBackFeedService;
+import cn.com.shukaiken.util.JSONHelper;
+import cn.com.shukaiken.util.JacksonHelper;
+import cn.com.shukaiken.webService.IAppBackFeedWebService;
+@Service
+public class AppBackFeedWebServiceImpl implements IAppBackFeedWebService {
+	
+	@Resource
+	private IBackFeedService backFeedService;
+	
+	@Override
+	public String addBackFeed(String jsonStr) {
+		Map<String, Object> map = new HashMap<String,Object>();
+		if(jsonStr!=null&&jsonStr.length()>0){
+			map = JSONHelper.getMapByJson(jsonStr);
+			BackFeed backFeed = new BackFeed();
+			String custId = map.get("cust_id").toString();
+			String content = map.get("content").toString();
+			String system = map.get("system").toString();
+			String model = map.get("model").toString();
+			String version = map.get("version").toString();
+			String contact = map.get("contact").toString();
+			map = new HashMap<String,Object>();
+			if(custId==null || custId.equals("")){
+				map.put("result", "102");
+				map.put("message", "传递的用户id为空");
+			}
+			if(content==null || content.equals("")){
+				map.put("result", "103");
+				map.put("message", "传递的内容为空");
+			}
+			if(system==null || system.equals("")){
+				map.put("result", "101");
+				map.put("message", "传递的系统为空");	
+			}
+			if(model==null || model.equals("")){
+				map.put("result", "101");
+				map.put("message", "传递的机型为空");
+			}
+			if(version==null || version.equals("")){
+				map.put("result", "101");
+				map.put("message", "传递的版本为空");
+			}
+			if(contact==null || contact.equals("")){
+				map.put("result", "101");
+				map.put("message", "传递的联系方式为空");
+			}
+			if(Integer.parseInt(custId)>0){
+				backFeed.setCust_id(Integer.parseInt(custId));
+			}
+			backFeed.setContent(content);
+			backFeed.setSystem(system);
+			backFeed.setModel(model);
+			backFeed.setVersion(version);
+			backFeed.setContact(contact);
+			backFeed.setCreate_date(new Date());
+			backFeed.setIs_valid(0);
+			int status = backFeedService.addBackFeed(backFeed);
+			if(status>0){
+				map.put("result", "1");
+				map.put("message", "意见反馈添加成功");
+			}else{
+				map.put("result", "0");
+				map.put("message", "意见反馈添加失败");
+			}
+		}else{
+			map.put("result", "101");
+			map.put("message", "传递的数据为空");
+		}
+		return JacksonHelper.toJSON(map);
+	}
+
+}

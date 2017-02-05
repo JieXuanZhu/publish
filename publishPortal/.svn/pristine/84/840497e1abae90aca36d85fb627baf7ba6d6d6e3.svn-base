@@ -1,0 +1,744 @@
+package cn.com.shukaiken.webService.impl;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.codehaus.xfire.transport.http.XFireServletController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import cn.com.shukaiken.controller.cust.CustController;
+import cn.com.shukaiken.model.Cust;
+import cn.com.shukaiken.service.ICustService;
+import cn.com.shukaiken.util.ConfigurationUtils;
+import cn.com.shukaiken.util.DateTimeUtils;
+import cn.com.shukaiken.util.HttpSender;
+import cn.com.shukaiken.util.JSONHelper;
+import cn.com.shukaiken.util.JacksonHelper;
+import cn.com.shukaiken.util.SMSUtils;
+import cn.com.shukaiken.util.UploadImageUtil;
+import cn.com.shukaiken.webService.IAppCustWebService;
+@Service
+public class AppCustWebServiceImpl implements IAppCustWebService {
+	
+	private Logger logger = LoggerFactory.getLogger(CustController.class);
+	
+	@Resource
+	private ICustService custService;
+	
+	/**
+	 * 获取注册手机验证码
+	 */
+	@Override
+	public String getValidCode(String jsonStr) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(jsonStr!=null&&jsonStr.length()>0){
+			map = JSONHelper.getMapByJson(jsonStr);
+			String user_name = map.get("user_name").toString();
+			map = new HashMap<String,Object>();
+			if(user_name!=null&&!user_name.equals("")){
+				Cust cust = new Cust();
+				cust.setUser_name(user_name);
+				cust = custService.selectByCust(cust);
+			     map = new HashMap<String,Object>();
+				if(cust==null){
+					map.put("result", "1");
+					map.put("message", "可以注册");
+					//String validCode = "123456";
+					String validCode = SMSUtils.genrateCode(6);
+					
+					/*String url = "http://222.73.117.158/msg/";// 应用地址
+					String account = "jiekou-clcs-03";// 账号
+					String pswd = "Admin888";// 密码
+					String mobile = user_name;// 手机号码，多个号码使用","分割
+					String msg = "您好，您的验证码是"+validCode;// 短信内容
+					boolean needstatus = true;// 是否需要状态报告，需要true，不需要false
+					String product = null;// 产品ID
+					String extno = null;// 扩展码
+
+					try {
+						HttpSender.batchSend(url, account, pswd, mobile, msg, needstatus, product, extno);
+						
+						//System.out.println(returnString);
+						// 处理返回值,参见HTTP协议文档
+					} catch (Exception e) {
+						// 处理异常
+						e.printStackTrace();
+					}*/
+					//validCode = Md5.getMD5(validCode);
+					HttpSender.aliSend(user_name, "{\"code\":\""+validCode+"\",\"product\":\"出版头条\"}", "SMS_3480221", "注册验证");
+					map.put("data", validCode);
+				}else{
+					map.put("result", "003");
+					map.put("message", "该用户已经存在");
+				}
+			}else{
+				map.put("result", "002");
+				map.put("message", "用户名为空");
+			}
+		}else{
+			map.put("result", "001");
+			map.put("message", "传递的数据为空");
+		}
+		
+	    jsonStr = JacksonHelper.toJSON(map);
+		return jsonStr;
+	}
+
+	/**
+	 * 用户注册
+	 */
+	@Override
+	public String addCust(String jsonStr) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(jsonStr!=null&&jsonStr.length()>0){
+			map = JSONHelper.getMapByJson(jsonStr);
+			String user_name = map.get("user_name").toString();
+			map = new HashMap<String,Object>();
+			if(user_name!=null&&!user_name.equals("")){
+				Cust cust = new Cust();
+				cust.setUser_name(user_name);
+			    Cust temp = custService.selectByCust(cust);
+				if(temp==null){
+					//cust.setPassword(Md5.getMD5("123456"));
+					cust.setPassword("123456");
+					cust.setCreate_date(new Date());
+					cust.setLast_login_date(new Date());
+					cust.setLevel(1);
+					cust.setLevel_id(1);
+					cust.setIs_valid(0);
+					int status = 0;
+				    status = custService.addCust(cust);
+				    cust = custService.selectByCust(cust);
+					if(status>0){
+						map.put("result", "1");
+						map.put("message", "注册成功");
+						map.put("data", cust);
+					}else{
+						map.put("result", "0004");
+						map.put("message", "注册失败");
+					}
+				}else{
+					map.put("result", "003");
+					map.put("message", "该用户已经存在");
+				}
+			}else{
+				map.put("result", "002");
+				map.put("message", "用户名为空");
+			}
+		}else{
+			map.put("result", "001");
+			map.put("message", "传递的数据为空");
+		}
+	    jsonStr = JacksonHelper.toJSON(map);
+		return jsonStr;
+	}
+	
+	/**
+	 * 获取登录手机验证码
+	 */
+	@Override
+	public String getLoginValidCode(String jsonStr) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(jsonStr!=null&&jsonStr.length()>0){
+			map = JSONHelper.getMapByJson(jsonStr);
+			String user_name = map.get("user_name").toString();
+			map = new HashMap<String,Object>();
+			if(user_name!=null&&!user_name.equals("")){
+				Cust cust = new Cust();
+				cust.setUser_name(user_name);
+				cust = custService.selectByCust(cust);
+			     map = new HashMap<String,Object>();
+				if(cust!=null){
+					map.put("result", "1");
+					map.put("message", "可以登录");
+					//String validCode = "123456";
+					String validCode = SMSUtils.genrateCode(6);
+					
+					/*String url = "http://222.73.117.158/msg/";// 应用地址
+					String account = "jiekou-clcs-03";// 账号
+					String pswd = "Admin888";// 密码
+					String mobile = user_name;// 手机号码，多个号码使用","分割
+					String msg = "您好，您的验证码是"+validCode;// 短信内容
+					boolean needstatus = true;// 是否需要状态报告，需要true，不需要false
+					String product = null;// 产品ID
+					String extno = null;// 扩展码
+
+					try {
+						 HttpSender.batchSend(url, account, pswd, mobile, msg, needstatus, product, extno);
+						
+						//System.out.println(returnString);
+						// 处理返回值,参见HTTP协议文档
+					} catch (Exception e) {
+						// 处理异常
+						e.printStackTrace();
+					}*/
+					//validCode = Md5.getMD5(validCode);
+					HttpSender.aliSend(user_name, "{\"code\":\""+validCode+"\",\"product\":\"出版头条\"}", "SMS_3480223", "登录验证");
+					map.put("data", validCode);
+				}else{
+					map.put("result", "003");
+					map.put("message", "该用户不存在");
+				}
+			}else{
+				map.put("result", "002");
+				map.put("message", "用户名为空");
+			}
+		}else{
+			map.put("result", "001");
+			map.put("message", "传递的数据为空");
+		}
+		
+	    jsonStr = JacksonHelper.toJSON(map);
+		return jsonStr;
+	}
+	
+	/**
+	 * 登录
+	 */
+	@Override
+	public String login(String jsonStr) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(jsonStr!=null&&jsonStr.length()>0){
+			map = JSONHelper.getMapByJson(jsonStr);
+			String user_name = map.get("user_name").toString();
+			String type = map.get("type").toString();
+			map = new HashMap<String,Object>();
+			if(user_name==null||user_name.equals("")){
+				map.put("result", "002");
+				map.put("message", "用户名为空");
+				jsonStr = JacksonHelper.toJSON(map);
+				return jsonStr;
+			}
+			if(type==null||type.equals("")){
+				map.put("result", "003");
+				map.put("message", "登录类型为空");
+				jsonStr = JacksonHelper.toJSON(map);
+				return jsonStr;
+			}
+			
+			if("1".equals(type)){
+				Cust cust = new Cust();
+				cust.setUser_name(user_name);
+				cust = custService.selectByCust(cust);
+				if(cust!=null){
+					map.put("result", "1");
+					map.put("message", "登录成功");
+					cust.setLast_login_date(new Date());
+					custService.updateByCustId(cust);
+					map.put("data", cust);
+				}else{
+					map.put("result", "004");
+					map.put("message", "用户名不存在");
+				}
+			}else if("2".equals(type)){
+				Cust cust = new Cust();
+				cust.setWei_xin(user_name);
+				cust = custService.selectByCust(cust);
+				if(cust!=null){
+					map.put("result", "1");
+					map.put("message", "登录成功");
+					cust.setLast_login_date(new Date());
+					custService.updateByCustId(cust);
+					map.put("data", cust);
+				}else{
+					cust = new Cust();
+					cust.setWei_xin(user_name);
+					//cust.setPassword(Md5.getMD5("123456"));
+					cust.setPassword("123456");
+					cust.setCreate_date(new Date());
+					cust.setLast_login_date(new Date());
+					cust.setLevel(1);
+					cust.setLevel_id(1);
+					cust.setIs_valid(0);
+					int status = 0;
+				    status = custService.addCust(cust);
+				    if(status>0){
+				    	cust = custService.selectByCust(cust);
+				    	map.put("result", "1");
+						map.put("message", "登录成功");
+						map.put("data", cust);
+				    }else{
+				    	map.put("result", "005");
+						map.put("message", "登录失败");
+				    }
+				}
+				
+			}else if("3".equals(type)){
+				Cust cust = new Cust();
+				cust.setQq(user_name);
+				cust = custService.selectByCust(cust);
+				if(cust!=null){
+					map.put("result", "1");
+					map.put("message", "登录成功");
+					cust.setLast_login_date(new Date());
+					custService.updateByCustId(cust);
+					map.put("data", cust);
+				}else{
+					cust = new Cust();
+					cust.setQq(user_name);
+					//cust.setPassword(Md5.getMD5("123456"));
+					cust.setPassword("123456");
+					cust.setCreate_date(new Date());
+					cust.setLast_login_date(new Date());
+					cust.setLevel(1);
+					cust.setLevel_id(1);
+					cust.setIs_valid(0);
+					int status = 0;
+				    status = custService.addCust(cust);
+				    if(status>0){
+				    	cust = custService.selectByCust(cust);
+				    	map.put("result", "1");
+						map.put("message", "登录成功");
+						map.put("data", cust);
+				    }else{
+				    	map.put("result", "005");
+						map.put("message", "登录失败");
+				    }
+				}
+				
+			}else if("4".equals(type)){
+				Cust cust = new Cust();
+				cust.setSina_wei_bo(user_name);
+				cust = custService.selectByCust(cust);
+				if(cust!=null){
+					map.put("result", "1");
+					map.put("message", "登录成功");
+					cust.setLast_login_date(new Date());
+					custService.updateByCustId(cust);
+					map.put("data", cust);
+				}else{
+					cust = new Cust();
+					cust.setSina_wei_bo(user_name);
+					//cust.setPassword(Md5.getMD5("123456"));
+					cust.setPassword("123456");
+					cust.setCreate_date(new Date());
+					cust.setLast_login_date(new Date());
+					cust.setLevel(1);
+					cust.setLevel_id(1);
+					cust.setIs_valid(0);
+					int status = 0;
+				    status = custService.addCust(cust);
+				    if(status>0){
+				    	cust = custService.selectByCust(cust);
+				    	map.put("result", "1");
+						map.put("message", "登录成功");
+						map.put("data", cust);
+				    }else{
+				    	map.put("result", "005");
+						map.put("message", "登录失败");
+				    }
+				}
+				
+			}
+			
+			
+		}else{
+			map.put("result", "001");
+			map.put("message", "传递的数据为空");
+		}
+		
+		jsonStr = JacksonHelper.toJSON(map);
+		return jsonStr;
+	}
+	
+	/**
+	 * 设置用户昵称
+	 */
+	@Override
+	public String setCustNickName(String jsonStr) {
+		Map<String, Object> map = new HashMap<String,Object>();
+	    if (jsonStr != null && jsonStr.length() > 0){
+	      map = JSONHelper.getMapByJson(jsonStr);
+	      String custId = map.get("cust_id").toString();
+	      String nick_name = map.get("nick_name").toString();
+	      map = new HashMap<String,Object>();
+	      if (custId == null || custId.equals("")) {
+	        map.put("result", "002");
+	        map.put("message", "传递的用户id为空");
+	        return JSONHelper.getJsonByMap(map);
+	      }
+	      if (nick_name == null || nick_name.equals("")) {
+	        map.put("result", "003");
+	        map.put("message", "传递的昵称为空");
+	        return JSONHelper.getJsonByMap(map);
+	      }
+	      	Cust cust = new Cust();
+			cust.setId(Integer.parseInt(custId));
+			cust.setNick_name(nick_name);
+			int status = 0;
+		    status = custService.updateByCustId(cust);
+		    if(status>0){
+		    	map.put("result", "1");
+				map.put("message", "昵称设置成功");
+		    }else{
+		    	map.put("result", "004");
+				map.put("message", "昵称设置失败");
+		    }
+	    }else{
+	    	map.put("result", "001");
+			map.put("message", "传递的数据为空");
+	    }
+	    jsonStr = JacksonHelper.toJSON(map);
+		return jsonStr;
+	}
+
+
+	/**
+	 * 设置用户头像
+	 */
+	@Override
+	public String setCustHeadImg(String jsonStr){
+		Map<String, Object> map = new HashMap<String,Object>();
+	    if (jsonStr != null && jsonStr.length() > 0) {
+	      map = JSONHelper.getMapByJson(jsonStr);
+	      String savePath = "";
+	    
+	      HttpServletRequest request = XFireServletController.getRequest();
+	      String requestURL = request.getRequestURL().toString();
+		  String servletPath = request.getServletPath();
+		  String appURL = requestURL.substring(0, requestURL.indexOf(servletPath));
+		  
+	      String path = appURL +ConfigurationUtils.readValue("info.images.access.path", "config.properties")+ DateTimeUtils.customDateTime(new Date(),"yyyyMMdd" ) + "/";
+	      String fileName = DateTimeUtils.customDateTime(new Date(), "yyyyMMddHHmmss") + "_head_" + new Random().nextInt(1000000) + ".jpg";
+	      String custId = map.get("cust_id").toString();
+	      String imgStr = map.get("data").toString();
+	      map = new HashMap<String,Object>();
+	      if (custId != null && !custId.equals("")) {
+	       
+	      }else{
+	    	  map.put("result", "002");
+		      map.put("message", "传递的用户id为空");
+		     return JSONHelper.getJsonByMap(map);
+	      }
+	      String osname = System.getProperty("os.name");
+	      if (osname.toLowerCase().indexOf("linux") > -1){
+	    	  savePath = ConfigurationUtils.readValue("linux.info.images.upload.path", "config.properties")+ DateTimeUtils.customDateTime(new Date(),"yyyyMMdd" ) + "/";
+	      }
+	      else if (osname.toLowerCase().indexOf("windows") > -1){
+	    	  savePath = ConfigurationUtils.readValue("windows.info.images.upload.path", "config.properties")+ DateTimeUtils.customDateTime(new Date(),"yyyyMMdd" ) + "\\";
+	      }
+	     
+	      if (imgStr != null && imgStr.length() > 0) {
+	    	byte[] b = null;
+	        b = UploadImageUtil.decode(imgStr);
+	        logger.info("base64长度为：" + imgStr.length());
+	        logger.info("byte[]长度为：" + b.length);
+	        String status ="";
+	        status = UploadImageUtil.fileUpload(b, savePath, fileName);
+	        logger.info("上传头像状态为：" + status);
+	        if (!status.equals("ok")) {
+	        	map.put("result", "004");
+		        map.put("message", "用户头像上传失败请重新上传");
+		        return JSONHelper.getJsonByMap(map);
+	        }
+	        
+	      }else{
+		      map.put("result", "003");
+		      map.put("message", "传递的data为空");
+		      return JSONHelper.getJsonByMap(map); 
+	      }
+
+	      Cust cust = new Cust();
+	      cust.setId(Integer.valueOf(Integer.parseInt(custId)));
+	      cust.setHead_img_url(path + fileName);
+	      int status = 0;
+	      status = this.custService.updateByCustId(cust);
+	      if (status > 0) {
+	        cust = custService.getCustById(Integer.parseInt(custId));
+	        map.put("result", "1");
+	        map.put("message", "用户头像设置成功");
+	        map.put("data", cust);
+	      } else {
+	        map.put("result", "005");
+	        map.put("message", "用户头像上传失败请重新上传");
+	      }
+	    } else {
+	      map.put("result", "001");
+	      map.put("message", "传递的数据为空");
+	    }
+
+	    return JacksonHelper.toJSON(map);
+	  }
+	
+	/**
+	 * 绑定手机号
+	 * @param custId 用户id
+	 * @param user_name 手机号
+	 * @return
+	 */
+	@Override
+	public String boundMobile(String jsonStr) {
+		Map<String, Object> map = new HashMap<String,Object>();
+	    if (jsonStr != null && jsonStr.length() > 0){
+	      map = JSONHelper.getMapByJson(jsonStr);
+	      String custId = map.get("cust_id").toString();
+	      String user_name = map.get("user_name").toString();
+	      
+	      map = new HashMap<String,Object>();
+	      if (custId == null || custId.equals("")) {
+	        map.put("result", "002");
+	        map.put("message", "传递的用户id为空");
+	        return JSONHelper.getJsonByMap(map);
+	      }
+	      if (user_name == null || user_name.equals("")) {
+	        map.put("result", "003");
+	        map.put("message", "传递的手机号为空");
+	        return JSONHelper.getJsonByMap(map);
+	      }
+	      
+	      
+	      	Cust temp = new Cust();
+	      	temp.setUser_name(user_name);
+	      	List<Cust> custLs = custService.getCustLs(temp);
+	      	if(custLs!=null&&custLs.size()>0){
+	      		map.put("result", "005");
+	 	        map.put("message", "该手机号已绑定过其他用户");
+	 	        return JSONHelper.getJsonByMap(map);
+	      	}
+	      	
+	      	Cust cust = new Cust();
+	      	cust.setUser_name(user_name);
+			cust.setId(Integer.parseInt(custId));
+			int status = 0;
+		    status = custService.updateByCustId(cust);
+		    if(status>0){
+		    	map.put("result", "1");
+				map.put("message", "手机号绑定成功");
+		    }else{
+		    	map.put("result", "004");
+				map.put("message", "手机号绑定失败");
+		    }
+	    }else{
+	    	map.put("result", "001");
+			map.put("message", "传递的数据为空");
+	    }
+		
+	    jsonStr = JacksonHelper.toJSON(map);
+		return jsonStr;
+	}
+
+	/**
+	 * 绑定微信号
+	 * @param custId 用户id
+	 * @param wei_xin 微信号
+	 * @return
+	 */
+	@Override
+	public String boundWei_xin(String jsonStr) {
+		Map<String, Object> map = new HashMap<String,Object>();
+	    if (jsonStr != null && jsonStr.length() > 0){
+	      map = JSONHelper.getMapByJson(jsonStr);
+	      String custId = map.get("cust_id").toString();
+	      String wei_xin = map.get("wei_xin").toString();
+	      
+	      map = new HashMap<String,Object>();
+	      if (custId == null || custId.equals("")) {
+	        map.put("result", "002");
+	        map.put("message", "传递的用户id为空");
+	        return JSONHelper.getJsonByMap(map);
+	      }
+	      if (wei_xin == null || wei_xin.equals("")) {
+	        map.put("result", "003");
+	        map.put("message", "传递的微信号为空");
+	        return JSONHelper.getJsonByMap(map);
+	      }
+	      
+	      
+	      	Cust temp = new Cust();
+	      	temp.setWei_xin(wei_xin);
+	      	List<Cust> custLs = custService.getCustLs(temp);
+	      	if(custLs!=null&&custLs.size()>0){
+	      		map.put("result", "005");
+	 	        map.put("message", "该微信号已绑定过其他用户");
+	 	        return JSONHelper.getJsonByMap(map);
+	      	}
+	      	
+	      	Cust cust = new Cust();
+	      	cust.setWei_xin(wei_xin);
+			cust.setId(Integer.parseInt(custId));
+			cust.setIs_wei_xin(1);
+			int status = 0;
+		    status = custService.updateByCustId(cust);
+		    if(status>0){
+		    	map.put("result", "1");
+				map.put("message", "微信绑定成功");
+		    }else{
+		    	map.put("result", "004");
+				map.put("message", "微信绑定失败");
+		    }
+	    }else{
+	    	map.put("result", "001");
+			map.put("message", "传递的数据为空");
+	    }
+		
+	    jsonStr = JacksonHelper.toJSON(map);
+		return jsonStr;
+	}
+
+	
+	/**
+	 * 绑定qq号
+	 * @param custId 用户id
+	 * @param qq QQ号
+	 * @return
+	 */
+	@Override
+	public String boundQQ(String jsonStr) {
+		Map<String, Object> map = new HashMap<String,Object>();
+	    if (jsonStr != null && jsonStr.length() > 0){
+	      map = JSONHelper.getMapByJson(jsonStr);
+	      String custId = map.get("cust_id").toString();
+	      String qq = map.get("qq").toString();
+	      map = new HashMap<String,Object>();
+	      if (custId == null || custId.equals("")) {
+	        map.put("result", "002");
+	        map.put("message", "传递的用户id为空");
+	        return JSONHelper.getJsonByMap(map);
+	      }
+	      if (qq == null || qq.equals("")) {
+	        map.put("result", "003");
+	        map.put("message", "传递的qq号为空");
+	        return JSONHelper.getJsonByMap(map);
+	      }
+	      
+		  	Cust temp = new Cust();
+	      	temp.setQq(qq);
+	      	List<Cust> custLs = custService.getCustLs(temp);
+	      	if(custLs!=null&&custLs.size()>0){
+	      		map.put("result", "005");
+	 	        map.put("message", "该QQ号已绑定过其他用户");
+	 	        return JSONHelper.getJsonByMap(map);
+	      	}
+	      	
+	      	Cust cust = new Cust();
+			cust.setId(Integer.parseInt(custId));
+			cust.setQq(qq);
+			cust.setIs_qq(1);
+			int status = 0;
+		    status = custService.updateByCustId(cust);
+		    if(status>0){
+		    	map.put("result", "1");
+				map.put("message", "QQ绑定成功");
+		    }else{
+		    	map.put("result", "004");
+				map.put("message", "QQ绑定失败");
+		    }
+	     
+	    }else{
+	    	map.put("result", "001");
+			map.put("message", "传递的数据为空");
+	    }
+	    jsonStr = JacksonHelper.toJSON(map);
+		return jsonStr;
+	}
+	
+	/**
+	 * 绑定微博号
+	 * @param custId 用户id
+	 * @param sina_wei_bo 新浪微博号
+	 * @return
+	 */
+	@Override
+	public String boundSina_wei_bo(String jsonStr) {
+		Map<String, Object> map = new HashMap<String,Object>();
+	    if (jsonStr != null && jsonStr.length() > 0){
+	      map = JSONHelper.getMapByJson(jsonStr);
+	      String custId = map.get("cust_id").toString();
+	      String sina_wei_bo = map.get("sina_wei_bo").toString();
+	      map = new HashMap<String,Object>();
+	      if (custId == null || custId.equals("")) {
+	        map.put("result", "002");
+	        map.put("message", "传递的用户id为空");
+	        return JSONHelper.getJsonByMap(map);
+	      }
+	      if (sina_wei_bo== null || sina_wei_bo.equals("")) {
+	        map.put("result", "003");
+	        map.put("message", "传递的微博号为空");
+	        return JSONHelper.getJsonByMap(map);
+	      }
+	      	Cust temp = new Cust();
+	      	temp.setSina_wei_bo(sina_wei_bo);
+	      	List<Cust> custLs = custService.getCustLs(temp);
+	      	if(custLs!=null&&custLs.size()>0){
+	      		map.put("result", "005");
+	 	        map.put("message", "该微博号已绑定过其他用户");
+	 	        return JSONHelper.getJsonByMap(map);
+	      	}
+	      	Cust cust = new Cust();
+			cust.setId(Integer.parseInt(custId));
+			cust.setSina_wei_bo(sina_wei_bo);
+			cust.setIs_sina_wei_bo(1);
+			int status = 0;
+		    status = custService.updateByCustId(cust);
+		    if(status>0){
+		    	map.put("result", "1");
+				map.put("message", "微博绑定成功");
+		    }else{
+		    	map.put("result", "004");
+				map.put("message", "微博绑定失败");
+		    }
+	     
+	    }else{
+	    	map.put("result", "001");
+			map.put("message", "传递的数据为空");
+	    }
+	    jsonStr = JacksonHelper.toJSON(map);
+		return jsonStr;
+	}
+
+	
+	/**
+	 * 修改密码
+	 * @param custId 用户id
+	 * @param password 密码   （传过来的已经过加密）
+	 * @return
+	 */
+	@Override
+	public String updatePassword(String jsonStr) {
+		Map<String, Object> map = new HashMap<String,Object>();
+	    if (jsonStr != null && jsonStr.length() > 0){
+	      map = JSONHelper.getMapByJson(jsonStr);
+	      String custId = map.get("cust_id").toString();
+	      String password = map.get("password").toString();
+	      map = new HashMap<String,Object>();
+	      if (custId == null || custId.equals("")) {
+	        map.put("result", "002");
+	        map.put("message", "传递的用户id为空");
+	        return JSONHelper.getJsonByMap(map);
+	      }
+	      if (password == null || password.equals("")) {
+	        map.put("result", "003");
+	        map.put("message", "传递的密码为空");
+	        return JSONHelper.getJsonByMap(map);
+	      }
+	      	Cust cust = new Cust();
+			cust.setId(Integer.parseInt(custId));
+			cust.setPassword(password);
+			int status = 0;
+		    status = custService.updateByCustId(cust);
+		    if(status>0){
+		    	map.put("result", "1");
+				map.put("message", "密码修改成功");
+		    }else{
+		    	map.put("result", "004");
+				map.put("message", "密码修改失败");
+		    }
+	     
+	    }else{
+	    	map.put("result", "001");
+			map.put("message", "传递的数据为空");
+	    }
+	    jsonStr = JacksonHelper.toJSON(map);
+		return jsonStr;
+		
+	}
+
+}

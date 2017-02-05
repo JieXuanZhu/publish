@@ -1,0 +1,55 @@
+package cn.com.shukaiken.model;
+
+import java.util.Date;
+
+public class PlattsType {
+    private Integer id;
+
+    private String platts_name;
+
+    private String code;
+
+    private Date create_date;
+
+    private Integer is_valid;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getPlatts_name() {
+        return platts_name;
+    }
+
+    public void setPlatts_name(String platts_name) {
+        this.platts_name = platts_name == null ? null : platts_name.trim();
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code == null ? null : code.trim();
+    }
+
+    public Date getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(Date create_date) {
+        this.create_date = create_date;
+    }
+
+    public Integer getIs_valid() {
+        return is_valid;
+    }
+
+    public void setIs_valid(Integer is_valid) {
+        this.is_valid = is_valid;
+    }
+}

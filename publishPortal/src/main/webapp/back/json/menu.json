@@ -1,0 +1,111 @@
+﻿[{
+	"id": "10",
+    "name": "会员管理",
+    "href": "javascript:void(0);",
+    "icon": "icon icon_huiyuan",
+    "title": "会员管理",
+    "state": "closed",
+    "children": [{
+	        "id": "1010",
+	        "name": "我的客户",
+		    "href": "javascript:;",
+		    "icon": "icon-bookmark-empty",
+		    "title": "我的客户",
+		    "state": "",
+	        "children": []
+        },{
+	        "id": "1011",
+	        "name": "潜在客户",
+		    "href": "javascript:;",
+		    "icon": "icon-bookmark-empty",
+		    "title": "潜在客户",
+		    "state": "",
+	        "children": []
+    }]
+},
+{
+	"id": "10",
+    "name": "合作加盟",
+    "href": "javascript:;",
+    "icon": "icon icon_jiameng",
+    "title": "合作加盟",
+    "state": "",
+    "children": []
+},
+{
+	"id": "10",
+    "name": "视频中心",
+    "href": "javascript:;",
+    "icon": "icon icon_shipin",
+    "title": "视频中心",
+    "state": "",
+    "children": []
+},
+{
+	"id": "10",
+    "name": "直播管理",
+    "href": "javascript:;",
+    "icon": "icon icon_zhibo",
+    "title": "直播管理",
+    "state": "",
+    "children": []
+},
+{
+	"id": "10",
+    "name": "每日股评",
+    "href": "javascript:;",
+    "icon": "icon icon_guping",
+    "title": "每日股评",
+    "state": "",
+    "children": []
+},
+{
+	"id": "10",
+    "name": "新闻资讯",
+    "href": "javascript:;",
+    "icon": "icon icon_xinwen",
+    "title": "新闻资讯",
+    "state": "",
+    "children": [{
+	        "id": "1010",
+	        "name": "我的客户",
+		    "href": "javascript:;",
+		    "icon": "icon-bookmark-empty",
+		    "title": "我的客户",
+		    "state": "",
+	        "children": []
+        },{
+	        "id": "1011",
+	        "name": "潜在客户",
+		    "href": "javascript:;",
+		    "icon": "icon-bookmark-empty",
+		    "title": "潜在客户",
+		    "state": "",
+	        "children": []
+    }]
+},
+{
+	"id": "10",
+    "name": "权限设置",
+    "href": "javascript:;",
+    "icon": "icon icon_quanxian",
+    "title": "权限设置",
+    "state": "closed",
+    "children": [{
+	        "id": "1010",
+	        "name": "我的客户",
+		    "href": "javascript:;",
+		    "icon": "icon-bookmark-empty",
+		    "title": "我的客户",
+		    "state": "",
+	        "children": []
+        },{
+	        "id": "1011",
+	        "name": "潜在客户",
+		    "href": "javascript:;",
+		    "icon": "icon-bookmark-empty",
+		    "title": "潜在客户",
+		    "state": "",
+	        "children": []
+    }]
+}]

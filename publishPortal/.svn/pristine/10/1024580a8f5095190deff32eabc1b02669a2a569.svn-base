@@ -1,0 +1,424 @@
+package cn.com.shukaiken.controller.label;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import cn.com.shukaiken.controller.base.RequestContext;
+import cn.com.shukaiken.model.Label;
+import cn.com.shukaiken.model.Menu;
+import cn.com.shukaiken.service.ILabelService;
+import cn.com.shukaiken.util.Constant;
+import cn.com.shukaiken.util.TokenHandler;
+import cn.com.shukaiken.util.ValidateUtils;
+
+import com.alibaba.fastjson.JSONArray;
+import com.github.pagehelper.PageInfo;
+
+@Controller
+@RequestMapping(value="/admin/label")
+public class LabelController {
+	
+	private Logger logger = LoggerFactory.getLogger(LabelController.class);
+	
+	private static final String LABEL_PATH = "/admin/label/";//角色页面的路径 
+	
+	@Resource
+	private ILabelService labelService;
+	
+	@RequestMapping("/getLabelLs")
+	public String getLabelLs(RequestContext rc,Label label,ModelMap model){
+		logger.info("查询标签");
+		if(label == null){
+			label = new Label();
+		}else{
+			if(label.getLabel_name()!=null){
+				if(label.getLabel_name().equals("")){
+					label.setLabel_name(null);
+				}
+			}
+			
+			if(label.getLevel()!=null){
+				if(label.getLevel()==0){
+					label.setLevel(null);
+				}
+			}
+			
+			if(label.getIs_valid()!=null){
+				if(label.getIs_valid()==2){
+					label.setIs_valid(null);
+				}
+			}
+			
+			if(label.getpName()!=null){
+				if(label.getpName().equals("")){
+					label.setpName(null);
+				}
+			}
+		}
+		
+		List<Label> levelList = labelService.getLevelLs(label);
+		rc.attr("levelList",levelList);
+		rc.attr("label",label);
+		rc.initPageHelper(Constant.PAGE_SIZE_TEN);
+		List<Label> labelLs = labelService.getLabelLs(label);
+		PageInfo<Label> page = new PageInfo<Label>(labelLs);
+		model.addAttribute("page", page);
+		
+		return LABEL_PATH+"label_list";
+	}
+	
+	
+	/**
+	 * 创建标签
+	 * @param rc
+	 * @return
+	 */
+	@RequestMapping("/toAddLabel")
+	public String toAddLabel(RequestContext rc){
+		String token = TokenHandler.generateGUID(rc.getSession());
+		rc.attr("TOKEN", token);
+		rc.attr("type",1);
+		return LABEL_PATH+"label_form";
+	}
+	
+	/**
+	 * 修改标签
+	 * @param rc
+	 * @return
+	 */
+	@RequestMapping("/toUpdateLabel")
+	public String toUpdateLabel(RequestContext rc){
+		String id = rc.get("id");
+		if(id!=null && id.equals("")){
+			rc.attr("msg", "程序异常！");
+			return LABEL_PATH+"label_form";
+		}else{
+			Label label =  labelService.getLabelById(Integer.parseInt(id));
+			if(label!=null){
+				label.setpName(labelService.getLabelById(label.getP_id()).getLabel_name());
+			}
+			String token = TokenHandler.generateGUID(rc.getSession());
+			rc.attr("TOKEN", token);
+			rc.attr("type",2);
+			rc.attr("label",label);
+		}
+		
+		return LABEL_PATH+"label_form";
+	}
+	
+	
+	/**
+	 * 添加或修改标签
+	 * @param rc
+	 * @param label
+	 * @return
+	 */
+	@RequestMapping("/addOrUpdateLabel")
+	public String addOrUpdateLabel(HttpServletRequest request,RequestContext rc,Label label){
+		
+		if(!TokenHandler.validToken(request)){
+			request.setAttribute("msg", "标签不能重复提交！");
+			return LABEL_PATH+"label_form";
+		}else{
+			String type = rc.get("type");
+			String id = rc.get("id");
+			if(type.equals("1")){
+				if(label!=null && !label.getLabel_name().equals("")){
+					Label temp = new Label();
+					temp.setIs_valid(0);
+					temp.setLabel_name(label.getLabel_name());
+					temp = labelService.selectByLabel(label);
+					if(temp==null){
+						//继续往下走
+						label.setLevel(1);
+						label.setIs_valid(0);
+						label.setCreate_date(new Date());
+						label.setP_id(1);
+						labelService.addLabel(label);
+						
+					}else{
+						
+						//标签已经存在
+						rc.attr("type",1);
+						rc.attr("msg", "该标签已经存在！");
+						return LABEL_PATH+"label_form";
+					}
+				}
+				
+				
+			}else if(type.equals("2")){
+				
+				if(!id.equals("") && id != null){
+					label.setId(Integer.parseInt(id));
+					
+					labelService.updateByLabelId(label);
+					
+				}
+				
+			}
+		}
+		
+		return "forward:getLabelLs";
+	}
+	
+	
+	/**
+	 * 去创建子标签
+	 * @param rc
+	 * @return
+	 */
+	@RequestMapping(value="/toAddSubLabel")
+	public String toAddSubLabel(RequestContext rc){
+		
+		String pId =rc.get("id");
+		if(pId!=null && !pId.equals("")){
+			Label label =  labelService.getLabelById(Integer.parseInt(pId));
+			String token = TokenHandler.generateGUID(rc.getSession());
+			rc.attr("TOKEN", token);
+			rc.attr("label",label);
+		}
+		
+		return LABEL_PATH+"label_sub_form";
+	}
+	
+	/**
+	 * 添加二级标签
+	 * @param rc
+	 * @param label
+	 * @return
+	 */
+	@RequestMapping("/addSubLabel")
+	@ResponseBody
+	public Map<String,String> addSubLabel(HttpServletRequest request,RequestContext rc,Label label){
+		Map<String,String> map = new HashMap<String,String>();
+		//if(!TokenHandler.validToken(request)){
+			//request.setAttribute("msg", "标签不能重复提交！");
+			//map.put("success", "false");
+			//map.put("message", "标签不能重复提交！");
+			//return LABEL_PATH+"label_sub_form";
+		//}else{
+			/*//父标签的id
+			String pId = rc.get("labelId");
+			Label labelTemp = null;
+			if(pId!=null && !pId.equals("")){
+				labelTemp = labelService.getLabelById(Integer.parseInt(pId));
+				label.setLevel(labelTemp.getLevel()+1);
+				label.setP_id(labelTemp.getId());
+			}else{
+				//标签已经存在
+				rc.attr("msg", "父标签id不能为空，程序异常！");
+				return LABEL_PATH+"label_sub_form";
+			}
+			
+		    if(label!=null && !label.getLabel_name().equals("")){
+				Label temp = new Label();
+				temp.setIs_valid(0);
+				temp.setLabel_name(label.getLabel_name());
+				temp = labelService.selectByLabel(label);
+				if(temp==null){
+					//继续往下走
+					label.setIs_valid(0);
+					label.setCreate_date(new Date());
+					labelService.addLabel(label);
+				}else{
+					//标签已经存在
+					rc.attr("msg", "该标签已经存在！");
+					return LABEL_PATH+"label_sub_form";
+				}
+			}*/
+			String labelId = rc.get("labelId");
+			String nodeIds = rc.get("nodesId");
+			if(!ValidateUtils.isEmpty(labelId)){
+					int rows = labelService.addLabelTagRel(labelId,nodeIds);
+					if(rows>0){
+						map.put("success", "true");
+						map.put("message", "增加标签成功");
+					}else {
+						map.put("success", "false");
+						map.put("message", "增加标签失败");
+					}
+			}
+				
+		//}
+		return map;
+		//return "forward:getLabelLs";
+	}
+	
+	/**
+	 * 预览标签
+	 * @param rc
+	 * @return
+	 */
+	@RequestMapping("/viewLabel")
+	public String viewLabel(RequestContext rc){
+		String id = rc.get("id");
+		if(id!=null && id.equals("")){
+			rc.attr("msg", "程序异常！");
+			return LABEL_PATH+"label_list";
+		}else{
+			Label label =  labelService.getLabelById(Integer.parseInt(id));
+			if(label!=null){
+				Label temp = labelService.getLabelById(label.getP_id());
+				if(temp!=null){
+					label.setpName(temp.getLabel_name());
+				}
+			}
+			rc.attr("label",label);
+		}
+		
+		return LABEL_PATH+"label_detail";
+	}
+	
+	/**
+	 * 修改标签的
+	 * @param rc
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/changeStatus")
+	@ResponseBody
+	public Map<String,String> changeStatus(RequestContext rc,ModelMap model){
+		
+		Map<String,String> map = new HashMap<String,String>();
+		String id = rc.get("id");
+		String status = rc.get("status");
+		logger.info("修改标签的状态,id="+id+",to status="+status+",操作人:"+rc.getCurrUser().getName()+",id="+rc.getCurrUser().getId());
+		if(!ValidateUtils.isEmpty(id)){
+			Label label = new Label();
+			label.setId(Integer.valueOf(id));
+			label.setIs_valid(Integer.valueOf(status));
+			int result = labelService.updateByLabelId(label);
+			String message = "";
+			if(result>0){
+				if(status.equals("1")){
+					message = "标签已生效";
+				}else if(status.equals("0")){
+					message="标签已失效";
+				}else{
+					message="标签状态修改成功";
+				}
+				map.put("message",message );
+				map.put("success", "true");
+			}else{
+				if(status.equals("1")){
+					message = "标签生效状态修改失败";
+				}else if(status.equals("0")){
+					message="标签失效状态修改失败";
+				}else{
+					message="标签状态修改失败";
+				}
+				map.put("message",message );
+				map.put("success", "false");
+			}
+		}else {
+			map.put("message","标签状态修改失败" );
+			map.put("success", "false");
+		}
+		
+		return map;
+	}
+	
+	
+	
+	
+	/**
+	 * 删除标签
+	 * @param rc
+	 * @return
+	 */
+	@RequestMapping(value="/delLabel")
+	public String delLabel(RequestContext rc){
+		String id = rc.get("id");
+		if(id!=null && !id.equals("")){
+			Label label = new Label();
+			label.setId(Integer.parseInt(id));
+			label.setIs_valid(2);
+			labelService.updateByLabelId(label);
+			
+		}else{
+			rc.attr("msg", "id不能为空！");
+			return LABEL_PATH+"label_list";
+		}
+		
+		return "forward:getLabelLs";
+		
+	}
+	
+	/**
+	 * 判断标签是否可以删除
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/canDelLabel")
+	@ResponseBody
+	public Map<String, Object> canDelLabel(RequestContext rc){
+		String id = rc.get("id");
+		Map<String, Object> map = new HashMap<String, Object>();
+		int count = 0;
+		if(id!=null && !id.equals("")){
+			Label label = new Label();
+			label.setId(Integer.parseInt(id));
+			count = labelService.getSubCountById(label);
+		}else{
+			//id不能为空
+			map.put("result", 2);
+		}
+		if(count>0){//该标签下还存在子标签
+			map.put("result", 1);
+		}else {//没有子标签，可以删除
+			map.put("result", 0);
+		}
+		return map;
+	}
+	
+	
+	/**
+	 * 菜单列表
+	 * @return
+	 */
+	@RequestMapping("/ajaxLabelList")
+	@ResponseBody
+	public JSONArray ajaxLabelList(RequestContext rc){
+		String tagIds = rc.get("tagIds");
+		String labelId = rc.get("labelId");
+		//List<Label> labelLs = labelService.getLabelLs(qLabel);
+		JSONArray array = labelService.getLabelTree(tagIds,labelId);
+		//初始化JSONArray对象，并添加数据
+		//JSONArray array = new JSONArray();
+		
+		/*if(labelLs != null && labelLs.size() > 0){
+			for (Label label : labelLs) {
+				//初始化HashMap集合并添加数组
+			    Map<String,Object> map = new HashMap<String,Object>();
+				map.put("id", label.getId());
+				map.put("pId", label.getP_id());
+				if(label.getP_id()==Constant.TREE_ROOT_ID){
+					map.put("open", "true");	
+			    }
+				map.put("name", label.getLabel_name());
+				
+			    if(!ValidateUtils.isEmpty(tagId)&& (label.getId()==Integer.valueOf(tagId))){
+					map.put("checked", "true");
+				}
+				array.add(map);
+			}
+			
+		}*/
+		//array.add(treeMap);
+		return array;
+		
+	}
+
+}

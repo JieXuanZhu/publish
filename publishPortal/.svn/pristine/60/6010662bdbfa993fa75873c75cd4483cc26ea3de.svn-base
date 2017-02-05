@@ -1,0 +1,687 @@
+/**
+ * @Title: InfoServiceImpl.java 
+* @Package cn.com.shukaiken.service.impl 
+* @Description: <p>TODO</p> 
+* @author zhaox   
+* @date 2015年11月13日 上午11:21:13 
+* @version V1.0 
+ */
+package cn.com.shukaiken.service.impl;
+
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.net.URL;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+
+import cn.com.shukaiken.aop.ServiceLog;
+import cn.com.shukaiken.dao.InfoDao;
+import cn.com.shukaiken.model.Info;
+import cn.com.shukaiken.model.InfoBanner;
+import cn.com.shukaiken.model.InfoCheck;
+import cn.com.shukaiken.model.InfoContent;
+import cn.com.shukaiken.model.InfoSearchWord;
+import cn.com.shukaiken.model.InfoTagRel;
+import cn.com.shukaiken.model.SystemUser;
+import cn.com.shukaiken.model.Tag;
+import cn.com.shukaiken.service.IInfoBannerService;
+import cn.com.shukaiken.service.IInfoCheckService;
+import cn.com.shukaiken.service.IInfoContentService;
+import cn.com.shukaiken.service.IInfoSearchWordService;
+import cn.com.shukaiken.service.IInfoService;
+import cn.com.shukaiken.service.ITagService;
+import cn.com.shukaiken.util.ConfigurationUtils;
+import cn.com.shukaiken.util.Constant;
+import cn.com.shukaiken.util.DateTimeUtils;
+import cn.com.shukaiken.util.SimpleImageInfo;
+import cn.com.shukaiken.util.ValidateUtils;
+
+/**
+ * @ClassName: InfoServiceImpl 
+ * @Description: <p>TODO</p>
+ * @date 2015年11月13日 上午11:21:13 
+ * @author Zhao Xiang
+ *
+ */
+@Service
+@Transactional
+public class InfoServiceImpl implements IInfoService {
+	Logger logger = LoggerFactory.getLogger(InfoServiceImpl.class);
+
+	@Autowired
+	private InfoDao infoDao;
+	
+	@Autowired
+	private IInfoBannerService infoBannerService;
+	
+	@Autowired
+	private IInfoContentService infoContentService;
+	
+	@Autowired
+	private IInfoSearchWordService infoWordService;
+	
+	@Autowired
+	private IInfoCheckService infoCheckService;
+	
+	@Autowired
+	private ITagService tagService;
+	/* (non-Javadoc)
+	 * <p>Title: addNewInfo</p> 
+	 * <p>Description: </p> 
+	 * @param info
+	 * @return 
+	 * @see cn.com.shukaiken.service.IInfoService#addNewInfo(cn.com.shukaiken.model.Info) 
+	 */
+	@Override
+	@ServiceLog(category=Constant.MODULE_NEWINFO,type=ServiceLog.ADD,description="增加新的资讯新闻")
+	public int addNewInfo(Info info, HttpServletRequest request, HttpServletResponse response,String ischangeImage,String bannerIds,String tagIds) {
+		// TODO Auto-generated method stub
+		logger.info("InfoServiceImpl.addNewInfo.INFO-新增资讯");
+		Integer id = 0;
+		InfoContent content = null;
+		if(info!=null){
+			try {
+				
+				infoDao.insertSelective(info);
+				if(info.getInfoContent()!=null){
+					content = info.getInfoContent();
+					//如果简介为空，那么取
+					if(ValidateUtils.isEmpty(content.getBrief())){
+						content.setBrief(content.getTitle());
+					}
+					content.setInfoId(info.getInfoId());
+					infoContentService.addNewContent(content);
+				}
+				//如果传过图片，即第一次传图片或者在保存草稿后又传过图片，那么进行图片上传操作，否则不操作
+				if("2".equals(ischangeImage)){
+					infoBannerService.removeAllImageByInfoId(info.getInfoId());
+					
+					if(info.getImageSize()>0){
+						if(!ValidateUtils.isEmpty(bannerIds)){
+							String []bannerIdArray = bannerIds.split(",");
+							Integer[] ids = new Integer[bannerIdArray.length];
+							for(int i=0;i<bannerIdArray.length;i++){
+								ids[i] = Integer.parseInt(bannerIdArray[i]);
+							}
+							Map<String,Object> bannerMap = new HashMap<String,Object>();
+							bannerMap.put("infoId", info.getInfoId());
+							bannerMap.put("contentId", content.getContentId());
+							bannerMap.put("ids", ids);
+							infoBannerService.updateBannerByIds(bannerMap);
+						}
+						//this.uploadImg(request, response, info, content);
+					}else {
+						//如果没有传banner图片，那么取content中的第一张图片作为banner图
+						String firstImageUrl = this.getImageFromContent(content);
+						//SimpleImageInfo imageInfo = getImageFileFromUrl(firstImageUrl,request);
+						if(!ValidateUtils.isEmpty(firstImageUrl)){
+							InfoBanner banner = new InfoBanner();
+							banner.setBanName(firstImageUrl.substring(firstImageUrl.lastIndexOf(File.separator), firstImageUrl.lastIndexOf(".")));
+							//banner.setBanSize(imageInfo.getSize().divide(new BigDecimal(1024), 2, BigDecimal.ROUND_HALF_DOWN));
+							//banner.setBanType(imageInfo.getMimeType());
+							banner.setUrl(firstImageUrl);
+							banner.setInfoId(info.getInfoId());
+							banner.setContentId(content.getContentId());
+							banner.setIsValid(Constant.VALID);
+							banner.setCreateTime(new Date());
+							infoBannerService.addNewBanner(banner);
+						}
+						
+					}
+					//没有上传过图片
+				}else if("0".equals(ischangeImage)){
+					String firstImageUrl = this.getImageFromContent(content);
+					//SimpleImageInfo imageInfo = getImageFileFromUrl(firstImageUrl,request);
+					if(!ValidateUtils.isEmpty(firstImageUrl)){
+						InfoBanner banner = new InfoBanner();
+						banner.setBanName(firstImageUrl.substring(firstImageUrl.lastIndexOf("/"), firstImageUrl.lastIndexOf(".")));
+						//banner.setBanSize(imageInfo.getSize().divide(new BigDecimal(1024), 2, BigDecimal.ROUND_HALF_DOWN));
+						//banner.setBanType(imageInfo.getMimeType());
+						banner.setUrl(firstImageUrl);
+						banner.setInfoId(info.getInfoId());
+						banner.setContentId(content.getContentId());
+						banner.setIsValid(Constant.VALID);
+						banner.setCreateTime(new Date());
+						infoBannerService.addNewBanner(banner);
+					}
+				}
+				
+				if(info.getSearchWords()!=null && info.getSearchWords().size()>0){
+					for(int i =0;i<info.getSearchWords().size();i++){
+						if(!ValidateUtils.isEmpty(info.getSearchWords().get(i).getWord())){
+							infoWordService.addNewWord(info.getSearchWords().get(i),info.getInfoId());
+						}
+					}
+				}
+				
+				if(!ValidateUtils.isEmpty(tagIds)){
+					String [] tagArr = tagIds.split(",");
+					for(int i=0;i<tagArr.length;i++){
+						InfoTagRel itr = new InfoTagRel();
+						itr.setInfoId(info.getInfoId());
+						itr.setIsValid(Constant.VALID);
+						itr.setLabelId(info.getTagId());
+						itr.setTagId(Integer.valueOf(tagArr[i]));
+						tagService.addInfotagRel(itr);
+					}
+				}
+				
+				
+				id = info.getInfoId();//返回添加的信息的ID
+				logger.info("InfoServiceImpl.addNewInfo.INFO:新增资讯成功,infoId="+id);
+			} catch (Exception e) {
+				logger.error("InfoServiceImpl.addNewInfo.ERROR,新增资讯出错:"+e,e);
+				e.printStackTrace();
+			}
+		}
+		return id;
+	}
+
+	/**
+	 * @Title: getImageFromContent 
+	 * @Description: TODO 从内容中获取第一张图片的地址
+	 * @param @param content
+	 * @param @return
+	 * @return String
+	 * @throws 
+	 */
+	private String getImageFromContent(InfoContent content) {
+		String imgUrl = null;
+		Document doc = Jsoup.parse(content.getContent());
+		if(doc !=null){
+			Element imgDoc = doc.select("img").first();
+			if(imgDoc!=null){
+				imgUrl = doc.select("img").first().attr("src");
+			}
+		}
+	
+		return imgUrl;
+	}
+	
+	/**
+	 * @param request 
+	 * @throws IOException 
+	 * @Title: getImageFileFromUrl 
+	 * @Description: TODO 根据url获取图片
+	 * @param @param url
+	 * @param @return
+	 * @return String
+	 * @throws 
+	 */
+	private SimpleImageInfo getImageFileFromUrl(String url, HttpServletRequest request) throws IOException{
+		SimpleImageInfo info = null;
+		if(!ValidateUtils.isEmpty(url)){
+			URL imageUrl = new URL(request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+url);
+			DataInputStream dataInputStream = new DataInputStream(imageUrl.openStream());
+			File file = new File(url.substring(url.lastIndexOf("/")));
+			FileOutputStream fileOutputStream = new FileOutputStream(file);
+			byte[] buffer = new byte[1024];  
+            int length;  
+
+            while ((length = dataInputStream.read(buffer)) > 0) {  
+                fileOutputStream.write(buffer, 0, length);  
+            }  
+
+            dataInputStream.close();  
+            fileOutputStream.close();
+			if(file.exists()){
+				info = new SimpleImageInfo(file);
+			}
+		}
+		return info;
+	}
+
+	/* (non-Javadoc)
+	 * <p>Title: modifyInfoByCondition</p> 
+	 * <p>Description: </p> 
+	 * @param info
+	 * @param srcInfo
+	 * @return 
+	 * @see cn.com.shukaiken.service.IInfoService#modifyInfoByCondition(cn.com.shukaiken.model.Info, cn.com.shukaiken.model.Info) 
+	 */
+	@Override
+	public int modifyInfoByCondition(Info info, Info srcInfo) {
+		logger.info("InfoServiceImpl.modifyInfoByCondition.INFO:根据条件修改资讯");
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	/* (non-Javadoc)
+	 * <p>Title: removeInfoById</p> 
+	 * <p>Description: </p> 
+	 * @param infoId
+	 * @return 
+	 * @see cn.com.shukaiken.service.IInfoService#removeInfoById(java.lang.Integer) 
+	 */
+	@Override
+	@ServiceLog(category=Constant.MODULE_NEWINFO,type=ServiceLog.DELETE,description="根据Id删除Info")
+	public int removeInfoById(Integer infoId) {
+		// TODO Auto-generated method stub
+		logger.info("InfoServiceImpl.removeInfoById.INFO:根据ID删除资讯:"+infoId);
+		int result = 0;
+		if(infoId!=null){
+			try {
+				Info info = new Info();
+				info.setIsValid(Constant.DELETED);
+				info.setInfoId(infoId);
+				//删除banners
+				/*InfoBanner banner = new InfoBanner();
+				banner.setInfoId(infoId);
+				banner.setIsValid(Constant.DELETED);*/
+				infoBannerService.removeAllImageByInfoId(infoId);
+				//删除content
+				infoContentService.removeContentByInfoId(infoId);
+				
+				infoWordService.removeAllByInfoId(infoId);
+				
+				infoCheckService.removeAllCheckByInfoId(infoId);
+				
+				result = infoDao.updateByPrimaryKeySelective(info);
+				logger.info("InfoServiceImpl.removeInfoById.INFO:根据ID:"+infoId+"删除资讯成功！");
+			} catch (Exception e) {
+				logger.error("InfoServiceImpl.removeInfoById.ERROR:根据ID:"+infoId+"删除资讯出错！"+e,e);
+				e.printStackTrace();
+			}
+		}else {
+			logger.error("InfoServiceImpl.removeInfoById.ERROR:根据ID删除资讯:ID为空");
+		}
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * <p>Title: removeInfoByCondition</p> 
+	 * <p>Description: </p> 
+	 * @param srcInfo
+	 * @return 
+	 * @see cn.com.shukaiken.service.IInfoService#removeInfoByCondition(cn.com.shukaiken.model.Info) 
+	 */
+	@Override
+	@ServiceLog(category=Constant.MODULE_NEWINFO,type=ServiceLog.DELETE,description="查询资讯列表")
+	public int removeInfoByCondition(Info srcInfo) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	/* (non-Javadoc)
+	 * <p>Title: modifyInfoById</p> 
+	 * <p>Description: </p> 
+	 * @param info
+	 * @return 
+	 * @see cn.com.shukaiken.service.IInfoService#modifyInfoById(cn.com.shukaiken.model.Info) 
+	 */
+	@Override
+	@ServiceLog(category=Constant.MODULE_NEWINFO,type=ServiceLog.UPDATE,description="根据Id修改资讯")
+	public int modifyInfoById(Info info) {
+		
+		return infoDao.updateByPrimaryKeySelective(info);
+	}
+
+	/* (non-Javadoc)
+	 * <p>Title: getInfoById</p> 
+	 * <p>Description: </p> 
+	 * @param infoId
+	 * @return 
+	 * @see cn.com.shukaiken.service.IInfoService#getInfoById(java.lang.Integer) 
+	 */
+	@Override
+	@ServiceLog(category=Constant.MODULE_NEWINFO,type=ServiceLog.SELECT,description="根据Id查询资讯")
+	public Info getInfoById(Integer infoId) {
+		// TODO Auto-generated method stub
+		return infoDao.getInfoById(infoId);
+	}
+
+	/* (non-Javadoc)
+	 * <p>Title: getInfosByCondition</p> 
+	 * <p>Description: </p> 
+	 * @param info
+	 * @return 
+	 * @see cn.com.shukaiken.service.IInfoService#getInfosByCondition(cn.com.shukaiken.model.Info) 
+	 */
+	@Override
+	@ServiceLog(category=Constant.MODULE_NEWINFO,type=ServiceLog.SELECT,description="查询资讯列表")
+	public List<Info> getInfosByCondition(Info info) {
+		// TODO Auto-generated method stub
+		return infoDao.selectInfosByCondition(info);
+	}
+
+	/* (non-Javadoc)
+	 * <p>Title: uploadImg</p> 
+	 * <p>Description: </p> 
+	 * @param req
+	 * @param res
+	 * @return
+	 * @throws Exception 
+	 * @see cn.com.shukaiken.service.IInfoService#uploadImg(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse) 
+	 */
+	@Override
+	public boolean uploadImg(HttpServletRequest req, HttpServletResponse res,Info info,InfoContent content) throws Exception {
+		String savePath = "";
+		boolean isSuc = false;
+		try {
+			CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver(req.getSession().getServletContext());  
+			if(commonsMultipartResolver.isMultipart(req)){
+				MultipartHttpServletRequest mrequest = (MultipartHttpServletRequest) req ;
+				Map<String, MultipartFile>  filesMap = mrequest.getFileMap();
+				//MultipartFile imageFile = mrequest.getFile("bannerFile");
+				String osname = System.getProperty("os.name");
+				if(osname.toLowerCase().indexOf("linux")>-1){
+					savePath = ConfigurationUtils.readValue("linux.info.images.upload.path", "config.properties");
+				}else if(osname.toLowerCase().indexOf("windows")>-1){
+					savePath = ConfigurationUtils.readValue("windows.info.images.upload.path", "config.properties");
+				}
+				if(filesMap!=null && filesMap.size()>0){
+					for(Entry<String, MultipartFile> entry:filesMap.entrySet()){
+						MultipartFile imageFile = (MultipartFile) (entry.getValue());
+						if(imageFile!=null&&!imageFile.isEmpty()){
+							//上传图片到图片服务器
+							String fileName = DateTimeUtils.customDateTime(new Date(), "yyyyMMddHHmmss")+"_banner_"+imageFile.getOriginalFilename();
+							String path = savePath + DateTimeUtils.customDateTime(new Date(),"yyyyMMdd" ) + "/";
+							String uploadFileName =  ConfigurationUtils.readValue("info.images.access.path", "config.properties")+DateTimeUtils.customDateTime(new Date(),"yyyyMMdd" ) + "/"+fileName;
+							isSuc = this.upload(imageFile,path , fileName, req);
+							//向数据库中插入数据
+							if(isSuc){
+								InfoBanner banner = new InfoBanner();
+								banner.setBanName(imageFile.getOriginalFilename());
+								banner.setBanSize(new BigDecimal(imageFile.getSize()/1024).setScale(2, BigDecimal.ROUND_HALF_DOWN));
+								banner.setBanType(imageFile.getContentType());
+								banner.setIsValid(Constant.VALID);
+								banner.setUrl(uploadFileName);
+								banner.setCreateTime(new Date());
+								banner.setInfoId(info.getInfoId());
+								banner.setContentId(content.getContentId());
+								infoBannerService.addNewBanner(banner);
+							}else {
+								//如果isSuc为false，表示上传失败，在 upload方法中有异常产生，此处抛出异常是为了事务管理
+								throw new RuntimeException("上传图片失败:"+imageFile.getOriginalFilename());
+							}
+						}
+					}
+				}
+			//}
+			}
+		} catch (Exception e) {
+			logger.error("InfoServiceImpl.uploadImg.ERROR:上传图片出错："+e, e);
+			e.printStackTrace();
+			isSuc = false;
+			throw new RuntimeException("上传图片出错"+e);
+		}
+		return isSuc;
+	}
+	
+	public boolean upload(MultipartFile file,String path,String fileName, HttpServletRequest request) {  
+        File targetFile = new File(path, fileName);
+        if(!targetFile.exists()){  
+            targetFile.mkdirs();  
+        }  
+        //保存  
+        try {  
+            file.transferTo(targetFile);  
+            logger.info("InfoServiceImpl.upload()--上传文件成功：");
+            return true;
+        } catch (Exception e) {  
+            e.printStackTrace(); 
+            logger.error("InfoServiceImpl.upload()--上传文件失败："+e,e);
+            return false;
+        }  
+       // model.addAttribute("fileUrl", request.getContextPath()+"/upload/"+fileName);  
+  
+        //return path+fileName;  
+    }
+
+
+	/* (non-Javadoc)
+	 * <p>Title: modifyInfo</p> 
+	 * <p>Description: </p> 
+	 * @param info
+	 * @param request
+	 * @param response
+	 * @param ischangeImage
+	 * @param bannerIds 
+	 * @see cn.com.shukaiken.service.IInfoService#modifyInfo(cn.com.shukaiken.model.Info, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.String, java.lang.String) 
+	 */
+	@Override
+	public int modifyInfo(Info info, HttpServletRequest request, HttpServletResponse response, String ischangeImage,
+			String bannerIds,String tagIds) {
+		int result = 0;
+		logger.info("修改资讯:infoId="+info.getInfoId());
+		InfoContent content = null;
+		try {
+			if(info!=null){
+				content = info.getInfoContent();
+				if("2".equals(ischangeImage)){
+					//如果有过修改图片的情况，将所有的图片删除，然后重新插入图片数据
+					//infoBannerService.removeAllImageByInfoId(info.getInfoId());
+					infoBannerService.removeAllImageByInfoIdAndNotInIds(Integer.toString(info.getInfoId()),bannerIds);
+					if(!ValidateUtils.isEmpty(bannerIds)){
+						String []bannerIdArray = bannerIds.split(",");
+						Integer[] ids = new Integer[bannerIdArray.length];
+						for(int i=0;i<bannerIdArray.length;i++){
+							ids[i] = Integer.parseInt(bannerIdArray[i]);
+						}
+						Map<String,Object> bannerMap = new HashMap<String,Object>();
+						bannerMap.put("infoId", info.getInfoId());
+						bannerMap.put("contentId", content.getContentId());
+						bannerMap.put("ids", ids);
+						infoBannerService.updateBannerByIds(bannerMap);
+					//this.uploadImg(request, response, info, content);
+					}else{
+						//如果没有传banner图片，那么取content中的第一张图片作为banner图
+						String firstImageUrl = this.getImageFromContent(content);
+						//SimpleImageInfo imageInfo = getImageFileFromUrl(firstImageUrl,request);
+						if(!ValidateUtils.isEmpty(firstImageUrl)){
+							InfoBanner banner = new InfoBanner();
+							banner.setBanName(firstImageUrl.substring(firstImageUrl.lastIndexOf("/"), firstImageUrl.lastIndexOf(".")));
+							//banner.setBanSize(imageInfo.getSize().divide(new BigDecimal(1024), 2, BigDecimal.ROUND_HALF_DOWN));
+							//banner.setBanType(imageInfo.getMimeType());
+							banner.setUrl(firstImageUrl);
+							banner.setInfoId(info.getInfoId());
+							banner.setContentId(content.getContentId());
+							banner.setIsValid(Constant.VALID);
+							banner.setCreateTime(new Date());
+							infoBannerService.addNewBanner(banner);
+					}
+				}
+				}
+				info.getInfoContent().setUpdateTime(new Date());
+				infoContentService.updateInfoContentById(info.getInfoContent());
+				
+				List<InfoSearchWord> oldList = infoWordService.getWordsByInfoId(info.getInfoId());
+				//如果没有插入过searchword，那么插入数据
+				if(oldList==null||oldList.size()<=0){
+					if(info.getSearchWords()!=null && info.getSearchWords().size()>0){
+						for(int i =0;i<info.getSearchWords().size();i++){
+							if(!ValidateUtils.isEmpty(info.getSearchWords().get(i).getWord())){
+								infoWordService.addNewWord(info.getSearchWords().get(i),info.getInfoId());
+							}
+						}
+					}
+				}else{
+					//如果以前插入过，那么删掉所有的关联关系，重新插入
+					infoWordService.removeAllByInfoId(info.getInfoId());
+					if(info.getSearchWords()!=null && info.getSearchWords().size()>0){
+						for(int i =0;i<info.getSearchWords().size();i++){
+							if(!ValidateUtils.isEmpty(info.getSearchWords().get(i).getWord())){
+								infoWordService.addNewWord(info.getSearchWords().get(i),info.getInfoId());
+							}
+						}
+					}
+				}
+				
+				
+				List<Tag> tagList = tagService.selectByInfoId(info.getInfoId()); 
+				if(tagList==null||tagList.size()<=0){
+					if(!ValidateUtils.isEmpty(tagIds)){
+						String [] tagArr = tagIds.split(",");
+						for(int i=0;i<tagArr.length;i++){
+							InfoTagRel itr = new InfoTagRel();
+							itr.setInfoId(info.getInfoId());
+							itr.setIsValid(Constant.VALID);
+							itr.setLabelId(info.getTagId());
+							itr.setTagId(Integer.valueOf(tagArr[i]));
+							tagService.addInfotagRel(itr);
+						}
+					}
+				}else {
+					tagService.removeAllRelByInfoId(info.getInfoId());
+					if(!ValidateUtils.isEmpty(tagIds)){
+						String [] tagArr = tagIds.split(",");
+						for(int i=0;i<tagArr.length;i++){
+							InfoTagRel itr = new InfoTagRel();
+							itr.setInfoId(info.getInfoId());
+							itr.setIsValid(Constant.VALID);
+							itr.setLabelId(info.getTagId());
+							itr.setTagId(Integer.valueOf(tagArr[i]));
+							tagService.addInfotagRel(itr);
+						}
+					}
+				}
+				info.setUpdateTime(new Date());
+				result = infoDao.updateByPrimaryKeySelective(info);
+				
+			}
+		} catch (Exception e) {
+			logger.error("InfoServiceImpl.modifyInfo.ERROR:修改资讯失败,"+e,e);
+			e.printStackTrace();
+		}
+		
+		return result;
+		}
+
+	/* (non-Javadoc)
+	 * <p>Title: changeInfoStatusById</p> 
+	 * <p>Description: </p> 
+	 * @param info
+	 * @param opinion
+	 * @return 
+	 * @see cn.com.shukaiken.service.IInfoService#changeInfoStatusById(cn.com.shukaiken.model.Info, java.lang.String) 
+	 */
+	@Override
+	public int changeInfoStatusById(Info info, String opinion,SystemUser curUser) {
+		logger.info("修改资讯状态");
+		int result = 0;
+		try {
+			if(!ValidateUtils.isEmpty(info.getStatus())){
+				String status = info.getStatus();
+				if(Constant.INFO_STATUS_WAIT_SECOND_CHECK.equals(status)||
+						Constant.INFO_STATUS_CHECK_SUCCESS.equals(status)||Constant.INFO_STATUS_FIRST_CHECK_FAIL.equals(status)||
+						Constant.INFO_STATUS_SECOND_CHECK_FAIL.equals(status)||Constant.INFO_STATUS_CHECK_PUBLISH_WAIT_REWRITE.equals(status)){
+					//message = "资讯确认成功,已提交至审核";
+					InfoCheck check = new InfoCheck();
+					check.setOpinion(opinion);
+					check.setInfoId(info.getInfoId());
+					check.setCheckTime(new Date());
+					check.setStage(status);
+					check.setIsValid(Constant.VALID);
+					if(Constant.INFO_STATUS_WAIT_SECOND_CHECK.equals(status)||
+							Constant.INFO_STATUS_CHECK_SUCCESS.equals(status)||
+							Constant.INFO_STATUS_CHECK_PUBLISH_WAIT_REWRITE.equals(status)){
+						check.setIsAgree("0");//同意
+					}else {
+						check.setIsAgree("1");//不同意
+					}
+					if(curUser!=null){
+						check.setUserId(curUser.getId());
+						check.setUserName(curUser.getName());
+					}else {
+						check.setUserId(null);
+						check.setUserName(null);
+					}
+					
+					infoCheckService.addNewCheck(check);
+				}
+				result = this.modifyInfoById(info);
+				
+				
+			}
+		} catch (Exception e) {
+			result = 0;
+			logger.error("InfoServiceImpl:changeInfoStatusById.ERROR:"+e, e);
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	@Override
+	public int updateInfoByIds(String infoIds, Info info) {
+		logger.info("根据infoIDS更新info数据");
+		int result = 0;
+		try {
+			if(!ValidateUtils.isEmpty(infoIds)){
+				String []infoIdStrArr = infoIds.split(",");
+				Integer []infoIdIntArr = new Integer[infoIdStrArr.length];
+				for(int i=0;i<infoIdStrArr.length;i++){
+					infoIdIntArr[i] = Integer.valueOf(infoIdStrArr[i]);
+				}
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("infoIdArr", infoIdIntArr);
+				map.put("info", info);
+				result = infoDao.updateInfoByInfoIds(map);
+			}
+		} catch (Exception e) {
+			logger.error("updateInfoByIds.ERROR:"+e, e);
+			e.printStackTrace();
+			return 0;
+		}
+		return result;
+	}
+
+	@Override
+	public int recommendInfo(Info recinfo) {
+		int result = 0;
+		try {
+			if(recinfo!=null){
+				//推荐之前，先将这个分类下的其他的分类都改成未推荐
+				Map<String,Object> map = new HashMap<String,Object>();
+				Info info = new Info();
+				Info cond = new Info();
+				info.setResv1("0");
+				
+				cond.setResv1("1");//1表示推荐，0-表示不推荐
+				cond.setTagId(recinfo.getTagId());
+				
+				map.put("info", info);
+				map.put("cond", cond);
+				infoDao.updateInfoByInfo(map);
+				
+				//根据Id和tagId将分类中的一条更新为推荐
+				recinfo.setResv1("1");
+				recinfo.setTagId(null);
+				result = infoDao.updateByPrimaryKeySelective(recinfo);
+			}
+		} catch (Exception e) {
+			logger.error("推荐资讯出错:"+e, e);
+			e.printStackTrace();
+			return 0;
+		}
+		return result;
+	}
+
+	@Override
+	public List<Info> searchInfos(Map<String,Object> queryMap) {
+		if(queryMap!=null){
+			return infoDao.searchInfos(queryMap);
+		}
+		return null;
+	}
+}

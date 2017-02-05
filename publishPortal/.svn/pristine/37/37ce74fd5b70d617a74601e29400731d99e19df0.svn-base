@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+<classPathEntry location="D:\Repositories\Maven\mysql\mysql-connector-java\5.1.36\mysql-connector-java-5.1.36.jar"/>
+<context id="MysqlTables" targetRuntime="MyBatis3">
+<commentGenerator>  
+    <property name="suppressAllComments" value="true" />     
+    </commentGenerator> 
+	<jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://192.168.1.186:3306/publish" userId="root" password="shukaiken"></jdbcConnection>
+	<javaTypeResolver>
+	<property name="forceBigDecimals" value="false"/>
+	</javaTypeResolver>
+	<javaModelGenerator targetPackage="cn.com.shukaiken.model" targetProject="src\main\java">
+	<property name="enableSubPackages" value="true"/>
+	<property name="trimStrings" value="true"/>
+	</javaModelGenerator>
+	<sqlMapGenerator targetPackage="cn.com.shukaiken.mapping" targetProject="src\main\java">
+	<property name="enableSubPackages" value="true"/>
+	</sqlMapGenerator>
+	<javaClientGenerator type="XMLMAPPER" targetPackage="cn.com.shukaiken.dao" targetProject="src\main\java">
+	<property name="enableSubPackages" value="true"/>
+	</javaClientGenerator>
+<!-- 	<table schema="publish" tableName="t_cust" domainObjectName="Cust" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+   	 <property name="useActualColumnNames" value="true"/>
+    </table>
+    <table schema="publish" tableName="t_cust_level" domainObjectName="CustLevel" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+   	 <property name="useActualColumnNames" value="true"/>
+    </table>
+    <table schema="publish" tableName="t_cust_role" domainObjectName="CustRole" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+   	 <property name="useActualColumnNames" value="true"/>
+    </table>
+    <table schema="publish" tableName="t_cust_role_power" domainObjectName="CustRolePower" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+   	 <property name="useActualColumnNames" value="true"/>
+    </table>
+    <table schema="publish" tableName="t_cust_role_power_rel" domainObjectName="CustRolePowerRel" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+   	 <property name="useActualColumnNames" value="true"/>
+    </table> 
+    <table schema="publish" tableName="t_cust_surplus_count" domainObjectName="CustSurplusCount" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+   	 <property name="useActualColumnNames" value="true"/>
+    </table>
+    <table schema="publish" tableName="t_back_feed" domainObjectName="BackFeed" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+   	 <property name="useActualColumnNames" value="true"/>
+    </table>
+    <table schema="publish" tableName="t_back_feed_type" domainObjectName="BackFeedType" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+   	 <property name="useActualColumnNames" value="true"/>
+    </table>
+    <table schema="publish" tableName="t_books" domainObjectName="Books" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+   	 <property name="useActualColumnNames" value="true"/>
+    </table>
+    <table schema="publish" tableName="t_data" domainObjectName="Data" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+   	 <property name="useActualColumnNames" value="true"/>
+    </table>
+    <table schema="publish" tableName="t_data_category" domainObjectName="DataCategory" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+   	 <property name="useActualColumnNames" value="true"/>
+    </table>
+    <table schema="publish" tableName="t_label" domainObjectName="Label" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+   	 <property name="useActualColumnNames" value="true"/>
+    </table>
+    <table schema="publish" tableName="t_menu" domainObjectName="Menu" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+   	 <property name="useActualColumnNames" value="true"/>
+    </table> 
+    <table schema="publish" tableName="t_platts" domainObjectName="Platts" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+   	 <property name="useActualColumnNames" value="true"/>
+    </table> 
+    <table schema="publish" tableName="t_platts_type" domainObjectName="PlattsType" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+   	 <property name="useActualColumnNames" value="true"/>
+    </table> 
+    <table schema="publish" tableName="t_role" domainObjectName="Role" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+   	 <property name="useActualColumnNames" value="true"/>
+    </table> 
+    <table schema="publish" tableName="t_role_menu_rel" domainObjectName="RoleMenuRel" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+   	 <property name="useActualColumnNames" value="true"/>
+    </table> 
+    <table schema="publish" tableName="t_sensitive_words" domainObjectName="SensitiveWords" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+   	 <property name="useActualColumnNames" value="true"/>
+    </table> -->
+    <table schema="publish" tableName="t_system_user" domainObjectName="SystemUser" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+   	 <property name="useActualColumnNames" value="true"/>
+    </table> 
+    <table schema="publish" tableName="t_system_user_role_rel" domainObjectName="SystemUserRoleRel" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+   	 <property name="useActualColumnNames" value="true"/>
+    </table> 
+</context>
+
+
+</generatorConfiguration> 

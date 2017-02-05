@@ -1,0 +1,848 @@
+/**
+ * @Title: InfoController.java 
+* @Package cn.com.shukaiken.controller.info 
+* @Description: <p>TODO</p> 
+* @author zhaox   
+* @date 2015年11月13日 上午11:51:24 
+* @version V1.0 
+ */
+package cn.com.shukaiken.controller.info;
+
+import java.io.File;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+
+import cn.com.shukaiken.aop.ControllerLog;
+import cn.com.shukaiken.controller.base.RequestContext;
+import cn.com.shukaiken.model.Info;
+import cn.com.shukaiken.model.InfoBanner;
+import cn.com.shukaiken.model.Label;
+import cn.com.shukaiken.model.SearchWords;
+import cn.com.shukaiken.model.Tag;
+import cn.com.shukaiken.service.IInfoBannerService;
+import cn.com.shukaiken.service.IInfoService;
+import cn.com.shukaiken.service.ILabelService;
+import cn.com.shukaiken.service.ISearchWordsService;
+import cn.com.shukaiken.service.ITagService;
+import cn.com.shukaiken.util.ConfigurationUtils;
+import cn.com.shukaiken.util.Constant;
+import cn.com.shukaiken.util.DateTimeUtils;
+import cn.com.shukaiken.util.JacksonHelper;
+import cn.com.shukaiken.util.ValidateUtils;
+
+import com.github.pagehelper.PageInfo;
+
+/**
+ * @ClassName: InfoController 
+ * @Description: <p>TODO</p>
+ * @date 2015年11月13日 上午11:51:24 
+ * @author Zhao Xiang
+ */
+@Controller(value="infoController")
+public class InfoController {
+	Logger logger = LoggerFactory.getLogger(InfoController.class);
+	
+	private final String INFO_PATH="/admin/info/";//资讯页面路径
+	
+	@Autowired
+	private IInfoService infoService;
+	
+	@Autowired
+	private IInfoBannerService infoBannerService;
+	
+	@Autowired
+	private ILabelService labelService;
+	
+	@Autowired
+	private ISearchWordsService searchWordsService;
+	
+	@Autowired
+	private ITagService tagService;
+	
+	//跳转到编辑列表页，
+	@RequestMapping(value="/admin/info/getInfos")
+	@ControllerLog(category=Constant.MODULE_NEWINFO,type=ControllerLog.SELECT,description="查询资讯列表 ")
+	public String getInfos(RequestContext rc,Info info,ModelMap model){
+		logger.info("获取资讯列表");
+		if(info==null){
+			info = new Info();
+		}
+		Map<String,String> statusList = new HashMap<String,String>(); 
+		statusList.put("草稿",Constant.INFO_STATUS_DRAFT);
+		statusList.put("已保存,待确认",Constant.INFO_STATUS_UNCHECKED);
+		statusList.put("审核未通过", Constant.INFO_STATUS_FIRST_CHECK_FAIL);
+		statusList.put("复核未通过", Constant.INFO_STATUS_SECOND_CHECK_FAIL);
+		statusList.put("待发布,首页修改", Constant.INFO_STATUS_CHECK_PUBLISH_WAIT_REWRITE);
+		model.addAttribute("statusMap", statusList);
+		if(ValidateUtils.isEmpty(info.getStatus())){
+			info.setStatusMap(statusList);
+		}
+		info.setIsValid(Constant.VALID);
+		rc.initPageHelper(10);
+		List<Info> infoList = infoService.getInfosByCondition(info);
+		PageInfo<Info> page = new PageInfo<Info>(infoList);
+		model.addAttribute("page",page);
+		model.addAttribute("queryInfo", info);
+		return INFO_PATH+"info-list";
+	}
+	
+	//跳转到审核列表页
+	@RequestMapping(value="/admin/info/getFirstCheckInfos")
+	@ControllerLog(category=Constant.MODULE_NEWINFO,type=ControllerLog.SELECT,description="获取资讯审核列表")
+	public String getInfoForFirstCheck(RequestContext rc,Info info,ModelMap model){
+		logger.info("获取资讯审核列表:status="+info.getStatus());
+		Map<String,String> statusList = new HashMap<String,String>(); 
+		info.setIsValid(Constant.VALID);
+		
+		statusList.put("待审核",Constant.INFO_STATUS_WAIT_FIRST_CHECK);
+		statusList.put("审核失败",Constant.INFO_STATUS_FIRST_CHECK_FAIL);
+		model.addAttribute("statusMap", statusList);
+		if(ValidateUtils.isEmpty(info.getStatus())){
+			info.setStatusMap(statusList);
+		}
+		rc.initPageHelper(10);
+		List<Info> infoList = infoService.getInfosByCondition(info);
+		PageInfo<Info> page = new PageInfo<Info>(infoList);
+		model.addAttribute("page",page);
+		model.addAttribute("queryInfo", info);
+		return INFO_PATH+"info-check-list";
+	}
+	
+	//跳转到复核列表页
+	@RequestMapping(value="/admin/info/getSecondCheckInfos")
+	@ControllerLog(category=Constant.MODULE_NEWINFO,type=ControllerLog.SELECT,description="获取资讯复核列表")
+	public String getInfoForSecondCheck(RequestContext rc,Info info,ModelMap model){
+		logger.info("获取资讯复核列表:status="+info.getStatus());
+		info.setIsValid(Constant.VALID);
+		Map<String,String> statusList = new HashMap<String,String>(); 
+		info.setIsValid(Constant.VALID);
+		
+		statusList.put("待审核",Constant.INFO_STATUS_WAIT_SECOND_CHECK);
+		statusList.put("审核失败",Constant.INFO_STATUS_SECOND_CHECK_FAIL);
+		model.addAttribute("statusMap", statusList);
+		if(ValidateUtils.isEmpty(info.getStatus())){
+			info.setStatusMap(statusList);
+		}
+		rc.initPageHelper(10);
+		List<Info> infoList = infoService.getInfosByCondition(info);
+		PageInfo<Info> page = new PageInfo<Info>(infoList);
+		model.addAttribute("page",page);
+		model.addAttribute("queryInfo", info);
+		return INFO_PATH+"info-check-list";
+	}
+	
+	//跳转到发布列表页，资讯配置
+	@RequestMapping(value="/admin/info/getToPublishInfos")
+	@ControllerLog(category=Constant.MODULE_NEWINFO,type=ControllerLog.SELECT,description="获取资讯发布列表")
+	public String getInfoForPublish(RequestContext rc,Info info,ModelMap model){
+		logger.info("获取资讯发布列表:status="+info.getStatus());
+		info.setIsValid(Constant.VALID);
+		Map<String,String> statusList = new HashMap<String,String>(); 
+		info.setIsValid(Constant.VALID);
+		
+		statusList.put("未发布",Constant.INFO_STATUS_CHECK_SUCCESS);
+		statusList.put("已撤回",Constant.INFO_STATUS_PUBLISH_ROLLBACK);
+		model.addAttribute("statusMap", statusList);
+		if(ValidateUtils.isEmpty(info.getStatus())){
+			info.setStatusMap(statusList);
+		}
+		Label ql = new Label();
+		ql.setIs_valid(0);
+		List<Label> labelList = labelService.selectLabelsByCondition(ql);
+		model.addAttribute("labelList", labelList);
+		
+		rc.initPageHelper(10);
+		List<Info> infoList = infoService.getInfosByCondition(info);
+		PageInfo<Info> page = new PageInfo<Info>(infoList);
+		model.addAttribute("page",page);
+		model.addAttribute("queryInfo", info);
+		return INFO_PATH+"info-publish-list";
+	}
+	
+	//跳转到手机排版列表页
+	@RequestMapping(value="/admin/info/layout")
+	@ControllerLog(category=Constant.MODULE_NEWINFO,type=ControllerLog.SELECT,description="获取资讯待排版列表")
+	public String getInfosForLayout(RequestContext rc,Info info,ModelMap model){
+		logger.info("获取资讯待排版列表:status="+info.getStatus());
+		info.setIsValid(Constant.VALID);
+		Map<String,String> statusList = new HashMap<String,String>(); 
+		info.setIsValid(Constant.VALID);
+		
+		statusList.put("待发布",Constant.INFO_STATUS_CHECK_WAIT_PUBLISH);
+		statusList.put("首页修改待确认", Constant.INFO_STATUS_CHECK_REWRITE_COMPLETE);
+		model.addAttribute("statusMap", statusList);
+		if(ValidateUtils.isEmpty(info.getStatus())){
+			info.setStatusMap(statusList);
+		}
+		rc.initPageHelper(10);
+		List<Info> infoList = infoService.getInfosByCondition(info);
+		PageInfo<Info> page = new PageInfo<Info>(infoList);
+		model.addAttribute("page",page);
+		model.addAttribute("queryInfo", info);
+		return INFO_PATH+"info-layout-list";
+	}
+	
+	@RequestMapping(value="/info/getAllInfos")
+	@ResponseBody
+	public Map<String,Object> getInfosForFront(RequestContext rc,Info info,ModelMap model){
+		logger.info("获取前端展示需要用的资讯列表");
+		Map<String,Object> resMap = new HashMap<String,Object>();
+		
+		return resMap;
+	}
+	
+	@RequestMapping(value="/admin/info/searchInfos")
+	@ControllerLog(category=Constant.MODULE_NEWINFO,type=ControllerLog.SELECT,description="搜索资讯列表")
+	public String searchInfos(RequestContext rc,ModelMap model,Info info){
+		
+		String keyWord = rc.get("keyWord");
+		String labelId = rc.get("labelId");
+		String tagId = rc.get("tagId");
+		String status = rc.get("status");
+		String secondkeyWord = rc.get("secondkeyWord");
+		String thirdkeyWord = rc.get("thirdkeyWord");
+		String orderBy = rc.get("orderBy");
+		String showNum = rc.get("showNum");
+		String orderByStr = "默认排序，按时间倒序排列";
+		if("1".equals(orderBy)){
+			orderByStr = "按时间倒序排列";
+		}else if ("2".equals(orderBy)){
+			orderByStr = "按时间正序排列";
+		}
+		logger.info("搜索资讯,主关键词:"+keyWord+",分类Id:"+labelId+",标签Id:"+tagId+",状态:"+status+",二次搜索关键词:"+secondkeyWord+",三次搜索关键词:"+thirdkeyWord+",orderBy:"+orderByStr+",列表展示个数"+showNum);
+		int num = 10;//默认查找10个
+		if(!ValidateUtils.isEmpty(showNum)){
+			num = Integer.valueOf(showNum);
+		}
+		
+		Map<String,Object> queryMap = new HashMap<String,Object>();
+		queryMap.put("keyWord", keyWord);
+		queryMap.put("labelId", ValidateUtils.isEmpty(labelId)?null:Integer.valueOf(labelId));
+		queryMap.put("tagId", ValidateUtils.isEmpty(tagId)?null:Integer.valueOf(tagId));
+		queryMap.put("status", status);
+		queryMap.put("secondkeyWord", secondkeyWord);
+		queryMap.put("thirdkeyWord", thirdkeyWord);
+		queryMap.put("orderBy", orderBy);
+		
+		model.addAttribute("queryCond", queryMap);
+	
+		rc.initPageHelper(num);
+		List<Info> infoList = infoService.searchInfos(queryMap);
+		PageInfo<Info> page = new PageInfo<Info>(infoList);
+		model.addAttribute("page", page);
+		
+		//搜索热词
+		SearchWords querySearchWord = new SearchWords();
+		rc.initPageHelper(5);
+		List<SearchWords> searchWords = searchWordsService.getSearchWordsLs(querySearchWord);
+		model.addAttribute("searchWords", searchWords);
+		Label label = new Label();
+		label.setIs_valid(0);
+		List<Label> labels = labelService.selectLabelsByCondition(label);
+		model.addAttribute("labels", labels);
+		
+		Tag tag = new Tag();
+		tag.setIsValid(0);
+		List<Tag> tags = tagService.getTagsByCondition(tag);
+		model.addAttribute("tags", tags);
+		
+		Map<String,String> statusMap = new HashMap<String,String>(); 
+		statusMap.put("草稿", Constant.INFO_STATUS_DRAFT);
+		statusMap.put("保存未确认", Constant.INFO_STATUS_UNCHECKED);
+		statusMap.put("确认待审核", Constant.INFO_STATUS_WAIT_FIRST_CHECK);
+		statusMap.put("审核失败", Constant.INFO_STATUS_FIRST_CHECK_FAIL);
+		statusMap.put("待复核", Constant.INFO_STATUS_WAIT_SECOND_CHECK);
+		statusMap.put("复核失败", Constant.INFO_STATUS_SECOND_CHECK_FAIL);
+		statusMap.put("复核成功", Constant.INFO_STATUS_CHECK_SUCCESS);
+		statusMap.put("待发布",Constant.INFO_STATUS_CHECK_WAIT_PUBLISH);
+		statusMap.put("待编辑修改首页", Constant.INFO_STATUS_CHECK_PUBLISH_WAIT_REWRITE);
+		statusMap.put("修改首页待审核", Constant.INFO_STATUS_CHECK_REWRITE_COMPLETE);
+		model.addAttribute("statusMap", statusMap);
+		return INFO_PATH+"info-search-list";
+	}
+	
+	@ControllerLog(description="进入设置首页Banner页面",category=Constant.MODULE_NEWINFO,type=ControllerLog.OTHERS)
+	@RequestMapping(value="/admin/info/setIndexBanner")
+	public String setIndexBanner(RequestContext rc,ModelMap model){
+		logger.info("进入设置首页Banner页面，操作人:"+rc.getCurrUser().getName()+",userId="+rc.getCurrUser().getId()+",进入时间："+DateTimeUtils.currentDateTime());
+		String infoId = rc.get("infoId");
+		if(!ValidateUtils.isEmpty(infoId)){
+			Info info = infoService.getInfoById(Integer.valueOf(infoId));
+			model.addAttribute("info", info);
+		}
+		
+		InfoBanner qBan = new InfoBanner();
+		qBan.setInfoId(Integer.valueOf(infoId));
+		qBan.setIsValid(Constant.VALID);
+		List<InfoBanner> banners = infoBannerService.getIndexBannnerForBackByInfoId(qBan);
+		model.addAttribute("indexBannerJson", JacksonHelper.toJSON(banners));
+		String isHeader = "";
+		String isShow = "";
+		for(int i=0;i<banners.size();i++){
+			if("0".equals(banners.get(i).getIsHeader())){
+				isHeader = "0";
+			}
+			if(!ValidateUtils.isEmpty(banners.get(i).getIsShow())){
+				isShow = banners.get(i).getIsShow();
+			}
+		}
+		model.addAttribute("isHeader", isHeader);
+		model.addAttribute("isShow", isShow);
+		Label ql = new Label();
+		ql.setIs_valid(0);
+		List<Label> labelList = labelService.selectLabelsByCondition(ql);
+		model.addAttribute("labelList", labelList);
+		
+		return INFO_PATH+"info-index";
+	}
+	
+	@ControllerLog(description="设置资讯首页图片",category=Constant.MODULE_NEWINFO,type=ControllerLog.ADD)
+	@RequestMapping(value="/admin/info/saveIndexBanner")
+	@ResponseBody
+	public Map<String,String> saveIndexBanner(RequestContext rc,HttpServletRequest request,ModelMap model){
+		Map<String,String> map = new HashMap<String,String>();
+		logger.info("设置资讯首页图片，操作人:"+rc.getCurrUser().getName()+",userId="+rc.getCurrUser().getId()+",进入时间："+DateTimeUtils.currentDateTime());
+		try {
+			String infoId = rc.get("id");
+			String ischangeImage = rc.get("ischangeImage");
+			String bannerIds = rc.get("bannerIds");
+			String imageSize = rc.get("imageSize");
+			String isHeads[] =  request.getParameterValues("isHeader");
+			String isShows[] = request.getParameterValues("isShow");
+			String isShowStr = "";
+			if(isShows!=null && isShows.length>0){
+				for(int i = 0;i<isShows.length;i++){
+					isShowStr+=(isShows[i]+",");
+				}
+				isShowStr = isShowStr.substring(0,isShowStr.length()-1);
+			}
+			
+			Info info = infoService.getInfoById(Integer.valueOf(infoId));
+			if(Integer.valueOf(imageSize)>0){
+				if(isHeads!=null && isHeads.length>0 && (isShows==null || isShows.length<=0)){
+					info.setResv2("1");//只设为首页
+				}else if(isShows!=null && isShows.length>0 && (isHeads==null || isHeads.length<=0)){
+					info.setResv2("2");//只设为模块首页
+				}else if(isShows!=null && isShows.length>0 && (isHeads!=null && isHeads.length>0)){
+					info.setResv2("3");//既设为首页也设为模块首页
+				}else{
+					info.setResv2("4");//原来设为首页的现在删除了图片，或者只是设为首页没有传图片
+				}
+			}
+			infoService.modifyInfoById(info);
+			//infoBannerService.removeAllImageByInfoIdAndNotInIds(infoId, bannerIds);
+			InfoBanner qBan = new InfoBanner();
+			qBan.setInfoId(Integer.valueOf(infoId));
+			qBan.setIsValid(Constant.VALID);
+			List<InfoBanner> banners = infoBannerService.getIndexBannnerForBackByInfoId(qBan);
+			if(banners!=null && banners.size()>0 && "2".equals(ischangeImage)){
+				//先将其中的所有的都置为无效
+				for(int i = 0;i<banners.size();i++){
+						InfoBanner ban = banners.get(i);
+						ban.setIsValid(Constant.INVALID);
+						infoBannerService.updateBannerById(ban);
+				}
+			}
+			
+			String[] ids = null;
+			if(!ValidateUtils.isEmpty(bannerIds)){
+				ids = bannerIds.split(",");
+				if(ids!=null && ids.length>0){
+					for(int k = 0;k<ids.length;k++){
+						Integer id = Integer.valueOf(ids[k]);
+						InfoBanner banner = infoBannerService.getBannerById(id);
+						banner.setInfoId(Integer.valueOf(infoId));
+						if(isHeads!=null && isHeads.length>0){
+							banner.setIsHeader(isHeads[0]);
+						}else {
+							banner.setIsHeader(null);
+						}
+						banner.setIsShow(isShowStr);
+						infoBannerService.updateBannerById(banner);
+					}
+				}
+			}
+			map.put("success", "true");
+			map.put("message", "首页设置成功");
+		} catch (Exception e) {
+			logger.error("设置首页出错:"+e, e);
+			map.put("fail", "true");
+			map.put("message", "首页设置失败");
+			e.printStackTrace();
+		}
+		
+		return map;
+	}
+	
+	@ControllerLog(description="进入新增资讯页面",category=Constant.MODULE_NEWINFO,type=ControllerLog.OTHERS)
+	@RequestMapping(value="/admin/info/initAddInfo")
+	public String gotoAddInfo(RequestContext rc,ModelMap model){
+		logger.info("进入新增资讯页面，用户:"+"时间:"+DateTimeUtils.currentDateTime());
+		//标签
+		//todos
+		//
+		return INFO_PATH+"info-add";
+	}
+	
+	@ControllerLog(description="创建新闻资讯",category=Constant.MODULE_NEWINFO,type=ControllerLog.ADD)
+	@RequestMapping(value="/admin/info/addInfo")
+	@ResponseBody
+	public Map<String,String> addInfo(RequestContext rc,Info info,HttpServletRequest request,HttpServletResponse response,ModelMap model){
+		logger.info("后台创建资讯，创建人:"+rc.getCurrUser().getName()+",userId="+rc.getCurrUser().getId()+",创建时间:"+DateTimeUtils.currentDateTime());
+		Map<String,String> resultMap = new HashMap<String,String>();
+		String ischangeImage =request.getParameter("ischangeImage");
+		String bannerIds = request.getParameter("bannerIds");
+		String tagIds = request.getParameter("tagIds");
+		try {
+			if(info!=null){
+				if(info.getInfoId()==null){
+					//如果资讯的主键infoId 为空，表示原来为添加过草稿，那么主需要新增
+					info.setIsValid(Constant.VALID);
+					info.setCreateTime(new Date());
+					info.setUpdateTime(new Date());
+					info.setAuthorId(rc.getCurrUser().getId());//作者ID
+					info.setAuthorName(rc.getCurrUser().getName());
+					info.setAuthorType("system");
+					info.setOrigin(Constant.INFO_ORIGIN_BACKEND);
+					if(info.getImageSize()>0){
+						info.setHasImage(Constant.YES);
+					}else {
+						info.setHasImage(Constant.NO);
+					}
+					//因为要保存草稿，所以在这里的状态由前端传过来
+					//info.setStatus(Constant.INFO_STATUS_UNCHECKED);
+					
+					//add data to database by serviceImpl
+					int infoId = infoService.addNewInfo(info,request,response,ischangeImage,bannerIds,tagIds);
+					if(infoId<=0){
+						resultMap.put("fail", "true");
+						if(Constant.INFO_STATUS_DRAFT.equals(info.getStatus())){
+							resultMap.put("message", "草稿保存失败");
+						}else if(Constant.INFO_STATUS_UNCHECKED.equals(info.getStatus())){
+							resultMap.put("message", "创建资讯失败");
+						}
+						
+					}else {
+						resultMap.put("success", "true");
+						if(Constant.INFO_STATUS_DRAFT.equals(info.getStatus())){
+							resultMap.put("message", "草稿保存成功");
+						}else if(Constant.INFO_STATUS_UNCHECKED.equals(info.getStatus())){
+							resultMap.put("message", "创建新资讯成功");
+						}
+						
+						resultMap.put("infoId", Integer.toString(infoId));
+					}
+				}else {
+					//如果资讯的主键infoId不为空，表示原来添加过草稿，那么只要修改就行
+					info.setIsValid(Constant.VALID);
+					info.setCreateTime(new Date());
+					info.setUpdateTime(new Date());
+					info.setAuthorId(rc.getCurrUser().getId());//作者ID
+					info.setAuthorName(rc.getCurrUser().getName());
+					info.setAuthorType("system");
+					info.setOrigin(Constant.INFO_ORIGIN_BACKEND);
+					if(info.getImageSize()>0){
+						info.setHasImage(Constant.YES);
+					}else {
+						info.setHasImage(Constant.NO);
+					}
+					//可能会多次保存草稿，所以状态由前端提供
+					//info.setStatus(Constant.INFO_STATUS_UNCHECKED);
+					
+					int rows = infoService.modifyInfo(info, request, response, ischangeImage, bannerIds, null);
+					if(rows<=0){
+						resultMap.put("fail", "true");
+						if(Constant.INFO_STATUS_DRAFT.equals(info.getStatus())){
+							resultMap.put("message", "草稿保存失败");
+						}else if(Constant.INFO_STATUS_UNCHECKED.equals(info.getStatus())){
+							resultMap.put("message", "创建资讯失败");
+						}
+					}else {
+						resultMap.put("success", "true");
+						if(Constant.INFO_STATUS_DRAFT.equals(info.getStatus())){
+							resultMap.put("message", "草稿保存成功");
+						}else if(Constant.INFO_STATUS_UNCHECKED.equals(info.getStatus())){
+							resultMap.put("message", "创建新资讯成功");
+						}
+						resultMap.put("infoId", Integer.toString(info.getInfoId()));
+					}
+				}
+				
+				
+			}else {
+				resultMap.put("fail", "true");
+				resultMap.put("message", "创建新资讯失败");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			resultMap.put("fail", "true");
+			resultMap.put("message", "创建资讯出错");
+			logger.error("InfoController.addInfo.ERROR:"+e, e);
+		}
+		return resultMap;
+	}
+	
+	@ControllerLog(description="查看资讯",category=Constant.MODULE_NEWINFO,type=ControllerLog.OTHERS)
+	@RequestMapping(value="/admin/info/viewInfo")
+	public String viewInfo(RequestContext rc,ModelMap model){
+		Integer id = rc.getInt("infoId");
+		if(id!=null){
+			Info info = infoService.getInfoById(id);
+			model.addAttribute("info", info);
+		}
+		return INFO_PATH+"info-view";
+	}
+	@RequestMapping(value="/admin/info/checkInfo")
+	public String checkInfo(RequestContext rc,ModelMap model){
+		Integer id = rc.getInt("infoId");
+		if(id!=null){
+			Info info = infoService.getInfoById(id);
+			model.addAttribute("info", info);
+		}
+		return INFO_PATH+"info-check";
+	}
+	
+	@ControllerLog(description="进入修改资讯页面",category=Constant.MODULE_NEWINFO,type=ControllerLog.OTHERS)
+	@RequestMapping(value="/admin/info/initModifyInfo")
+	public String initModifyInfo(RequestContext rc,ModelMap model){
+		Integer id = rc.getInt("infoId");
+		if(id!=null){
+			Info info = infoService.getInfoById(id);
+			if(info.getInfoBanners()!=null&&info.getInfoBanners().size()>0){
+				model.addAttribute("bannersJson", JacksonHelper.toJSON(info.getInfoBanners()));
+			}
+			if(info.getInfoTags()!=null && info.getInfoTags().size()>0){
+				String tagIds = "";
+				for(int i=0;i<info.getInfoTags().size();i++){
+					tagIds+=info.getInfoTags().get(i).getTagId()+",";
+				}
+				model.addAttribute("tagIds", tagIds.substring(0, tagIds.length()-1));
+			}
+			model.addAttribute("info", info);
+		}
+		return INFO_PATH+"info-edit";
+	}
+	
+	@ControllerLog(description="修改资讯",category=Constant.MODULE_NEWINFO,type=ControllerLog.UPDATE)
+	@RequestMapping(value="/admin/info/modifyInfo")
+	@ResponseBody
+	public Map<String,String> modifyInfo(RequestContext rc,Info info, HttpServletRequest request,HttpServletResponse response,ModelMap model){
+		Map<String,String> map = new HashMap<String,String>();
+		try {
+			logger.info("修改资讯:修改人:"+rc.getCurrUser().getName()+",userId="+rc.getCurrUser().getId()+",修改时间:"+DateTimeUtils.currentDateTime());
+			String ischangeImage =request.getParameter("ischangeImage");
+			String bannerIds = request.getParameter("bannerIds");
+			String tagIds = request.getParameter("tagIds");
+			if(info!=null){
+				info.setUpdateTime(new Date());
+				int result = infoService.modifyInfo(info, request,response,ischangeImage,bannerIds,tagIds);
+				if(result>0){
+					map.put("success", "true");
+					map.put("message", "修改资讯成功");
+				}else {
+					map.put("fail", "true");
+					map.put("message", "修改资讯失败");
+				}
+			}else{
+				map.put("fail", "true");
+				map.put("message", "修改资讯失败");
+			}
+		} catch (Exception e) {
+			logger.error("InfoController.modifyInfo.ERROR:"+e, e);
+			map.put("fail", "true");
+			map.put("message", "修改资讯失败");
+			e.printStackTrace();
+		}
+		
+		return map;
+	}
+	
+	@ControllerLog(description="删除资讯",category=Constant.MODULE_NEWINFO,type=ControllerLog.DELETE)
+	@RequestMapping(value="/admin/info/deleteInfo")
+	@ResponseBody
+	public Map<String,String> deleteInfo(RequestContext rc){
+		Map<String,String> map = new HashMap<String,String>();
+		try {
+			String infoId = rc.get("infoId");
+			if(!ValidateUtils.isEmpty(infoId)){
+				logger.info("删除资讯:infoId="+infoId+",操作人:"+rc.getCurrUser().getName()+",userId="+rc.getCurrUser().getId()+",操作时间:"+DateTimeUtils.currentDateTime());
+				int result = infoService.removeInfoById(Integer.valueOf(infoId));
+				if(result>0){
+					map.put("success", "true");
+					map.put("message", "资讯删除成功");
+				}else {
+					map.put("fail", "true");
+					map.put("message", "资讯删除失败");
+				}
+			}
+		} catch (Exception e) {
+			logger.error("deleteInfo.ERROR:"+e,e);
+			map.put("fail", "true");
+			map.put("message", "资讯删除失败");
+			e.printStackTrace();
+		}
+		
+		return map;
+	}
+	
+	//分配资讯
+	@ControllerLog(description="分配资讯",category=Constant.MODULE_NEWINFO,type=ControllerLog.UPDATE)
+	@RequestMapping(value="/admin/info/distributeInfo")
+	@ResponseBody
+	public Map<String,String> distributeInfo(RequestContext rc,ModelMap model){
+		Map<String,String> map = new HashMap<String,String>();
+		
+		try {
+			String infoIds = rc.get("infoIds");
+			String labelId = rc.get("labelId");
+			if(!ValidateUtils.isEmpty(infoIds) && !ValidateUtils.isEmpty(labelId)){
+				logger.info("分配资讯:infoIds="+infoIds+"lableId="+labelId+",操作人:"+rc.getCurrUser().getName()+",userId="+rc.getCurrUser().getId()+",操作时间:"+DateTimeUtils.currentDateTime());
+				Info info = new Info();
+				info.setTagId(Integer.valueOf(labelId));
+				info.setStatus(Constant.INFO_STATUS_CHECK_WAIT_PUBLISH);
+				int result = infoService.updateInfoByIds(infoIds,info);
+				if(result>0){
+					map.put("success", "true");
+					map.put("message", "分配成功");
+				}else {
+					map.put("fail", "true");
+					map.put("message", "分配失败");
+				}
+			}
+		} catch (Exception e) {
+			logger.error("distributeInfo.ERROR:"+e,e);
+			map.put("fail", "true");
+			map.put("message", "资讯分配失败");
+			e.printStackTrace();
+		}
+		return map;
+	}
+	
+	//推荐资讯
+	@ControllerLog(description="推荐资讯",category=Constant.MODULE_NEWINFO,type=ControllerLog.UPDATE)
+	@RequestMapping(value="/admin/info/recommendInfo")
+	@ResponseBody
+	public Map<String,String> recommendInfo(RequestContext rc,ModelMap model){
+		Map<String,String> map = new HashMap<String,String>();
+		
+		try {
+			String infoId = rc.get("infoId");
+			String labelId = rc.get("labelId");
+			if(!ValidateUtils.isEmpty(infoId) && !ValidateUtils.isEmpty(labelId)){
+				logger.info("推荐资讯:infoId="+infoId+"lableId="+labelId+",操作人:"+rc.getCurrUser().getName()+",userId="+rc.getCurrUser().getId()+",操作时间:"+DateTimeUtils.currentDateTime());
+				Info info = new Info();
+				info.setInfoId(Integer.valueOf(infoId));
+				info.setTagId(Integer.valueOf(labelId));
+				info.setStatus(Constant.INFO_STATUS_CHECK_WAIT_PUBLISH);
+				int result = infoService.recommendInfo(info);
+				if(result>0){
+					map.put("success", "true");
+					map.put("message", "推荐成功");
+				}else {
+					map.put("fail", "true");
+					map.put("message", "推荐失败");
+				}
+			}
+		} catch (Exception e) {
+			logger.error("distributeInfo.ERROR:"+e,e);
+			map.put("fail", "true");
+			map.put("message", "资讯推荐失败");
+			e.printStackTrace();
+		}
+		return map;
+	}
+	
+	@ControllerLog(description="上传图片",category=Constant.MODULE_NEWINFO,type=ControllerLog.ADD)
+	@RequestMapping("/uploadBanner")
+	@ResponseBody
+	public Map<String,String> uploadImg(HttpServletRequest request,HttpServletResponse response,ModelMap model){
+		Map<String,String> uploadMap = new HashMap<String,String>();
+		String savePath = "";
+		String bannerIds = request.getParameter("bannerIds");
+		String infoId = request.getParameter("infoId");
+		/*String isHeader = request.getParameter("isHeader");//首页图片
+		String isShow = request.getParameter("isShow");//模块首页图片
+*/		String isIndex = request.getParameter("isIndex");//如果是1表示是上传首页图片
+		try {
+			//如果是修改的时候，那么先将现在所有的banner都删除掉，重新上传
+			if(!ValidateUtils.isEmpty(infoId) && !"1".equals(isIndex)){
+				infoBannerService.removeAllImageByInfoIdAndNotInIds(infoId,bannerIds);
+			}
+			
+			CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());  
+			if(commonsMultipartResolver.isMultipart(request)){
+				MultipartHttpServletRequest mrequest = (MultipartHttpServletRequest) request ;
+				//Map<String, MultipartFile>  filesMap = mrequest.getFileMap();
+				MultipartFile imageFile = mrequest.getFile("bannerFile");
+				String osname = System.getProperty("os.name");
+				if(osname.toLowerCase().indexOf("linux")>-1){
+					savePath = ConfigurationUtils.readValue("linux.info.images.upload.path", "config.properties");
+				}else if(osname.toLowerCase().indexOf("windows")>-1){
+					savePath = ConfigurationUtils.readValue("windows.info.images.upload.path", "config.properties");
+				}
+				/*if(filesMap!=null && filesMap.size()>0){
+					for(Entry<String, MultipartFile> entry:filesMap.entrySet()){*/
+						//MultipartFile imageFile = (MultipartFile) (entry.getValue());
+						if(imageFile!=null&&!imageFile.isEmpty()){
+							String fileName = DateTimeUtils.customDateTime(new Date(), "yyyyMMddHHmmss")+"_banner_"+(new Random()).nextInt(1000000)+(imageFile.getOriginalFilename().substring(imageFile.getOriginalFilename().lastIndexOf(".")));
+							String path = savePath + DateTimeUtils.customDateTime(new Date(),"yyyyMMdd" ) + "/";
+							String uploadFileName =  request.getScheme()+"://"+request.getServerName()+":"+
+									request.getServerPort()+request.getContextPath()+"/"+ConfigurationUtils.readValue("info.images.access.path", "config.properties")+DateTimeUtils.customDateTime(new Date(),"yyyyMMdd" ) + "/"+fileName;
+							boolean isSuc = this.upload(imageFile,path , fileName, request, model);
+							if(isSuc){
+								
+								InfoBanner banner = new InfoBanner();
+								banner.setBanName(imageFile.getOriginalFilename());
+								banner.setBanSize(new BigDecimal(imageFile.getSize()/1024).setScale(2, BigDecimal.ROUND_HALF_DOWN));
+								banner.setBanType(imageFile.getContentType());
+								banner.setIsValid(Constant.VALID);
+								banner.setUrl(uploadFileName);
+								banner.setCreateTime(new Date());
+								/*if(!ValidateUtils.isEmpty(isHeader)){
+									banner.setIsHeader(isHeader);
+								}
+								if(!ValidateUtils.isEmpty(isShow)){
+									banner.setIsShow(isShow);//如果一张图片可以在多个模块使用的话，那么可以isShow中保存的格式是以逗号","分割的LabelId
+								}*/
+								
+								int id= infoBannerService.addNewBanner(banner);
+								if(id>0){
+									uploadMap.put("success", "true");
+									uploadMap.put("filename", uploadFileName);
+									uploadMap.put("filesize", imageFile.getSize()/1024+"KB");
+									uploadMap.put("fileType", imageFile.getContentType());
+									uploadMap.put("bannerId",Integer.toString(id));
+								}
+							}else {
+								uploadMap.put("fail", "true");
+							}
+						}
+					/*}
+				}*/
+			//}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return uploadMap;
+	}
+	
+	public boolean upload(MultipartFile file,String path,String fileName, HttpServletRequest request, ModelMap model) {  
+        File targetFile = new File(path, fileName);
+        if(!targetFile.exists()){  
+            targetFile.mkdirs();  
+        }  
+        //保存  
+        try {  
+            file.transferTo(targetFile);  
+            logger.info("InfoController.upload()--上传文件成功：");
+            return true;
+        } catch (Exception e) {  
+            e.printStackTrace(); 
+            logger.error("InfoController.upload()--上传文件失败："+e,e);
+            return false;
+        }  
+       // model.addAttribute("fileUrl", request.getContextPath()+"/upload/"+fileName);  
+  
+        //return path+fileName;  
+    }
+	
+	@ControllerLog(description="修改资讯状态",category=Constant.MODULE_NEWINFO,type=ControllerLog.CHECKED)
+	@RequestMapping(value="/admin/info/changeStatus")
+	@ResponseBody
+	public Map<String,String> changeStatus(RequestContext rc,ModelMap model){
+		
+		Map<String,String> map = new HashMap<String,String>();
+		String infoId = rc.get("infoId");
+		String status = rc.get("status");
+		String opinion = rc.get("opinion");
+		String message = "";
+		logger.info("修改资讯的状态,infoId="+infoId+",to status="+status+",操作人:"+rc.getCurrUser().getName()+",userId="+rc.getCurrUser().getId()+",id=");
+		try {
+			if(!ValidateUtils.isEmpty(infoId)){
+				Info info = new Info();
+				info.setInfoId(Integer.valueOf(infoId));
+				info.setStatus(status);
+				int result = infoService.changeInfoStatusById(info,opinion,rc.getCurrUser());
+				//int result = infoService.modifyInfoById(info);
+				
+				if(result>0){
+					logger.info("资讯状态修改成功");
+					if(Constant.INFO_STATUS_WAIT_FIRST_CHECK.equals(status)){
+						message = "资讯确认成功,已提交至审核";
+					}else if(Constant.INFO_STATUS_WAIT_SECOND_CHECK.equals(status)){
+						message = "资讯审核成功,已提交至复核";
+					}else if(Constant.INFO_STATUS_CHECK_SUCCESS.equals(status)){
+						message = "资讯复核成功,待发布";
+					}else if(Constant.INFO_STATUS_PUBLISH.equals(status)){
+						message = "资讯发布成功";
+					}else if(Constant.INFO_STATUS_PUBLISH_ROLLBACK.equals(status)){
+						message = "资讯已撤回发布";
+					}else if(Constant.INFO_STATUS_CHECK_PUBLISH_WAIT_REWRITE.equals(status)){
+						message = "通知发送成功";
+					}
+					map.put("message" ,message );
+					map.put("success", "true");
+				}else{
+					logger.info("资讯状态更新失败");
+					if(Constant.INFO_STATUS_WAIT_FIRST_CHECK.equals(status)){
+						message = "资讯确认失败";
+					}else if(Constant.INFO_STATUS_WAIT_SECOND_CHECK.equals(status)){
+						message = "资讯审核失败";
+					}else if(Constant.INFO_STATUS_CHECK_SUCCESS.equals(status)){
+						message = "资讯复核失败";
+					}else if(Constant.INFO_STATUS_PUBLISH.equals(status)){
+						message = "资讯发布失败";
+					}else if(Constant.INFO_STATUS_PUBLISH_ROLLBACK.equals(status)){
+						message = "资讯撤回失败";
+					}else if(Constant.INFO_STATUS_CHECK_PUBLISH_WAIT_REWRITE.equals(status)){
+						message = "通知发送失败";
+					}
+					map.put("message",message );
+					map.put("success", "false");
+				}
+			}else {
+				logger.info("资讯Id未取到");
+				if(Constant.INFO_STATUS_WAIT_FIRST_CHECK.equals(status)){
+					message = "资讯确认失败";
+				}else if(Constant.INFO_STATUS_WAIT_SECOND_CHECK.equals(status)){
+					message = "资讯审核失败";
+				}else if(Constant.INFO_STATUS_CHECK_SUCCESS.equals(status)){
+					message = "资讯复核失败";
+				}else if(Constant.INFO_STATUS_PUBLISH.equals(status)){
+					message = "资讯发布失败";
+				}else if(Constant.INFO_STATUS_PUBLISH_ROLLBACK.equals(status)){
+					message = "资讯撤回失败";
+				}else if(Constant.INFO_STATUS_CHECK_PUBLISH_WAIT_REWRITE.equals(status)){
+					message = "通知发送失败";
+				}
+				map.put("message",message );
+				map.put("success", "false");
+			}
+		} catch (Exception e) {
+			logger.error("资讯状态修改过成功,ERROR:"+e,e);
+			e.printStackTrace();
+		}
+		
+		return map;
+	}
+}

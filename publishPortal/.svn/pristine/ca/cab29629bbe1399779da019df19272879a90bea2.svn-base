@@ -1,0 +1,208 @@
+package cn.com.shukaiken.util;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class UploadImageUtil {
+	
+	private static Logger logger = LoggerFactory.getLogger(UploadImageUtil.class);
+	
+	/**
+	 * 根据文件获取字节数组
+	 * @param file
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("resource")
+	public static byte[] getByte(File file) throws Exception{
+		
+		byte[] bytes = null;
+		
+		if(file!=null){
+			
+			InputStream is = new FileInputStream(file);
+			
+			int length = (int) file.length();
+			//当文件的长度超过了int的最大值
+			if(length>Integer.MAX_VALUE){
+				System.out.println("this file is max ");
+				return null;
+			}
+		
+			bytes = new byte[length];
+		
+			int offset = 0;
+			
+			int numRead = 0;
+			
+			 while(offset<bytes.length&&(numRead=is.read(bytes,offset,bytes.length-offset))>=0)
+	            {
+	                offset+=numRead;
+	            }
+			//如果得到的字节长度和file实际的长度不一致就可能出错了
+			 if(offset<bytes.length){
+				System.out.println("file length is error");
+				return null;
+			}
+			is.close();
+		}
+		return bytes;
+	}
+	
+	
+    /**  
+     * 编码  
+     * @param bstr  
+     * @return String  
+     */    
+    public static String encode(byte[] bstr){ 
+    	
+    	return new sun.misc.BASE64Encoder().encode(bstr);  
+    	
+    }    
+    
+    /**  
+     * 解码  
+     * @param str  
+     * @return string  
+     */    
+    public static byte[] decode(String str){ 
+    	
+    	byte[] bt = null;    
+	    try {    
+	        sun.misc.BASE64Decoder decoder = new sun.misc.BASE64Decoder();    
+	        bt = decoder.decodeBuffer( str );    
+	    } catch (IOException e) {    
+	        e.printStackTrace();    
+	    }    
+        return bt;  
+    }  
+    
+    /**
+     * 文件上传
+     * @param fileByteBuf  要上传的文件的字节流
+     * @param strRoot 上传目的地路径
+     * @param fileName 自定义文件名
+     * @return 上传成功则返回"ok",否则则返回"err:****"错误信息
+     */
+ 	public static String fileUpload(byte[] fileByteBuf, String strRoot, String fileName) {
+ 		logger.info("WebService文件上传");
+ 		  //  验证文件字节数组是否为空
+ 		  if (fileByteBuf == null || fileByteBuf.length == 0){
+ 			  logger.error("err：上传文件的字节数组为空!");
+ 			  return "err：上传文件的字节数组为空!";
+ 		  }
+ 		   
+ 		  //验证上传目的地路径是否存在
+ 		  if (strRoot == null || strRoot == ""){
+ 			 logger.error("err：上传目的地路径为空!");
+ 			  return "err：上传目的地路径为空!";
+ 		  }
+ 		  
+ 		  //验证指定的文件名是否为空
+ 		  if (fileName == null || fileName== ""){
+ 			 logger.error("err：指定的文件名为空!");
+ 			  return "err：指定的文件名为空!";
+ 		  }
+ 		   
+ 		  if (fileName.lastIndexOf(".") == -1){
+ 			 logger.error("err：指定的文件名无后缀名!");
+ 			  return "err：指定的文件名无后缀名!";
+ 		  }
+ 		  
+ 		  
+ 		  /**
+ 		   * 声明四种I/O流
+ 		   */
+ 		  ByteArrayInputStream fInStream = null;// 文件输入流
+ 		  BufferedInputStream bInStream = null;// 输入缓冲流
+ 		  OutputStream fOutStream = null;// 输出流
+ 		  BufferedOutputStream bOutStream = null;// 输出缓冲流
+ 		  
+ 		  try {
+ 		   /**
+ 		    * 赋值
+ 		    */
+ 		   //得到字节数组输入流
+ 		   fInStream = new ByteArrayInputStream(fileByteBuf);
+ 		   //得到输入缓冲流
+ 		   bInStream = new BufferedInputStream(fInStream);
+
+ 		   //判断上传的目的地路径是否是目录，不是则新建目录
+ 		   File folderSave = new File(strRoot);
+ 		   if (!folderSave.isDirectory()){
+ 			   folderSave.mkdirs();
+ 		   }
+ 		   
+ 		   //验证目标文件
+ 		   File fileSave = new File(strRoot + fileName);
+ 		   if (fileSave.exists()){//当此抽象路径名表示的文件存在时
+ 			    if (!fileSave.canWrite()){
+ 			    	logger.error("err：文件不可写入!");
+ 			    	return "err：文件不可写入!";
+ 			    }
+ 		   }else if (!fileSave.createNewFile()){
+ 			  logger.error("err：文件不能新建!");
+ 			   return "err：文件不能新建!";
+ 		   }
+ 		   
+ 		   //得到输出流
+ 		   fOutStream = new FileOutputStream(fileSave);
+ 		   //得到输出缓冲流
+ 		   bOutStream = new BufferedOutputStream(fOutStream);
+ 		   
+ 		   /**
+ 		    * 循环
+ 		    */
+ 		   int intByte = 512 * 1024;//缓冲区大小
+ 		   byte[] fileData = new byte[intByte];//定义一个缓冲区
+ 		   int intIndex = 0;
+ 		   while ((intIndex = bInStream.read(fileData, 0, intByte)) != -1) {
+ 		    bOutStream.write(fileData, 0, intIndex);
+ 		    bOutStream.flush();
+ 		   }
+ 		   
+ 		   folderSave = null;
+ 		   fileSave = null;
+ 		  } catch (IOException e) {
+ 		   return ("err：" + e.getMessage());
+ 		  } finally{
+ 		   /**
+ 		    * 用完后，关闭I/O流
+ 		    */
+ 		   try {
+ 		    if (fInStream != null) {
+ 		     fInStream.close();//关闭方法无效？！！！
+ 		     fInStream = null;
+ 		    }
+ 		    if (bInStream != null) {
+ 		     bInStream.close();
+ 		     bInStream = null;
+ 		    }
+ 		    if (fOutStream != null) {
+ 		     fOutStream.close();
+ 		     fOutStream = null;
+ 		    }
+ 		    if (bOutStream != null) {
+ 		     bOutStream.close();
+ 		     bOutStream = null;
+ 		    }
+ 		   } catch (IOException e) {
+ 			  logger.error("err："+e,e);
+ 		    return ("err：" + e.getMessage());
+ 		   }
+ 		  }
+ 		  return "ok";
+	 }
+
+}

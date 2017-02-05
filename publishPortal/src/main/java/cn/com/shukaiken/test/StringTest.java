@@ -1,0 +1,29 @@
+/**
+ * @Title: StringTest.java 
+* @Package cn.com.shukaiken.test 
+* @Description: <p>TODO</p> 
+* @author zhaox   
+* @date 2015年11月22日 上午11:59:45 
+* @version V1.0 
+ */
+package cn.com.shukaiken.test;
+
+import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+/**
+ * @ClassName: StringTest 
+ * @Description: <p>TODO</p>
+ * @date 2015年11月22日 上午11:59:45 
+ * @author Zhao Xiang
+ *
+ */
+public class StringTest {
+	public static void main(String[] args) throws UnknownHostException {
+		/*String str = "/upload/image/20151121/20151121184039_504.jpg";
+		str = str.replaceAll("/", "\\");
+		System.out.println(File.separator);
+		System.out.println(str.substring(str.lastIndexOf(File.separator)+1, str.lastIndexOf(".")));*/
+	}
+}

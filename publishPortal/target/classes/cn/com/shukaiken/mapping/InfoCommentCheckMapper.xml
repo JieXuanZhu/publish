@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.shukaiken.dao.InfoCommentCheckDao" >
+  <resultMap id="BaseResultMap" type="cn.com.shukaiken.model.InfoCommentCheck" >
+    <id column="check_id" property="checkId" jdbcType="INTEGER" />
+    <result column="comment_id" property="commentId" jdbcType="INTEGER" />
+    <result column="info_id" property="infoId" jdbcType="INTEGER" />
+    <result column="opinion" property="opinion" jdbcType="VARCHAR" />
+    <result column="is_agree" property="isAgree" jdbcType="VARCHAR" />
+    <result column="stage" property="stage" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="user" property="user" jdbcType="VARCHAR" />
+    <result column="check_time" property="checkTime" jdbcType="TIMESTAMP" />
+    <result column="is_valid" property="isValid" jdbcType="VARCHAR" />
+    <result column="resv1" property="resv1" jdbcType="VARCHAR" />
+    <result column="resv2" property="resv2" jdbcType="VARCHAR" />
+    <result column="resv3" property="resv3" jdbcType="VARCHAR" />
+    <result column="resv4" property="resv4" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    check_id, comment_id, info_id, opinion, is_agree, stage, user_id, user, check_time, 
+    is_valid, resv1, resv2, resv3, resv4
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_info_comment_check
+    where check_id = #{checkId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_info_comment_check
+    where check_id = #{checkId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="checkId" parameterType="cn.com.shukaiken.model.InfoCommentCheck" >
+    insert into t_info_comment_check (check_id, comment_id, info_id, 
+      opinion, is_agree, stage, 
+      user_id, user, check_time, 
+      is_valid, resv1, resv2, 
+      resv3, resv4)
+    values (#{checkId,jdbcType=INTEGER}, #{commentId,jdbcType=INTEGER}, #{infoId,jdbcType=INTEGER}, 
+      #{opinion,jdbcType=VARCHAR}, #{isAgree,jdbcType=VARCHAR}, #{stage,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=INTEGER}, #{user,jdbcType=VARCHAR}, #{checkTime,jdbcType=TIMESTAMP}, 
+      #{isValid,jdbcType=VARCHAR}, #{resv1,jdbcType=VARCHAR}, #{resv2,jdbcType=VARCHAR}, 
+      #{resv3,jdbcType=VARCHAR}, #{resv4,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="checkId" parameterType="cn.com.shukaiken.model.InfoCommentCheck" >
+    insert into t_info_comment_check
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="checkId != null" >
+        check_id,
+      </if>
+      <if test="commentId != null" >
+        comment_id,
+      </if>
+      <if test="infoId != null" >
+        info_id,
+      </if>
+      <if test="opinion != null" >
+        opinion,
+      </if>
+      <if test="isAgree != null" >
+        is_agree,
+      </if>
+      <if test="stage != null" >
+        stage,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="user != null" >
+        user,
+      </if>
+      <if test="checkTime != null" >
+        check_time,
+      </if>
+      <if test="isValid != null" >
+        is_valid,
+      </if>
+      <if test="resv1 != null" >
+        resv1,
+      </if>
+      <if test="resv2 != null" >
+        resv2,
+      </if>
+      <if test="resv3 != null" >
+        resv3,
+      </if>
+      <if test="resv4 != null" >
+        resv4,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="checkId != null" >
+        #{checkId,jdbcType=INTEGER},
+      </if>
+      <if test="commentId != null" >
+        #{commentId,jdbcType=INTEGER},
+      </if>
+      <if test="infoId != null" >
+        #{infoId,jdbcType=INTEGER},
+      </if>
+      <if test="opinion != null" >
+        #{opinion,jdbcType=VARCHAR},
+      </if>
+      <if test="isAgree != null" >
+        #{isAgree,jdbcType=VARCHAR},
+      </if>
+      <if test="stage != null" >
+        #{stage,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="user != null" >
+        #{user,jdbcType=VARCHAR},
+      </if>
+      <if test="checkTime != null" >
+        #{checkTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null" >
+        #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="resv1 != null" >
+        #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        #{resv4,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.shukaiken.model.InfoCommentCheck" >
+    update t_info_comment_check
+    <set >
+      <if test="commentId != null" >
+        comment_id = #{commentId,jdbcType=INTEGER},
+      </if>
+      <if test="infoId != null" >
+        info_id = #{infoId,jdbcType=INTEGER},
+      </if>
+      <if test="opinion != null" >
+        opinion = #{opinion,jdbcType=VARCHAR},
+      </if>
+      <if test="isAgree != null" >
+        is_agree = #{isAgree,jdbcType=VARCHAR},
+      </if>
+      <if test="stage != null" >
+        stage = #{stage,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="user != null" >
+        user = #{user,jdbcType=VARCHAR},
+      </if>
+      <if test="checkTime != null" >
+        check_time = #{checkTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null" >
+        is_valid = #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="resv1 != null" >
+        resv1 = #{resv1,jdbcType=VARCHAR},
+      </if>
+      <if test="resv2 != null" >
+        resv2 = #{resv2,jdbcType=VARCHAR},
+      </if>
+      <if test="resv3 != null" >
+        resv3 = #{resv3,jdbcType=VARCHAR},
+      </if>
+      <if test="resv4 != null" >
+        resv4 = #{resv4,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where check_id = #{checkId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.shukaiken.model.InfoCommentCheck" >
+    update t_info_comment_check
+    set comment_id = #{commentId,jdbcType=INTEGER},
+      info_id = #{infoId,jdbcType=INTEGER},
+      opinion = #{opinion,jdbcType=VARCHAR},
+      is_agree = #{isAgree,jdbcType=VARCHAR},
+      stage = #{stage,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER},
+      user = #{user,jdbcType=VARCHAR},
+      check_time = #{checkTime,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=VARCHAR},
+      resv1 = #{resv1,jdbcType=VARCHAR},
+      resv2 = #{resv2,jdbcType=VARCHAR},
+      resv3 = #{resv3,jdbcType=VARCHAR},
+      resv4 = #{resv4,jdbcType=VARCHAR}
+    where check_id = #{checkId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,424 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ include file="/WEB-INF/views/general_path.jsp"%>
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<title>交易产品及规则</title>
+		<meta name="keywords" content="东翌"/>
+		<meta name="description" content="东翌（上海）投资发展有限公司是..."/>
+		<link rel="stylesheet" type="text/css" href="<%=path %>/front/css/default.css">
+		<link rel="stylesheet" type="text/css" href="<%=path %>/front/css/main.css">
+		<link rel="shortcut icon" type="image/x-icon" href="<%=request.getContextPath()%>/front/images/favicon.ico" />
+	</head>
+	<body>
+		<%@ include file="/WEB-INF/views/front/header.jsp" %>
+		<div class="d_wrapper">
+			<div class="d_detail_cont clearfix">
+				<div class="text_center"><img src="<%=path %>/front/images/d_trade.jpg" alt="交易指南" title="交易指南" /></div>
+				<!-- left start -->
+				<%@ include file="/WEB-INF/views/front/trading/trading_left.jsp" %>
+				<!-- left end -->
+				<div class="d_detail_fr fr">
+					<div class="d_content_fl_tit"><h2>交易产品及规则</h2></div>
+					<div class="d_main_cont">
+						<div class="d_tab_tit fr">
+							<span class="curr">交易细则</span>
+							<span>交易方式</span>
+							<span>交易词汇</span>
+							<span>清算规则</span>
+							<span>密码重置</span>
+							<span>盈亏计算</span>
+							<span>交易费用</span>
+							<span>下单方式</span>
+						</div>
+						<div class="d_tab_con fl">
+							<div class="subtab">
+								<div class="d_open_cont d_trade_cont ">
+									<p class="text_center">东翌商品交易中心 现货白银 品种零售交易参数表</p>
+								  <table align="center">
+								    <tbody>
+								      <tr>
+								        <td>交易品种</td>
+								        <td>白银产品</td>
+								      </tr>
+								      <tr>
+								        <td>交易单位</td>
+								        <td>5kg/手</td>
+								      </tr>
+								      <tr>
+								        <td>报价单位</td>
+								        <td>元（人民币）/千克</td>
+								      </tr>
+								      <tr>
+								        <td>最小变动价位</td>
+								        <td>1元/千克</td>
+								      </tr>
+								      <tr>
+								        <td>实物交收方式</td>
+								        <td>交收申报制</td>
+								      </tr>
+								      <tr>
+								        <td>交易时间</td>
+								        <td>周一早7：00至周六早4：00；
+								            凌晨4：00至7：00为结算时间</td>
+								      </tr>
+								      <tr>
+								        <td>实物交收申报时间</td>
+								        <td>交易日内10:00～16:00</td>
+								      </tr>
+								      <tr>
+								        <td>实物交收品级</td>
+								        <td>成色为99.99％，符合国标GB/T4135-2002的白银产品</td>
+								      </tr>
+								      <tr>
+								        <td>实物交收地点</td>
+								        <td>会员营业网点所在地</td>
+								      </tr>
+								      <tr>
+								        <td>履约保证金</td>
+								        <td>8%</td>
+								      </tr>
+								      <tr>
+								        <td>交易手续费</td>
+								        <td>单边每公斤3元</td>
+								      </tr>
+								      <tr>
+								        <td>交收方式</td>
+								        <td>实物白银产品</td>
+								      </tr>
+								    </tbody>
+								  </table>
+								  <p class="text_center">备注：现货白银零售交易参数如有调整，按交易市场公告执行。</p>
+								  <p class="text_center">东翌商品交易中心 现货白银 品种批发交易参数表</p>
+								  <table align="center">
+								    <tbody>
+								      <tr>
+								        <td>交易品种</td>
+								        <td>银锭</td>
+								      </tr>
+								      <tr>
+								        <td>交易单位</td>
+								        <td>20 kg/手</td>
+								      </tr>
+								      <tr>
+								        <td>报价单位</td>
+								        <td>元（人民币）/千克</td>
+								      </tr>
+								      <tr>
+								        <td>最小变动价位</td>
+								        <td>1元/千克</td>
+								      </tr>
+								      <tr>
+								        <td>实物交收方式</td>
+								        <td>交收申报制</td>
+								      </tr>
+								      <tr>
+								        <td>交易时间</td>
+								        <td>周一早7：00至周六早4：00；凌晨4：00至7：00为结算时间</td>
+								      </tr>
+								      <tr>
+								        <td>实物交收申报时间</td>
+								        <td>交易日内10:00～16:00</td>
+								      </tr>
+								      <tr>
+								        <td>实物交收品级</td>
+								        <td>成色为99.95％，符合国标GB/T4135-2002的银锭</td>
+								      </tr>
+								      <tr>
+								        <td>实物交收地点</td>
+								        <td>会员营业网点所在地</td>
+								      </tr>
+								      <tr>
+								        <td>履约保证金</td>
+								        <td>4%</td>
+								      </tr>
+								      <tr>
+								        <td>交易手续费</td>
+								        <td>单边每公斤3元</td>
+								      </tr>
+								      <tr>
+								        <td>仓单管理费</td>
+								        <td>建仓时成交金额的0.1‰/天</td>
+								      </tr>
+								      <tr>
+								        <td>交收方式</td>
+								        <td>实物银锭</td>
+								      </tr>
+								    </tbody>
+								  </table>
+								   <p class="text_center">备注：现货白银批发交易参数如有调整，按交易市场公告执行。</p>
+								   <p class="text_center">东翌商品交易中心 现货银条 品种批发交易参数表</p>
+								  <table align="center">
+								    <tbody>
+								      <tr>
+								        <td>交易品种</td>
+								        <td>银条</td>
+								      </tr>
+								      <tr>
+								        <td>交易单位</td>
+								        <td>50kg/手、100kg/手</td>
+								      </tr>
+								      <tr>
+								        <td>报价单位</td>
+								        <td>元（人民币）/千克</td>
+								      </tr>
+								      <tr>
+								        <td>最小变动价位</td>
+								        <td>1元/千克</td>
+								      </tr>
+								      <tr>
+								        <td>实物交收方式</td>
+								        <td>交收申报制</td>
+								      </tr>
+								      <tr>
+								        <td>交易时间</td>
+								        <td>周一早7：00至周六早4：00；
+								            凌晨4：00至7：00为结算时间</td>
+								      </tr>
+								      <tr>
+								        <td>实物交收申报时间</td>
+								        <td>交易日内10:00～16:00</td>
+								      </tr>
+								      <tr>
+								        <td>实物交收品级</td>
+								        <td>成色为99.99％，符合国标GB/T4135-2002的银锭</td>
+								      </tr>
+								      <tr>
+								        <td>实物交收地点</td>
+								        <td>会员营业网点所在地</td>
+								      </tr>
+								      <tr>
+								        <td>履约保证金</td>
+								        <td>2%</td>
+								      </tr>
+								      <tr>
+								        <td>交易手续费</td>
+								        <td>单边每公斤3元</td>
+								      </tr>
+								      <tr>
+								        <td>交收方式</td>
+								        <td>实物银条</td>
+								      </tr>
+								    </tbody>
+								  </table>
+								  <p class="text_center">备注：现货白银交易参数如有调整，按交易市场公告执行。</p>
+								</div>
+							</div>
+							<div class="subtab" style="display:none">
+								<h2 class="text_center">东翌贵金属交易中心电子平台</h2>
+								<div class="d_open_cont">
+									<p>东翌贵金属交易中心电子平台是东翌贵金属交易中心主持研发的功能强大、操作简单的网上交易系统，能够提供实时行情、网上交易以及查询、报表功能，同时有与银行接口的实时转账功能，方便客户出入金。系统高效、安全、灵活，让您的投资交易得到可靠保障，充分把握市场投资机会。</p>
+								</div>
+							</div>
+							<div class="subtab" style="display:none">
+								<div class="d_open_cont">
+									<table>
+									  <tbody>
+									    <tr>
+									      <td>现货合约</td>
+									      <td> 为立即或在将来交付实际商品，通过交易中心电子交易平台签订的销售协议。</td>
+									    </tr>
+									    <tr>
+									      <td> 交易账号</td>
+									      <td> 是按照交易中心细则编制的用于客户进行贵金属交易的专用代码，也称"客户编码"、"保证金账号"，实行一户一码、专码专用原则。</td>
+									    </tr>
+									    <tr>
+									      <td> 保证金</td>
+									      <td> 为确保履行合约存放在交易账户内的、由银行第三方存管的资金。</td>
+									    </tr>
+									    <tr>
+									      <td> 买入/卖出价</td>
+									      <td> 当前可供客户买入/卖出的价格。</td>
+									    </tr>
+									    <tr>
+									      <td> 建仓</td>
+									      <td> 买入或卖出贵金属商品合约的交易行为，也称开仓。</td>
+									    </tr>
+									    <tr>
+									      <td> 持仓</td>
+									      <td> 持有贵金属商品合约的交易行为。</td>
+									    </tr>
+									    <tr>
+									      <td> 平仓</td>
+									      <td> 为了结持有的合约，而进行的反向交易。</td>
+									    </tr>
+									    <tr>
+									      <td> 止损</td>
+									      <td> 当商品价格向亏损方向运行，达到设定的数值，及时平仓出局。</td>
+									    </tr>
+									    <tr>
+									      <td> 止盈</td>
+									      <td> 当商品价格向盈利方向运行，达到预期的水平，及时获利了结。</td>
+									    </tr>
+									    <tr>
+									      <td> 点差</td>
+									      <td> 价格最小变化的单位，通常称为"点"，天通金的点为0.01元，现货白银的点为1元。可分为报价点差（买入价与卖出价的差值）、市价点差（市价委托时，委托价格与实际成交价格的差值）、限价点差（限价委托时，委托价格与当前价格的差值）。</td>
+									    </tr>
+									    <tr>
+									      <td> 市价指令</td>
+									      <td> 以当前价格买入或卖出贵金属商品的指令。因行情变化太快，最新当前价格可能和委托价格存在差距，导致不能成功成交。可设置合理的市价点差（0-100），保证成功成交。</td>
+									    </tr>
+									    <tr>
+									      <td> 限价指令</td>
+									      <td> 以限定（固定）价格买入或卖出贵金属商品合约的指令。因行情波动较大，当进行限价委托指令时，委托价格不能处于报价牌提示的限价点差范围内。</td>
+									    </tr>
+									    <tr>
+									      <td> 头寸</td>
+									      <td> 未进行平仓处理的买或卖商品订单的数量。对买进者，称多头头寸；对卖出者，称空头头寸。</td>
+									    </tr>
+									    <tr>
+									      <td> 资金流水</td>
+									      <td> 客户交易账户的出入金和其他资金变动情况的明细。</td>
+									    </tr>
+									    <tr>
+									      <td> 结算</td>
+									      <td> 根据交易结果和交易中心有关规定，对保证金、盈亏、手续费、延期费等有关款项进行的计算、划拨。</td>
+									    </tr>
+									    <tr>
+									      <td> 结算价</td>
+									      <td> 取交易日收市前10分种的买价和卖价的平均价为结算价，并以结算价作为计算当日盈亏以及下一交易日商品的持仓价的依据。</td>
+									    </tr>
+									    <tr>
+									      <td> 持仓价</td>
+									      <td> 如是当日建仓，持仓价等于建仓价；如是历史持仓，持仓价等于上一交易日结算价。</td>
+									    </tr>
+									    <tr>
+									      <td> 浮动盈亏</td>
+									      <td> 由于盘中价格变动，导致最新平仓价与持仓价相比产生的盈利或亏损。计算方法为：（最新价－持仓价）×持仓数量×合约单位×方向。</td>
+									    </tr>
+									    <tr>
+									      <td> 结算盈亏</td>
+									      <td> 由于结算价与持仓价变动，导致最新结算价与持仓价相比产生的盈利或亏损。计算方法为：（结算价－持仓价）×持仓数量×合约单位×方向。</td>
+									    </tr>
+									    <tr>
+									      <td> 平仓盈亏</td>
+									      <td> 是持仓被平仓导致的盈利或亏损，计算方法为：（平仓价－持仓价）×持仓数量×合约单位×方向。</td>
+									    </tr>
+									    <tr>
+									      <td> 实际盈亏</td>
+									      <td> 是实际的盈利或亏损。计算方法为：（平仓价－建仓价）×持仓数量×合约单位×方向。</td>
+									    </tr>
+									    <tr>
+									      <td> 占用保证金</td>
+									      <td> 建仓占用的保证金，计算方法为：∑建仓价×持仓数量×合约单位×保证金比例。</td>
+									    </tr>
+									    <tr>
+									      <td> 冻结保证金</td>
+									      <td> 限价委托未成交时冻结的保证金，计算方法为：∑限价×委托数量×合约单位×保证金比例。</td>
+									    </tr>
+									    <tr>
+									      <td> 可用保证金</td>
+									      <td> 当前可以用于交易的有效保证金，盘中出入金、扣除手续费、浮动盈亏都会导致可用保证金变化。</td>
+									    </tr>
+									    <tr>
+									      <td> 余额</td>
+									      <td> 交易账户内保证金的实际金额，是所有保证金之和。</td>
+									    </tr>
+									    <tr>
+									      <td> 净值</td>
+									      <td> 交易账户内余额加上浮动盈亏之和。</td>
+									    </tr>
+									    <tr>
+									      <td> 风险率</td>
+									      <td> 净值与占用保证金的百分比比率，计算方法为：净值／占用保证金 ×100% 。</td>
+									    </tr>
+									  </tbody>
+									</table>
+
+								</div>
+							</div>
+							<div class="subtab" style="display:none">
+								<h2 class="text_center">清算规则</h2>
+								<div class="d_open_cont">
+									<p>交易中心对延期交收交易实行集中、T+1的资金清算原则。<br />
+									"集中"是指由交易中心和托管银行对会员及客户资金统一进行清算。<br />
+									"T+1"是指交易中心对客户和会员每笔交易所产生的盈亏及费用在第二个工作日内进行资金清算。<br />
+									投资者须在交易中心指定的银行开立资金清算账户；资金托管银行根据交易系统每日结算数据，在规定时间内进行资金清算。<br />
+									投资者可通过交易系统实时查询资金清算明细数据，如有异意，24小时内向交易中心提出复核申请。
+									</p>
+								</div>
+							</div>
+							<div class="subtab" style="display:none">
+								<h2 class="text_center">密码重置</h2>
+								<div class="d_open_cont">
+									<p>密码重置是指我公司客户因遗忘登录密码、电话交易密码或资金密码而由东翌贵金属进行重置密码的服务。 密码重置业务可采取现场重置或异地办理的方式。</p>
+									<p>办理密码重置业务，个人客户需提交《客户密码重置申请》、身份证原件及复印件。委托他人代办，需提交《客户密码重置申请》并携带客户本人身份证原件、复印 件、受托人身份证原件、复印件、授权委托书原件办理。机构客户需提交《客户密码重置申请》（加盖公章）、《营业执照复印件》（加盖公章）、法定代表人身份 证复印件、法定代表人授权委托书、受托人身份证原件及复印件办理。
+									对在异地未能到达东翌贵金属现场进行密码重置的客户，应先将《客户密码重置申请》、《营业执照复印件》、客户本人身份证复印件、受托人身份证复印件、委托书等相关资料传真至我公司，原件于三个工作日内邮寄至我公司。
+									东翌贵金属根据规定必须执行严格的核对、确认和审批流程，并由交易中心审核无误后，方可对客户密码进行重置操作。</p>
+									<p>密码重置后的新密码可通过现场提取或电子邮件的方式提取。</p>
+									<p>对在异地未能到达华福贵金属现场进行密码重置的客户，我公司对客户密码进行重置后，立即通知客户已完成密码重置，并通过电子邮件方式进行新密码发送，客户应立即登陆交易系统进行密码修改，我公司将以电话录音的方式将语音通知进行保存。</p>
+								</div>
+							</div>
+							<div class="subtab" style="display:none">
+								<h2 class="text_center">盈亏计算</h2>
+								<div class="d_open_cont">
+									<p>盈亏计算公式:<br />
+									盈亏值=（卖出价－买入价）×买入数量－手续费<br />
+									王先生买入2手（100千克合约）白银。买入价格为4300元/千克，卖出价格为4500元/千克，他的盈利情况为：<br />
+									需要投入保证金：2×100×8000=1600000元<br />
+									盈利值：<br />
+									（4500-4300）×2×100-2×300-2×300=38800元<br />
+									毛利4万元 2手买入手续费600元 2手卖出手续费600元<br />
+									盈利率=38800÷16000=228%</p>
+								</div>
+							</div>
+							<div class="subtab" style="display:none">
+								<h2 class="text_center">交易费用</h2>
+								<div class="d_open_cont">
+									<p>投资者在参与东翌银交易过程中，需要支付如下费用：手续费、延期费（持仓过夜时收取）等。<br />
+									手续费收取标准所有合约都为1公斤双边6元；<br />
+									延期费收取标准为1元/天；</p>
+								</div>
+							</div>
+							<div class="subtab" style="display:none">
+								<h2 class="text_center">下单方式</h2>
+								<div class="d_open_cont">
+									<p>交易系统的下单类型目前分为：市价单、指价单、止损和止盈单</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<%@ include file="/WEB-INF/views/front/footer.jsp" %>
+	    <script type="text/javascript">
+		   $(function(){
+		         siblingSelect({
+		            storSel:"curr",
+		            storItem: $(".d_tab_tit span"),//items
+		            storTab: $(".d_tab_con .subtab"),//tabs
+		            event:"click"//event
+		         });
+		     });
+		   function siblingSelect(options){
+		        var setting = {
+		            storSel:"curr",//status
+		            storItem: null,//items
+		            storTab: null,//tabs
+		            event:"click"//event
+		        };
+		        $.extend(setting, options);
+		        
+		        
+		        $(setting.storItem).on(setting.event, function(){
+		            $.each(setting.storItem, function(i, e){
+		                $(e).removeClass(setting.storSel);
+		                $($(setting.storTab).get(i)).hide();
+		            });
+
+		            if(!($(this).hasClass(setting.storSel))){
+		                $(this).addClass(setting.storSel);
+		            }
+		            
+		            var index = $(setting.storItem).index($(this));
+		            $($(setting.storTab).get(index)).show();
+		        });
+		    }
+		</script>
+	</body>
+</html>
